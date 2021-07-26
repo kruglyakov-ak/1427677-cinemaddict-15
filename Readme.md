@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Александр Кругляков](https://up.htmlacademy.ru/ecmascript/15/user/1427677).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Алипкин](https://htmlacademy.ru/profile/ealipkin).
 
 ---
 
