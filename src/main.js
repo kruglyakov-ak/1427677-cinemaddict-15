@@ -7,10 +7,12 @@ import {createFilmCardTemplate} from './view/film-card.js';
 import {createFilmsListExtraTemplate} from './view/films-list-extra.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createFooterStatisticsTemplate} from './view/footer-statistics.js';
+// import {createFilmPoupTemplate} from './view/film-popup.js';
+import {generateMovie} from './mock/movie-mock.js';
 
 const MAIN_FILMS_COUNT = 5;
 const EXTRA_FILMS_COUNT = 2;
-
+console.log(generateMovie());
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -57,3 +59,4 @@ for (let i = 0; i < EXTRA_FILMS_COUNT; i++) {
 const siteFooterElement = document.querySelector('.footer');
 
 render(siteFooterElement, createFooterStatisticsTemplate(), 'beforeend');
+// render(siteFooterElement, createFilmPoupTemplate(), 'beforeend');
