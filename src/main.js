@@ -9,10 +9,15 @@ import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createFooterStatisticsTemplate} from './view/footer-statistics.js';
 // import {createFilmPoupTemplate} from './view/film-popup.js';
 import {generateMovie} from './mock/movie-mock.js';
+import {generateFilter} from './mock/filter-mock.js';
 
+const MOVIE_COUNT = 30;
 const MAIN_FILMS_COUNT = 5;
 const EXTRA_FILMS_COUNT = 2;
-console.log(generateMovie());
+
+const movies = new Array(MOVIE_COUNT).fill().map(generateMovie);
+const filters = generateFilter(movies);
+
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -21,7 +26,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
 render(siteHeaderElement, createHeaderProfileTemplate(), 'beforeend');
-render(siteMainElement, createMainNavigationTemplate(), 'beforeend');
+render(siteMainElement, createMainNavigationTemplate(filters), 'beforeend');
 render(siteMainElement, createSortTemplate(), 'beforeend');
 render(siteMainElement, createFilmsContainerTemplate(), 'beforeend');
 
@@ -33,7 +38,7 @@ const mainFilmsListElement = filmsContainerElement.querySelector('.films-list');
 const mainFilmsListContainerElement = mainFilmsListElement.querySelector('.films-list__container');
 
 for (let i = 0; i < MAIN_FILMS_COUNT; i++) {
-  render(mainFilmsListContainerElement, createFilmCardTemplate(), 'beforeend');
+  render(mainFilmsListContainerElement, createFilmCardTemplate(movies[i]), 'beforeend');
 }
 
 render(mainFilmsListElement, createShowMoreButtonTemplate(), 'beforeend');
@@ -44,7 +49,7 @@ const topRatedFilmsListElement = filmsContainerElement.querySelector('.films-lis
 const topRatedFilmsListContainerElement = topRatedFilmsListElement.querySelector('.films-list__container');
 
 for (let i = 0; i < EXTRA_FILMS_COUNT; i++) {
-  render(topRatedFilmsListContainerElement, createFilmCardTemplate(), 'beforeend');
+  render(topRatedFilmsListContainerElement, createFilmCardTemplate(movies[i]), 'beforeend');
 }
 
 render(filmsContainerElement, createFilmsListExtraTemplate(), 'beforeend');
@@ -53,7 +58,7 @@ const mostCommentedFilmsListElement = filmsContainerElement.querySelector('.film
 const mostCommentedFilmsListContainerElement = mostCommentedFilmsListElement.querySelector('.films-list__container');
 
 for (let i = 0; i < EXTRA_FILMS_COUNT; i++) {
-  render(mostCommentedFilmsListContainerElement, createFilmCardTemplate(), 'beforeend');
+  render(mostCommentedFilmsListContainerElement, createFilmCardTemplate(movies[i]), 'beforeend');
 }
 
 const siteFooterElement = document.querySelector('.footer');
