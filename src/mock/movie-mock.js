@@ -5,6 +5,9 @@ const MAX_RATING_COUNT = 10;
 const MIN_RUNTIME = 45;
 const MAX_RUNTIME = 180;
 const GENRES_COUNT = 3;
+const MAX_AGE_RATING = 18;
+const ACTORS_COUNT = 3;
+const DIRECTOR_COUNT = 1;
 const posters = [
   {
     title: 'Made for Each Other',
@@ -34,6 +37,41 @@ const posters = [
     title: 'The Man with the Golden Arm',
     src: 'the-man-with-the-golden-arm.jpg',
   },
+];
+const actors = [
+  'Anthony Mann',
+  'Anne Wigton',
+  'Heinz Herald',
+  'Erich von Stroheim',
+  'Mary Beth Hughes',
+  'Dan Duryea',
+  'John Cromwell',
+  'Carole Lombard',
+  'James Stewart',
+  'David O. Selznick',
+  'Rose Franken',
+  'John Cromwell',
+];
+const countries = [
+  'Switzerland',
+  'Denmark',
+  'Netherlands',
+  'Finland',
+  'Australia',
+  'Iceland',
+  'Austria',
+  'Germany',
+  'New Zealand',
+  'Norway',
+  'Sweden',
+  'Japan',
+  'United States',
+  'Spain',
+  'Lithuania',
+  'Portugal',
+  'Canada',
+  'United Kingdom',
+  'France',
 ];
 
 const getRandomNumberInRange = (min = 0, max = 1, numberSymbolsAfterComma = 0) => {
@@ -96,19 +134,42 @@ const generateRuntime = () => {
 
 const generateGenre = () => {
   const genres = [
-    'Drama',
-    'Film-Noir',
-    'Mystery',
-    'Western',
+    'Action',
+    'Adventure',
+    'Animation',
+    'Biography',
     'Comedy',
-    'Cartoon',
+    'Crime',
+    'Drama',
+    'Family',
+    'Fantasy',
+    'Film-Noir',
+    'History',
+    'Horror',
+    'Music',
     'Musical',
+    'Mystery',
+    'Romance',
+    'Sci-Fi',
+    'Sport',
+    'Thriller',
+    'War',
+    'Western',
   ];
 
   return new Array(GENRES_COUNT)
     .fill()
     .map(() => genres[getRandomNumberInRange(0, genres.length - 1)]);
 };
+
+const generateAgeRating = () => getRandomNumberInRange(0, MAX_AGE_RATING);
+
+const generateActors = (count) => new Array(count)
+  .fill()
+  .map(() => actors[getRandomNumberInRange(0, actors.length - 1)])
+  .join('');
+
+const generateCountrie = () => countries[getRandomNumberInRange(0, countries.length - 1)];
 
 export const generateMovie = () => {
   const poster = generatePoster();
@@ -118,7 +179,12 @@ export const generateMovie = () => {
     title: poster.title,
     totalRating: generateRating(),
     poster: poster.src,
+    ageRating: generateAgeRating(),
+    director: generateActors(DIRECTOR_COUNT),
+    writers: generateActors(ACTORS_COUNT),
+    actors: generateActors(ACTORS_COUNT),
     releaseDate: generateReleaseDate(),
+    releaseCountry: generateCountrie(),
     genres: generateGenre(),
     runtime: generateRuntime(),
     description: generateDescription(),

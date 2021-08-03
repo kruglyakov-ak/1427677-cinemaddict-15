@@ -1,4 +1,4 @@
-import {formatReleaseDate} from '../utils.js';
+import { formatReleaseDate } from '../utils.js';
 
 export const createFilmCardTemplate = (movie) => {
   const {
@@ -16,7 +16,13 @@ export const createFilmCardTemplate = (movie) => {
   } = movie;
 
   const setControlClassName = (isControl) => isControl ? 'film-card__controls-item--active' : '';
+  const cutDescription = () => {
+    if (description.length > 140) {
+      return `${description.substring(0, 139)}...`;
+    }
 
+    return description;
+  };
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${totalRating}</p>
@@ -26,7 +32,7 @@ export const createFilmCardTemplate = (movie) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${description}</p>
+      <p class="film-card__description">${cutDescription()}</p>
       <a class="film-card__comments">${comments} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist
