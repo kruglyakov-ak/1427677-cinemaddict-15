@@ -1,8 +1,14 @@
+const MIN_MOVIES_COUNT_NOVICE_RATE = 1;
+const MAX_MOVIES_COUNT_NOVICE_RATE = 10;
+const MIN_MOVIES_COUNT_FAN_RATE = 11;
+const MAX_MOVIES_COUNT_FAN_RATE = 20;
+const MIN_MOVIES_COUNT_MOVIE_BUFF_RATE = 21;
 const createProfileRating = (watchedMoviesCount) => {
   const empty = 0;
-  const novice = watchedMoviesCount >= 1 && watchedMoviesCount <= 10;
-  const fan = watchedMoviesCount >= 11 && watchedMoviesCount <= 20;
-  const movieBuff = watchedMoviesCount >= 21;
+  const novice = watchedMoviesCount >=
+    MIN_MOVIES_COUNT_NOVICE_RATE && watchedMoviesCount <= MAX_MOVIES_COUNT_NOVICE_RATE;
+  const fan = watchedMoviesCount >= MIN_MOVIES_COUNT_FAN_RATE && watchedMoviesCount <= MAX_MOVIES_COUNT_FAN_RATE;
+  const movieBuff = watchedMoviesCount >= MIN_MOVIES_COUNT_MOVIE_BUFF_RATE;
 
   if (empty) {
     return '';
