@@ -2,7 +2,7 @@ import { formatReleaseDate } from '../utils.js';
 
 export const createFilmCardTemplate = (movie) => {
   const {
-    comments,
+    commentsCount,
     title,
     totalRating,
     poster,
@@ -33,7 +33,7 @@ export const createFilmCardTemplate = (movie) => {
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${cutDescription()}</p>
-      <a class="film-card__comments">${comments} comments</a>
+      <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist
         ${setControlClassName(isWatchlist)}" type="button">

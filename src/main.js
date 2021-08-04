@@ -7,9 +7,10 @@ import { createFilmCardTemplate } from './view/film-card.js';
 import { createFilmsListExtraTemplate } from './view/films-list-extra.js';
 import { createShowMoreButtonTemplate } from './view/show-more-button.js';
 import { createFooterStatisticsTemplate } from './view/footer-statistics.js';
-import {createFilmPoupTemplate} from './view/film-popup.js';
+import { createFilmPoupTemplate } from './view/film-popup.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateFilter } from './mock/filter-mock.js';
+import { generateComments } from './mock/comments-mock.js';
 
 const MOVIE_COUNT = 32;
 const MOVIE_COUNT_PER_STEP = 5;
@@ -18,6 +19,7 @@ const EXTRA_FILMS_COUNT = 2;
 
 const movies = new Array(MOVIE_COUNT).fill().map(generateMovie);
 const filters = generateFilter(movies);
+const comments = movies.map((movie) => generateComments(movie));
 const moviesByRating = movies.slice().sort((prev, next) => next.totalRating - prev.totalRating);
 const moviesByComments = movies.slice().sort((prev, next) => next.comments - prev.comments);
 
@@ -85,6 +87,5 @@ if (movies.length) {
   }
 }
 const siteFooterElement = document.querySelector('.footer');
-
 render(siteFooterElement, createFooterStatisticsTemplate(movies), 'beforeend');
-render(siteFooterElement, createFilmPoupTemplate(movies[0]), 'afterend');
+render(siteFooterElement, createFilmPoupTemplate(movies[0], comments[0]), 'afterend');

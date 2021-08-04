@@ -8,6 +8,20 @@ const GENRES_COUNT = 3;
 const MAX_AGE_RATING = 18;
 const ACTORS_COUNT = 3;
 const DIRECTOR_COUNT = 1;
+const MAX_ID_COUNR = 99;
+const descriptions = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  'Cras aliquet varius magna, non porta ligula feugiat eget.',
+  'Fusce tristique felis at fermentum pharetra.',
+  'Aliquam id orci ut lectus varius viverra.',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+  'Sed sed nisi sed augue convallis suscipit in sed felis.',
+  'Aliquam erat volutpat.',
+  'Nunc fermentum tortor ac porta dapibus.',
+  'In rutrum ac purus sit amet tempus.',
+];
 const posters = [
   {
     title: 'Made for Each Other',
@@ -87,19 +101,6 @@ const generatePoster = () => {
 };
 
 const generateDescription = () => {
-  const descriptions = [
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    'Cras aliquet varius magna, non porta ligula feugiat eget.',
-    'Fusce tristique felis at fermentum pharetra.',
-    'Aliquam id orci ut lectus varius viverra.',
-    'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-    'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-    'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-    'Sed sed nisi sed augue convallis suscipit in sed felis.',
-    'Aliquam erat volutpat.',
-    'Nunc fermentum tortor ac porta dapibus.',
-    'In rutrum ac purus sit amet tempus.',
-  ];
   const randomSentencesCount = getRandomNumberInRange(1, DESCRIPTION_SENTENCES_COUNT);
   const description =
     new Array(randomSentencesCount)
@@ -175,7 +176,8 @@ export const generateMovie = () => {
   const poster = generatePoster();
 
   return {
-    comments: generateComments(),
+    id: getRandomNumberInRange(1, MAX_ID_COUNR),
+    commentsCount: generateComments(),
     title: poster.title,
     totalRating: generateRating(),
     poster: poster.src,
