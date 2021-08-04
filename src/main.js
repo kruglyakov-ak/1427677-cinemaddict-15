@@ -12,7 +12,7 @@ import { generateMovie } from './mock/movie-mock.js';
 import { generateFilter } from './mock/filter-mock.js';
 import { generateComments } from './mock/comments-mock.js';
 
-const MOVIE_COUNT = 32;
+const MOVIE_COUNT = 48;
 const MOVIE_COUNT_PER_STEP = 5;
 const MAIN_FILMS_COUNT = 5;
 const EXTRA_FILMS_COUNT = 2;

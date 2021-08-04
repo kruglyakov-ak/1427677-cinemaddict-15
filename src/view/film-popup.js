@@ -1,5 +1,5 @@
 import { formatReleaseDate } from '../utils.js';
-
+const DATE_FORMAT = 'DD MMMM YYYY';
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
@@ -94,7 +94,7 @@ export const createFilmPoupTemplate = (movie, comments) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${formatReleaseDate(releaseDate, 'DD MMMM YYYY')}</td>
+                  <td class="film-details__cell">${formatReleaseDate(releaseDate, DATE_FORMAT)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>

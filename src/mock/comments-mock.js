@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 const DESCRIPTION_SENTENCES_COUNT = 2;
 
-const emotions = ['smile', 'sleeping', 'puke', 'angry'];
-const commentAuthors = [
+const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
+const COMMENT_AUTHORS = [
   'Anthony Mann',
   'Anne Wigton',
   'Heinz Herald',
@@ -16,7 +16,7 @@ const commentAuthors = [
   'Rose Franken',
   'John Cromwell',
 ];
-const commentTexts = [
+const COMMENT_TEXTS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
   'Fusce tristique felis at fermentum pharetra.',
@@ -29,6 +29,7 @@ const commentTexts = [
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.',
 ];
+const DATE_FORMAT = 'YYYY/MM/DD HH:mm';
 
 const getRandomNumberInRange = (min = 0, max = 1, numberSymbolsAfterComma = 0) => {
   const lower = Math.min(Math.abs(min), Math.abs(max));
@@ -42,14 +43,14 @@ const generateCommentText = () => {
   const description =
     new Array(randomSentencesCount)
       .fill()
-      .map(() => commentTexts[getRandomNumberInRange(0, commentTexts.length - 1)])
+      .map(() => COMMENT_TEXTS[getRandomNumberInRange(0, COMMENT_TEXTS.length - 1)])
       .join(' ');
   return description;
 };
 
-const generateEmotions = () => emotions[getRandomNumberInRange(0, emotions.length - 1)];
-const generateCommentAuthor = () => commentAuthors[getRandomNumberInRange(0, commentAuthors.length - 1)];
-const generateDate = () => dayjs().format('YYYY/MM/DD HH:mm');
+const generateEmotions = () => EMOTIONS[getRandomNumberInRange(0, EMOTIONS.length - 1)];
+const generateCommentAuthor = () => COMMENT_AUTHORS[getRandomNumberInRange(0, COMMENT_AUTHORS.length - 1)];
+const generateDate = () => dayjs().format(DATE_FORMAT);
 
 const generateComment = (movie) => {
   const {commentsCount} = movie;

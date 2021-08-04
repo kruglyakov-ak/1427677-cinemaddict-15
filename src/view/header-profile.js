@@ -1,23 +1,19 @@
-const MIN_MOVIES_COUNT_NOVICE_RATE = 1;
-const MAX_MOVIES_COUNT_NOVICE_RATE = 10;
-const MIN_MOVIES_COUNT_FAN_RATE = 11;
-const MAX_MOVIES_COUNT_FAN_RATE = 20;
-const MIN_MOVIES_COUNT_MOVIE_BUFF_RATE = 21;
-const createProfileRating = (watchedMoviesCount) => {
-  const empty = 0;
-  const novice = watchedMoviesCount >=
-    MIN_MOVIES_COUNT_NOVICE_RATE && watchedMoviesCount <= MAX_MOVIES_COUNT_NOVICE_RATE;
-  const fan = watchedMoviesCount >= MIN_MOVIES_COUNT_FAN_RATE && watchedMoviesCount <= MAX_MOVIES_COUNT_FAN_RATE;
-  const movieBuff = watchedMoviesCount >= MIN_MOVIES_COUNT_MOVIE_BUFF_RATE;
+const MIN_MOVIES_COUNT = 10;
+const MAX_MOVIES_COUNT = 20;
 
-  if (empty) {
-    return '';
-  } else if (novice) {
+const createProfileRating = (watchedMoviesCount) => {
+  const novice = watchedMoviesCount > 0 && watchedMoviesCount <= MIN_MOVIES_COUNT;
+  const fan = watchedMoviesCount > MIN_MOVIES_COUNT && watchedMoviesCount <= MAX_MOVIES_COUNT;
+  const movieBuff = watchedMoviesCount > MAX_MOVIES_COUNT;
+
+  if (novice) {
     return 'Novice';
   } else if (fan) {
     return 'Fan';
   } else if (movieBuff) {
     return 'Movie Buff';
+  } else {
+    return '';
   }
 };
 
