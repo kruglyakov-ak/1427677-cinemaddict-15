@@ -21,7 +21,7 @@ const movies = new Array(MOVIE_COUNT).fill().map(generateMovie);
 const filters = generateFilter(movies);
 const comments = movies.map((movie) => generateComments(movie));
 const moviesByRating = movies.slice().sort((prev, next) => next.totalRating - prev.totalRating);
-const moviesByComments = movies.slice().sort((prev, next) => next.comments - prev.comments);
+const moviesByComments = movies.slice().sort((prev, next) => next.commentsCount - prev.commentsCount);
 
 const getWatchedMovies = () => filters.find((filter) => filter.name === 'History').count;
 
