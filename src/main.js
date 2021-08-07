@@ -2,7 +2,7 @@ import HeaderProfileView from './view/header-profile.js';
 import MainNavigationView from './view/main-navigation.js';
 import SortView from './view/sort.js';
 import FilmsContainerView from './view/films-container.js';
-import { createFilmsListTemplate } from './view/films-list.js';
+import FilmsListView from './view/films-list.js';
 import { createFilmCardTemplate } from './view/film-card.js';
 import { createFilmsListExtraTemplate } from './view/films-list-extra.js';
 import { createShowMoreButtonTemplate } from './view/show-more-button.js';
@@ -36,7 +36,7 @@ renderElement(siteMainElement, new FilmsContainerView().getElement(), RenderPosi
 
 const filmsContainerElement = siteMainElement.querySelector('.films');
 
-renderTemplate(filmsContainerElement, createFilmsListTemplate(), 'beforeend');
+renderElement(filmsContainerElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
 
 const mainFilmsListElement = filmsContainerElement.querySelector('.films-list');
 const mainFilmsListContainerElement = mainFilmsListElement.querySelector('.films-list__container');
