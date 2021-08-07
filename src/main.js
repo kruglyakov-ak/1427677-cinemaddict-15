@@ -7,11 +7,11 @@ import FilmCardView from './view/film-card.js';
 import FilmsListExtraView from './view/films-list-extra.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import FooterStatisticsView from './view/footer-statistics.js';
-import { createFilmPoupTemplate } from './view/film-popup.js';
+import FilmPoupView from './view/film-popup.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateFilter } from './mock/filter-mock.js';
 import { generateComments } from './mock/comments-mock.js';
-import { renderTemplate, renderElement, RenderPosition } from './utils.js';
+import { renderElement, RenderPosition } from './utils.js';
 
 const MOVIE_COUNT = 48;
 const MOVIE_COUNT_PER_STEP = 5;
@@ -100,4 +100,4 @@ if (movies.length) {
 const siteFooterElement = document.querySelector('.footer');
 
 renderElement(siteFooterElement, new FooterStatisticsView(movies).getElement(), RenderPosition.BEFOREEND);
-renderTemplate(siteFooterElement, createFilmPoupTemplate(movies[0], comments[0]), 'afterend');
+renderElement(siteFooterElement, new FilmPoupView(movies[0], comments[0]).getElement(), RenderPosition.BEFOREEND);
