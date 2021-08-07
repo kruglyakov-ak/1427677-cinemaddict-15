@@ -1,4 +1,4 @@
-import { createHeaderProfileTemplate } from './view/header-profile.js';
+import HeaderProfileView from './view/header-profile.js';
 import { createMainNavigationTemplate } from './view/main-navigation.js';
 import { createSortTemplate } from './view/sort.js';
 import { createFilmsContainerTemplate } from './view/films-container.js';
@@ -11,7 +11,7 @@ import { createFilmPoupTemplate } from './view/film-popup.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateFilter } from './mock/filter-mock.js';
 import { generateComments } from './mock/comments-mock.js';
-import { renderTemplate } from './utils.js';
+import { renderTemplate, renderElement, RenderPosition } from './utils.js';
 
 const MOVIE_COUNT = 48;
 const MOVIE_COUNT_PER_STEP = 5;
@@ -29,7 +29,7 @@ const getWatchedMovies = () => filters.find((filter) => filter.name === 'History
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
-renderTemplate(siteHeaderElement, createHeaderProfileTemplate(getWatchedMovies()), 'beforeend');
+renderElement(siteHeaderElement, new HeaderProfileView(getWatchedMovies()).getElement(), RenderPosition.BEFOREEND);
 renderTemplate(siteMainElement, createMainNavigationTemplate(filters), 'beforeend');
 renderTemplate(siteMainElement, createSortTemplate(), 'beforeend');
 renderTemplate(siteMainElement, createFilmsContainerTemplate(), 'beforeend');

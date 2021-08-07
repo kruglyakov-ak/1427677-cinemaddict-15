@@ -27,12 +27,13 @@ const createHeaderProfileTemplate = (watchedMovies) => (
 );
 
 export default class HeaderProfile {
-  constructor() {
+  constructor(watchedMovies) {
     this._element = null;
+    this._watchedMovies = watchedMovies;
   }
 
   getTemplate() {
-    return createHeaderProfileTemplate();
+    return createHeaderProfileTemplate(this._watchedMovies);
   }
 
   getElement() {
