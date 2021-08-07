@@ -11,7 +11,7 @@ import FilmPoupView from './view/film-popup.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateFilter } from './mock/filter-mock.js';
 import { generateComments } from './mock/comments-mock.js';
-import { renderElement, RenderPosition } from './utils.js';
+import { render, RenderPosition } from './utils.js';
 
 const MOVIE_COUNT = 48;
 const MOVIE_COUNT_PER_STEP = 5;
@@ -29,25 +29,25 @@ const getWatchedMovies = () => filters.find((filter) => filter.name === 'History
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
-renderElement(siteHeaderElement, new HeaderProfileView(getWatchedMovies()).getElement(), RenderPosition.BEFOREEND);
-renderElement(siteMainElement, new MainNavigationView(filters).getElement(), RenderPosition.BEFOREEND);
-renderElement(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
-renderElement(siteMainElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new HeaderProfileView(getWatchedMovies()).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new MainNavigationView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsContainerElement = siteMainElement.querySelector('.films');
 
-renderElement(filmsContainerElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
+render(filmsContainerElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
 
 const mainFilmsListElement = filmsContainerElement.querySelector('.films-list');
 const mainFilmsListContainerElement = mainFilmsListElement.querySelector('.films-list__container');
 
 for (let i = 0; i < MAIN_FILMS_COUNT && i < MOVIE_COUNT; i++) {
-  renderElement(mainFilmsListContainerElement, new FilmCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
+  render(mainFilmsListContainerElement, new FilmCardView(movies[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 if (movies.length > MOVIE_COUNT_PER_STEP) {
   let renderedMoviesCount = MOVIE_COUNT_PER_STEP;
-  renderElement(mainFilmsListElement, new ShowMoreButtonView().getElement(), RenderPosition.BEFOREEND);
+  render(mainFilmsListElement, new ShowMoreButtonView().getElement(), RenderPosition.BEFOREEND);
 
   const showMoreButton = mainFilmsListElement.querySelector('.films-list__show-more');
 
@@ -55,7 +55,7 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
     evt.preventDefault();
     movies
       .slice(renderedMoviesCount, renderedMoviesCount + MOVIE_COUNT_PER_STEP)
-      .forEach((movie) => renderElement(
+      .forEach((movie) => render(
         mainFilmsListContainerElement,
         new FilmCardView(movie).getElement(),
         RenderPosition.BEFOREEND));
@@ -68,7 +68,7 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
   });
 }
 if (movies.length) {
-  renderElement(
+  render(
     filmsContainerElement,
     new FilmsListExtraView('Top rated').getElement(),
     RenderPosition.BEFOREEND);
@@ -77,12 +77,12 @@ if (movies.length) {
   const topRatedFilmsListContainerElement = topRatedFilmsListElement.querySelector('.films-list__container');
 
   for (let i = 0; i < EXTRA_FILMS_COUNT && i < MOVIE_COUNT; i++) {
-    renderElement(
+    render(
       topRatedFilmsListContainerElement,
       new FilmCardView(moviesByRating[i]).getElement(),
       RenderPosition.BEFOREEND);
   }
-  renderElement(
+  render(
     filmsContainerElement,
     new FilmsListExtraView('Most commented').getElement(),
     RenderPosition.BEFOREEND);
@@ -91,7 +91,7 @@ if (movies.length) {
   const mostCommentedFilmsListContainerElement = mostCommentedFilmsListElement.querySelector('.films-list__container');
 
   for (let i = 0; i < EXTRA_FILMS_COUNT && i < MOVIE_COUNT; i++) {
-    renderElement(
+    render(
       mostCommentedFilmsListContainerElement,
       new FilmCardView(moviesByComments[i]).getElement(),
       RenderPosition.BEFOREEND);
@@ -99,5 +99,5 @@ if (movies.length) {
 }
 const siteFooterElement = document.querySelector('.footer');
 
-renderElement(siteFooterElement, new FooterStatisticsView(movies).getElement(), RenderPosition.BEFOREEND);
-renderElement(siteFooterElement, new FilmPoupView(movies[0], comments[0]).getElement(), RenderPosition.BEFOREEND);
+render(siteFooterElement, new FooterStatisticsView(movies).getElement(), RenderPosition.BEFOREEND);
+render(siteFooterElement, new FilmPoupView(movies[0], comments[0]).getElement(), RenderPosition.BEFOREEND);
