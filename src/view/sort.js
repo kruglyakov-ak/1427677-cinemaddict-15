@@ -7,6 +7,7 @@ const createSortTemplate = () => (
   <li><a href="#" class="sort__button">Sort by rating</a></li>
 </ul>`
 );
+
 export default class Sort {
   constructor() {
     this._element = null;

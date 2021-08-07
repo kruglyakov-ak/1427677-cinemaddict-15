@@ -5,7 +5,7 @@ import FilmsContainerView from './view/films-container.js';
 import FilmsListView from './view/films-list.js';
 import FilmCardView from './view/film-card.js';
 import FilmsListExtraView from './view/films-list-extra.js';
-import { createShowMoreButtonTemplate } from './view/show-more-button.js';
+import ShowMoreButtonView from './view/show-more-button.js';
 import { createFooterStatisticsTemplate } from './view/footer-statistics.js';
 import { createFilmPoupTemplate } from './view/film-popup.js';
 import { generateMovie } from './mock/movie-mock.js';
@@ -47,7 +47,7 @@ for (let i = 0; i < MAIN_FILMS_COUNT && i < MOVIE_COUNT; i++) {
 
 if (movies.length > MOVIE_COUNT_PER_STEP) {
   let renderedMoviesCount = MOVIE_COUNT_PER_STEP;
-  renderTemplate(mainFilmsListElement, createShowMoreButtonTemplate(), 'beforeend');
+  renderElement(mainFilmsListElement, new ShowMoreButtonView().getElement(), RenderPosition.BEFOREEND);
 
   const showMoreButton = mainFilmsListElement.querySelector('.films-list__show-more');
 
