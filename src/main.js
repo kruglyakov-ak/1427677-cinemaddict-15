@@ -4,7 +4,7 @@ import SortView from './view/sort.js';
 import FilmsContainerView from './view/films-container.js';
 import FilmsListView from './view/films-list.js';
 import FilmCardView from './view/film-card.js';
-import { createFilmsListExtraTemplate } from './view/films-list-extra.js';
+import FilmsListExtraView from './view/films-list-extra.js';
 import { createShowMoreButtonTemplate } from './view/show-more-button.js';
 import { createFooterStatisticsTemplate } from './view/footer-statistics.js';
 import { createFilmPoupTemplate } from './view/film-popup.js';
@@ -68,7 +68,10 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
   });
 }
 if (movies.length) {
-  renderTemplate(filmsContainerElement, createFilmsListExtraTemplate('Top rated'), 'beforeend');
+  renderElement(
+    filmsContainerElement,
+    new FilmsListExtraView('Top rated').getElement(),
+    RenderPosition.BEFOREEND);
 
   const topRatedFilmsListElement = filmsContainerElement.querySelector('.films-list:nth-child(2');
   const topRatedFilmsListContainerElement = topRatedFilmsListElement.querySelector('.films-list__container');
@@ -79,8 +82,10 @@ if (movies.length) {
       new FilmCardView(moviesByRating[i]).getElement(),
       RenderPosition.BEFOREEND);
   }
-
-  renderTemplate(filmsContainerElement, createFilmsListExtraTemplate('Most commented'), 'beforeend');
+  renderElement(
+    filmsContainerElement,
+    new FilmsListExtraView('Most commented').getElement(),
+    RenderPosition.BEFOREEND);
 
   const mostCommentedFilmsListElement = filmsContainerElement.querySelector('.films-list:nth-child(3)');
   const mostCommentedFilmsListContainerElement = mostCommentedFilmsListElement.querySelector('.films-list__container');
