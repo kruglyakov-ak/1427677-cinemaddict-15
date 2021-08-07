@@ -1,6 +1,6 @@
 import HeaderProfileView from './view/header-profile.js';
 import MainNavigationView from './view/main-navigation.js';
-import { createSortTemplate } from './view/sort.js';
+import SortView from './view/sort.js';
 import { createFilmsContainerTemplate } from './view/films-container.js';
 import { createFilmsListTemplate } from './view/films-list.js';
 import { createFilmCardTemplate } from './view/film-card.js';
@@ -31,7 +31,7 @@ const siteMainElement = document.querySelector('.main');
 
 renderElement(siteHeaderElement, new HeaderProfileView(getWatchedMovies()).getElement(), RenderPosition.BEFOREEND);
 renderElement(siteMainElement, new MainNavigationView(filters).getElement(), RenderPosition.BEFOREEND);
-renderTemplate(siteMainElement, createSortTemplate(), 'beforeend');
+renderElement(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 renderTemplate(siteMainElement, createFilmsContainerTemplate(), 'beforeend');
 
 const filmsContainerElement = siteMainElement.querySelector('.films');
