@@ -6,7 +6,7 @@ import FilmsListView from './view/films-list.js';
 import FilmCardView from './view/film-card.js';
 import FilmsListExtraView from './view/films-list-extra.js';
 import ShowMoreButtonView from './view/show-more-button.js';
-import { createFooterStatisticsTemplate } from './view/footer-statistics.js';
+import FooterStatisticsView from './view/footer-statistics.js';
 import { createFilmPoupTemplate } from './view/film-popup.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateFilter } from './mock/filter-mock.js';
@@ -98,5 +98,6 @@ if (movies.length) {
   }
 }
 const siteFooterElement = document.querySelector('.footer');
-renderTemplate(siteFooterElement, createFooterStatisticsTemplate(movies), 'beforeend');
+
+renderElement(siteFooterElement, new FooterStatisticsView(movies).getElement(), RenderPosition.BEFOREEND);
 renderTemplate(siteFooterElement, createFilmPoupTemplate(movies[0], comments[0]), 'afterend');
