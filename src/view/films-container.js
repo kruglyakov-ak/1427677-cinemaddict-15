@@ -1,8 +1,6 @@
 import {createElement} from '../utils.js';
 
-const createFilmsContainerTemplate = () => (
-  ' <section class="films"></section>'
-);
+const createFilmsContainerTemplate = () => '<section class="films"></section>';
 
 export default class FilmsContainer {
   constructor() {

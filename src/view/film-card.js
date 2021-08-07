@@ -1,4 +1,5 @@
 import { formatReleaseDate } from '../utils.js';
+import {createElement} from '../utils.js';
 const DATE_FORMAT = 'YYYY';
 const MAX_NUMBER_OF_CHARACTERS = 140;
 
@@ -10,7 +11,7 @@ const cutDescription = (description) => {
   return description;
 };
 
-export const createFilmCardTemplate = (movie) => {
+const createFilmCardTemplate = (movie) => {
   const {
     commentsCount,
     title,
@@ -52,3 +53,26 @@ export const createFilmCardTemplate = (movie) => {
       </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(movie) {
+    this._element = null;
+    this._movie = movie;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._movie);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
