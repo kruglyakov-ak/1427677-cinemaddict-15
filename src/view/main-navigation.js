@@ -10,7 +10,6 @@ const createMainNavigationItemTemplate = (filter) => {
 };
 
 const createMainNavigationTemplate = (filterItems) => {
-
   const filterItemsTemplate = filterItems
     .map((filter) => createMainNavigationItemTemplate(filter))
     .join('');

@@ -13,7 +13,7 @@ import { generateFilter } from './mock/filter-mock.js';
 import { generateComments } from './mock/comments-mock.js';
 import { render, RenderPosition } from './utils.js';
 
-const MOVIE_COUNT = 48;
+const MOVIE_COUNT = 12;
 const MOVIE_COUNT_PER_STEP = 5;
 const MAIN_FILMS_COUNT = 5;
 const EXTRA_FILMS_COUNT = 2;
@@ -104,7 +104,7 @@ if (movies.length > MOVIE_COUNT_PER_STEP) {
     evt.preventDefault();
     movies
       .slice(renderedMoviesCount, renderedMoviesCount + MOVIE_COUNT_PER_STEP)
-      .forEach((movie, i) => renderFilmCard(mainFilmsListContainerElement, movie, comments[i]));
+      .forEach((movie, i) => renderFilmCard(mainFilmsListContainerElement, movie, comments[i + MOVIE_COUNT_PER_STEP]));
 
     renderedMoviesCount += MOVIE_COUNT_PER_STEP;
 
@@ -139,4 +139,3 @@ if (movies.length) {
 }
 
 render(footerElement, new FooterStatisticsView(movies).getElement(), RenderPosition.BEFOREEND);
-// render(siteFooterElement, new FilmPoupView(movies[0], comments[0]).getElement(), RenderPosition.BEFOREEND);
