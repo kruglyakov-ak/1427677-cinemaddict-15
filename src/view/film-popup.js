@@ -1,4 +1,5 @@
 import { formatReleaseDate } from '../utils.js';
+import {createElement} from '../utils.js';
 const DATE_FORMAT = 'DD MMMM YYYY';
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
@@ -29,12 +30,11 @@ const createCommentTemplate = (comment) => {
 </li>`;
 };
 
-
 const createCommentsTemplate = (comments) => comments
   .map((comment) => createCommentTemplate(comment))
   .join('');
 
-export const createFilmPoupTemplate = (movie, comments) => {
+const createFilmPoupTemplate = (movie, comments) => {
   const {
     commentsCount,
     title,
@@ -180,3 +180,27 @@ export const createFilmPoupTemplate = (movie, comments) => {
   </form>
 </section>`;
 };
+
+export default class FilmPoup {
+  constructor(movie, comments) {
+    this._element = null;
+    this._movie = movie;
+    this._comments = comments;
+  }
+
+  getTemplate() {
+    return createFilmPoupTemplate(this._movie, this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

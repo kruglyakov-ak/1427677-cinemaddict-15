@@ -1,6 +1,17 @@
 import { formatReleaseDate } from '../utils.js';
+import {createElement} from '../utils.js';
 const DATE_FORMAT = 'YYYY';
-export const createFilmCardTemplate = (movie) => {
+const MAX_NUMBER_OF_CHARACTERS = 140;
+
+const setControlClassName = (isControl) => isControl ? 'film-card__controls-item--active' : '';
+const cutDescription = (description) => {
+  if (description.length > MAX_NUMBER_OF_CHARACTERS) {
+    return `${description.substring(0, MAX_NUMBER_OF_CHARACTERS - 1)}...`;
+  }
+  return description;
+};
+
+const createFilmCardTemplate = (movie) => {
   const {
     commentsCount,
     title,
@@ -15,14 +26,6 @@ export const createFilmCardTemplate = (movie) => {
     isFavorite,
   } = movie;
 
-  const setControlClassName = (isControl) => isControl ? 'film-card__controls-item--active' : '';
-  const cutDescription = () => {
-    if (description.length > 140) {
-      return `${description.substring(0, 139)}...`;
-    }
-
-    return description;
-  };
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${totalRating}</p>
@@ -32,7 +35,7 @@ export const createFilmCardTemplate = (movie) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${cutDescription()}</p>
+      <p class="film-card__description">${cutDescription(description)}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist
@@ -50,3 +53,26 @@ export const createFilmCardTemplate = (movie) => {
       </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(movie) {
+    this._element = null;
+    this._movie = movie;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._movie);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

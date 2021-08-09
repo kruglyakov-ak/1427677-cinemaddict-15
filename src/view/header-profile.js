@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const MIN_MOVIES_COUNT = 10;
 const MAX_MOVIES_COUNT = 20;
 
@@ -17,9 +19,32 @@ const createProfileRating = (watchedMoviesCount) => {
   }
 };
 
-export const createHeaderProfileTemplate = (watchedMovies) => (
+const createHeaderProfileTemplate = (watchedMovies) => (
   `<section class="header__profile profile">
   <p class="profile__rating">${createProfileRating(watchedMovies)}</p>
   <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
 </section>`
 );
+
+export default class HeaderProfile {
+  constructor(watchedMovies) {
+    this._element = null;
+    this._watchedMovies = watchedMovies;
+  }
+
+  getTemplate() {
+    return createHeaderProfileTemplate(this._watchedMovies);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
