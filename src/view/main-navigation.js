@@ -1,5 +1,18 @@
 import {createElement} from '../utils.js';
 
+const movieToFilterMap = {
+  Watchlist: (movies) => movies.filter((movie) => movie.isWatchlist).length,
+  History: (movies) =>  movies.filter((movie) => movie.isAlreadyWatched).length,
+  Favorites: (movies) =>  movies.filter((movie) => movie.isFavorite).length,
+};
+
+const generateFilterItems = (movies) => Object.entries(movieToFilterMap).map(
+  ([filterName, countMovies]) => ({
+    name: filterName,
+    count: countMovies(movies),
+  }),
+);
+
 const createMainNavigationItemTemplate = (filter) => {
   const { name, count } = filter;
 
@@ -9,8 +22,8 @@ const createMainNavigationItemTemplate = (filter) => {
   );
 };
 
-const createMainNavigationTemplate = (filterItems) => {
-  const filterItemsTemplate = filterItems
+const createMainNavigationTemplate = (movies) => {
+  const filterItemsTemplate = generateFilterItems(movies)
     .map((filter) => createMainNavigationItemTemplate(filter))
     .join('');
 
@@ -24,13 +37,13 @@ const createMainNavigationTemplate = (filterItems) => {
 };
 
 export default class MainNavigation {
-  constructor(filterItems) {
+  constructor(movies) {
     this._element = null;
-    this._filterItems = filterItems;
+    this._movies = movies;
   }
 
   getTemplate() {
-    return createMainNavigationTemplate(this._filterItems);
+    return createMainNavigationTemplate(this._movies);
   }
 
   getElement() {
@@ -43,5 +56,9 @@ export default class MainNavigation {
 
   removeElement() {
     this._element = null;
+  }
+
+  getWatchedMovies() {
+    return generateFilterItems(this._movies).find((filter) => filter.name === 'History').count;
   }
 }
