@@ -73,19 +73,19 @@ if (!movies.length) {
     const filmCard = new FilmCardView(movie);
     const filmPopup = new FilmPoupView(movie, commentsList);
 
-    filmCard.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
+    filmCard.setPosterClickHandler(() => {
       openPopup(filmPopup);
     });
 
-    filmCard.getElement().querySelector('.film-card__title').addEventListener('click', () => {
+    filmCard.setTitleClickHandler(() => {
       openPopup(filmPopup);
     });
 
-    filmCard.getElement().querySelector('.film-card__comments').addEventListener('click', () => {
+    filmCard.setCommentsClickHandler(() => {
       openPopup(filmPopup);
     });
 
-    filmPopup.getElement().querySelector('.film-details__close-btn').addEventListener('click', () => {
+    filmPopup.setCloseBtnClickHandler(() => {
       closePopup();
       document.removeEventListener('keydown', onEscKeyDown);
     });
