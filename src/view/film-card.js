@@ -1,16 +1,8 @@
-import { formatReleaseDate } from '../utils.js';
+import { formatReleaseDate, cutDescription, addActiveBtnClass } from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const DATE_FORMAT = 'YYYY';
 const MAX_NUMBER_OF_CHARACTERS = 140;
-
-const setControlClassName = (isControl) => isControl ? 'film-card__controls-item--active' : '';
-const cutDescription = (description) => {
-  if (description.length > MAX_NUMBER_OF_CHARACTERS) {
-    return `${description.substring(0, MAX_NUMBER_OF_CHARACTERS - 1)}...`;
-  }
-  return description;
-};
 
 const createFilmCardTemplate = (movie) => {
   const {
@@ -36,19 +28,19 @@ const createFilmCardTemplate = (movie) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${cutDescription(description)}</p>
+      <p class="film-card__description">${cutDescription(description, MAX_NUMBER_OF_CHARACTERS)}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist
-        ${setControlClassName(isWatchlist)}" type="button">
+        ${addActiveBtnClass(isWatchlist)}" type="button">
           Add to watchlist
         </button>
         <button class="film-card__controls-item film-card__controls-item--mark-as-watched
-        ${setControlClassName(isAlreadyWatched)}" type="button">
+        ${addActiveBtnClass(isAlreadyWatched)}" type="button">
           Mark as watched
         </button>
         <button class="film-card__controls-item film-card__controls-item--favorite
-         ${setControlClassName(isFavorite)}" type="button">
+         ${addActiveBtnClass(isFavorite)}" type="button">
           Mark as favorite
         </button>
       </div>

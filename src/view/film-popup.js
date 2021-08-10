@@ -1,4 +1,4 @@
-import { formatReleaseDate } from '../utils.js';
+import { formatReleaseDate, addActiveBtnClass } from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const DATE_FORMAT = 'DD MMMM YYYY';
@@ -6,7 +6,6 @@ const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
   .join('');
-const setControlClassName = (isControl) => isControl ? 'film-details__control-button--active' : '';
 
 const createCommentTemplate = (comment) => {
   const {
@@ -119,15 +118,15 @@ const createFilmPoupTemplate = (movie, comments) => {
 
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button film-details__control-button--watchlist
-           ${setControlClassName(isWatchlist)}" id="watchlist" name="watchlist">
+           ${addActiveBtnClass(isWatchlist)}" id="watchlist" name="watchlist">
                 Add to watchlist
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--watched
-          ${setControlClassName(isAlreadyWatched)}" id="watched" name="watched">
+          ${addActiveBtnClass(isAlreadyWatched)}" id="watched" name="watched">
                Already watched
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--favorite
-          ${setControlClassName(isFavorite)}" id="favorite" name="favorite">
+          ${addActiveBtnClass(isFavorite)}" id="favorite" name="favorite">
                 Add to favorites
               </button>
         </section>
