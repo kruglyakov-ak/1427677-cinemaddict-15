@@ -1,4 +1,5 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+
 const ALL_MOVIES_EMPTY_MESSAGE = 'There are no movies in our database';
 
 const createFilmsListEmptyTemplate = () => (
@@ -7,24 +8,8 @@ const createFilmsListEmptyTemplate = () => (
   </section>`
 );
 
-export default class FilmsListEmpty {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsListEmpty extends AbstractView {
   getTemplate() {
     return createFilmsListEmptyTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const MIN_MOVIES_COUNT = 10;
 const MAX_MOVIES_COUNT = 20;
@@ -26,25 +26,13 @@ const createHeaderProfileTemplate = (watchedMovies) => (
 </section>`
 );
 
-export default class HeaderProfile {
+export default class HeaderProfile extends AbstractView {
   constructor(watchedMovies) {
-    this._element = null;
+    super();
     this._watchedMovies = watchedMovies;
   }
 
   getTemplate() {
     return createHeaderProfileTemplate(this._watchedMovies);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
