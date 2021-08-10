@@ -13,7 +13,7 @@ import { generateFilter } from './mock/filter-mock.js';
 import { generateComments } from './mock/comments-mock.js';
 import { render, RenderPosition } from './utils.js';
 
-const MOVIE_COUNT = 12;
+const MOVIE_COUNT = 10;
 const MOVIE_COUNT_PER_STEP = 5;
 const MAIN_FILMS_COUNT = 5;
 const EXTRA_FILMS_COUNT = 2;
@@ -33,12 +33,14 @@ const footerElement = document.querySelector('.footer');
 
 render(headerElement, new HeaderProfileView(getWatchedMovies()).getElement(), RenderPosition.BEFOREEND);
 render(mainElement, new MainNavigationView(filters).getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+if (movies.length) {
+  render(mainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+}
 render(mainElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsContainerElement = mainElement.querySelector('.films');
 
-render(filmsContainerElement, new FilmsListView().getElement(), RenderPosition.BEFOREEND);
+render(filmsContainerElement, new FilmsListView(movies).getElement(), RenderPosition.BEFOREEND);
 
 const mainFilmsListElement = filmsContainerElement.querySelector('.films-list');
 const mainFilmsListContainerElement = mainFilmsListElement.querySelector('.films-list__container');
