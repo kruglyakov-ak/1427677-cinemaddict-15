@@ -1,5 +1,6 @@
 import { formatReleaseDate } from '../utils.js';
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+
 const DATE_FORMAT = 'DD MMMM YYYY';
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
@@ -181,26 +182,14 @@ const createFilmPoupTemplate = (movie, comments) => {
 </section>`;
 };
 
-export default class FilmPoup {
+export default class FilmPoup extends AbstractView {
   constructor(movie, comments) {
-    this._element = null;
+    super();
     this._movie = movie;
     this._comments = comments;
   }
 
   getTemplate() {
     return createFilmPoupTemplate(this._movie, this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

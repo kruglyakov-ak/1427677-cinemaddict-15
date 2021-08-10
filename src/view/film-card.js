@@ -1,5 +1,6 @@
 import { formatReleaseDate } from '../utils.js';
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+
 const DATE_FORMAT = 'YYYY';
 const MAX_NUMBER_OF_CHARACTERS = 140;
 
@@ -54,25 +55,13 @@ const createFilmCardTemplate = (movie) => {
   </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(movie) {
-    this._element = null;
+    super();
     this._movie = movie;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._movie);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
