@@ -1,11 +1,11 @@
-import { formatReleaseDate } from '../utils.js';
-import {createElement} from '../utils.js';
+import { formatReleaseDate, addActiveBtnClass } from '../utils/film.js';
+import AbstractView from './abstract.js';
+
 const DATE_FORMAT = 'DD MMMM YYYY';
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
   .join('');
-const setControlClassName = (isControl) => isControl ? 'film-details__control-button--active' : '';
 
 const createCommentTemplate = (comment) => {
   const {
@@ -118,15 +118,15 @@ const createFilmPoupTemplate = (movie, comments) => {
 
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button film-details__control-button--watchlist
-           ${setControlClassName(isWatchlist)}" id="watchlist" name="watchlist">
+           ${addActiveBtnClass(isWatchlist)}" id="watchlist" name="watchlist">
                 Add to watchlist
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--watched
-          ${setControlClassName(isAlreadyWatched)}" id="watched" name="watched">
+          ${addActiveBtnClass(isAlreadyWatched)}" id="watched" name="watched">
                Already watched
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--favorite
-          ${setControlClassName(isFavorite)}" id="favorite" name="favorite">
+          ${addActiveBtnClass(isFavorite)}" id="favorite" name="favorite">
                 Add to favorites
               </button>
         </section>
@@ -181,26 +181,25 @@ const createFilmPoupTemplate = (movie, comments) => {
 </section>`;
 };
 
-export default class FilmPoup {
+export default class FilmPoup extends AbstractView {
   constructor(movie, comments) {
-    this._element = null;
+    super();
     this._movie = movie;
     this._comments = comments;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmPoupTemplate(this._movie, this._comments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseBtnClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 }

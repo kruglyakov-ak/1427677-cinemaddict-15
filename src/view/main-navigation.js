@@ -1,4 +1,17 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+
+const movieToFilterMap = {
+  Watchlist: (movies) => movies.filter((movie) => movie.isWatchlist).length,
+  History: (movies) =>  movies.filter((movie) => movie.isAlreadyWatched).length,
+  Favorites: (movies) =>  movies.filter((movie) => movie.isFavorite).length,
+};
+
+const generateFilterItems = (movies) => Object.entries(movieToFilterMap).map(
+  ([filterName, countMovies]) => ({
+    name: filterName,
+    count: countMovies(movies),
+  }),
+);
 
 const createMainNavigationItemTemplate = (filter) => {
   const { name, count } = filter;
@@ -9,8 +22,8 @@ const createMainNavigationItemTemplate = (filter) => {
   );
 };
 
-const createMainNavigationTemplate = (filterItems) => {
-  const filterItemsTemplate = filterItems
+const createMainNavigationTemplate = (movies) => {
+  const filterItemsTemplate = generateFilterItems(movies)
     .map((filter) => createMainNavigationItemTemplate(filter))
     .join('');
 
@@ -23,25 +36,17 @@ const createMainNavigationTemplate = (filterItems) => {
 </nav>`;
 };
 
-export default class MainNavigation {
-  constructor(filterItems) {
-    this._element = null;
-    this._filterItems = filterItems;
+export default class MainNavigation extends AbstractView {
+  constructor(movies) {
+    super();
+    this._movies = movies;
   }
 
   getTemplate() {
-    return createMainNavigationTemplate(this._filterItems);
+    return createMainNavigationTemplate(this._movies);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  getWatchedMovies() {
+    return generateFilterItems(this._movies).find((filter) => filter.name === 'History').count;
   }
 }

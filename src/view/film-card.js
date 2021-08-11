@@ -1,15 +1,8 @@
-import { formatReleaseDate } from '../utils.js';
-import {createElement} from '../utils.js';
+import { formatReleaseDate, cutDescription, addActiveBtnClass } from '../utils/film.js';
+import AbstractView from './abstract.js';
+
 const DATE_FORMAT = 'YYYY';
 const MAX_NUMBER_OF_CHARACTERS = 140;
-
-const setControlClassName = (isControl) => isControl ? 'film-card__controls-item--active' : '';
-const cutDescription = (description) => {
-  if (description.length > MAX_NUMBER_OF_CHARACTERS) {
-    return `${description.substring(0, MAX_NUMBER_OF_CHARACTERS - 1)}...`;
-  }
-  return description;
-};
 
 const createFilmCardTemplate = (movie) => {
   const {
@@ -35,44 +28,53 @@ const createFilmCardTemplate = (movie) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${cutDescription(description)}</p>
+      <p class="film-card__description">${cutDescription(description, MAX_NUMBER_OF_CHARACTERS)}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist
-        ${setControlClassName(isWatchlist)}" type="button">
+        ${addActiveBtnClass(isWatchlist)}" type="button">
           Add to watchlist
         </button>
         <button class="film-card__controls-item film-card__controls-item--mark-as-watched
-        ${setControlClassName(isAlreadyWatched)}" type="button">
+        ${addActiveBtnClass(isAlreadyWatched)}" type="button">
           Mark as watched
         </button>
         <button class="film-card__controls-item film-card__controls-item--favorite
-         ${setControlClassName(isFavorite)}" type="button">
+         ${addActiveBtnClass(isFavorite)}" type="button">
           Mark as favorite
         </button>
       </div>
   </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(movie) {
-    this._element = null;
+    super();
     this._movie = movie;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._movie);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setPosterClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._clickHandler);
+  }
+
+  setTitleClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._clickHandler);
+  }
+
+  setCommentsClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._clickHandler);
   }
 }
