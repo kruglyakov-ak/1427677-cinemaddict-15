@@ -10,9 +10,10 @@ import {
   RenderPosition
 } from './utils/render.js';
 
-export default class Board {
-  constructor(filmsContainer) {
+export default class Movie {
+  constructor(filmsContainer, movies) {
     this._filmsContainer = filmsContainer;
+    this._movies = movies;
 
     this._sortComponent = new SortView();
     this._filmsListComponent = new FilmsListView();
@@ -23,13 +24,10 @@ export default class Board {
     this._showMoreButtonComponent = new ShowMoreButtonView();
   }
 
-  init(movies) {
-    this.movies = movies.slice();
-    // Метод для инициализации (начала работы) модуля,
-  }
-
   _renderSort() {
-    // Метод для рендеринга сортировки
+    if (this._movies.length) {
+      render(document.querySelector('.main'), this._sortComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   _renderFilmCard() {
@@ -61,4 +59,8 @@ export default class Board {
     // Метод для инициализации (начала работы) модуля
   }
 
+  init(movies) {
+    this.movies = movies.slice();
+    // Метод для инициализации (начала работы) модуля,
+  }
 }
