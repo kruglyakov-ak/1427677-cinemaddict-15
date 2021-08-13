@@ -43,7 +43,7 @@ export default class Movie {
   }
 
   _renderFilmListEmpty() {
-    // Метод для рендеринга заглушки
+    render(this._filmsContainer, this._filmListEmptyComponent, RenderPosition.BEFOREEND);
   }
 
   _renderShowMoreButton() {
