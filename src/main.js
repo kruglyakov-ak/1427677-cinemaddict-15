@@ -105,8 +105,8 @@ if (!movies.length) {
     new FilmsListExtraView('Top rated'),
     RenderPosition.BEFOREEND);
 
-  const topRatedFilmsListElement = filmsContainerElement.querySelector('.films-list:nth-child(2');
-  const topRatedFilmsListContainerElement = topRatedFilmsListElement.querySelector('.films-list__container');
+  const topRatedFilmsListContainerElement = filmsContainerElement
+    .querySelector('.films-list:nth-child(2').querySelector('.films-list__container');
 
   for (let i = 0; i < EXTRA_FILMS_COUNT && i < MOVIE_COUNT; i++) {
     renderFilmCard(topRatedFilmsListContainerElement, moviesByRating[i], comments[i]);
@@ -116,8 +116,8 @@ if (!movies.length) {
     new FilmsListExtraView('Most commented'),
     RenderPosition.BEFOREEND);
 
-  const mostCommentedFilmsListElement = filmsContainerElement.querySelector('.films-list:nth-child(3)');
-  const mostCommentedFilmsListContainerElement = mostCommentedFilmsListElement.querySelector('.films-list__container');
+  const mostCommentedFilmsListContainerElement = filmsContainerElement
+    .querySelector('.films-list:nth-child(3)').querySelector('.films-list__container');
 
   for (let i = 0; i < EXTRA_FILMS_COUNT && i < MOVIE_COUNT; i++) {
     renderFilmCard(mostCommentedFilmsListContainerElement, moviesByComments[i], comments[i]);
