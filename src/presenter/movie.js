@@ -65,21 +65,15 @@ export default class Movie {
     const filmCard = new FilmCardView(movie);
     const filmPopup = new FilmPoupView(movie, comments);
 
-    filmCard.setPosterClickHandler(() => {
-      openPopup(filmPopup);
-    });
+    filmCard.setPosterClickHandler(() => openPopup(filmPopup));
 
-    filmCard.setTitleClickHandler(() => {
-      openPopup(filmPopup);
-    });
+    filmCard.setTitleClickHandler(() => openPopup(filmPopup));
 
-    filmCard.setCommentsClickHandler(() => {
-      openPopup(filmPopup);
-    });
+    filmCard.setCommentsClickHandler(() => openPopup(filmPopup));
 
     filmPopup.setCloseBtnClickHandler(() => {
-      closePopup();
-      document.removeEventListener('keydown', onEscKeyDown);
+      closePopup(filmPopup);
+      document.removeEventListener('keydown', (evt) => onEscKeyDown(evt, filmPopup));
     });
     render(containerElement, filmCard, RenderPosition.BEFOREEND);
   }

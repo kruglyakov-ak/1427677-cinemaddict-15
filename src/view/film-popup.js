@@ -202,4 +202,23 @@ export default class FilmPoup extends AbstractView {
     this._callback.click = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
+
+  setAddToWatchlistClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement()
+      .querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this._clickHandler);
+  }
+
+  setMarkAsWatchedlistClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement()
+      .querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this._clickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement()
+      .querySelector('.film-card__controls-item--favorite').addEventListener('click', this._clickHandler);
+  }
+
 }
