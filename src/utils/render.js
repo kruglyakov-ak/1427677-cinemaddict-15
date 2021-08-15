@@ -31,21 +31,30 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
+export const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
+
 const bodyElement = document.querySelector('body');
 
-export const closePopup = () => {
-  const popupElement = document.querySelector('.film-details');
-  if (popupElement) {
-    bodyElement.removeChild(popupElement);
+export const closePopup = (popup) => {
+  if (popup) {
+    remove(popup);
   }
   bodyElement.classList.remove('hide-overflow');
 };
 
-export const onEscKeyDown = (evt) => {
+export const onEscKeyDown = (evt, popup) => {
   if (evt.key === 'Escape' || evt.key === 'Esc') {
     evt.preventDefault();
-    closePopup();
-    document.removeEventListener('keydown', onEscKeyDown);
+    closePopup(popup);
+    // eslint-disable-next-line no-shadow
+    document.removeEventListener('keydown', (evt) => onEscKeyDown(evt, popup));
   }
 };
 
@@ -53,5 +62,5 @@ export const openPopup = (popup) => {
   closePopup();
   render(bodyElement, popup, RenderPosition.BEFOREEND);
   bodyElement.classList.add('hide-overflow');
-  document.addEventListener('keydown', onEscKeyDown);
+  document.addEventListener('keydown', (evt) => onEscKeyDown(evt, popup));
 };

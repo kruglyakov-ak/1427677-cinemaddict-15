@@ -9,7 +9,7 @@ import {
   RenderPosition
 } from './utils/render.js';
 
-const MOVIE_COUNT = 5;
+const MOVIE_COUNT = 12;
 
 const movies = new Array(MOVIE_COUNT).fill().map(generateMovie);
 const comments = movies.map((movie) => generateComments(movie));
