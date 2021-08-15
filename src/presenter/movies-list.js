@@ -19,7 +19,7 @@ const EXTRA_FILMS_COUNT = 2;
 const TOP_RATED_LIST_TITLE = 'Top rated';
 const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 
-export default class Movie {
+export default class MoviesList {
   constructor(main) {
     this._mainElement = main;
 
