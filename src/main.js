@@ -12,7 +12,7 @@ import {
 const MOVIE_COUNT = 12;
 
 const movies = new Array(MOVIE_COUNT).fill().map(generateMovie);
-const comments = movies.map((movie) => generateComments(movie));
+const commentsList = movies.map((movie) => generateComments(movie));
 
 const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
@@ -23,6 +23,6 @@ render(headerElement, new HeaderProfileView(
 render(mainElement, new MainNavigationView(movies), RenderPosition.BEFOREEND);
 
 const moviePresenter = new MovieListPresenter(mainElement);
-moviePresenter.init(movies, comments);
+moviePresenter.init(movies, commentsList);
 
 render(footerElement, new FooterStatisticsView(movies), RenderPosition.BEFOREEND);

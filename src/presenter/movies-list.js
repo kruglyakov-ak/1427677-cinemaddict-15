@@ -22,7 +22,6 @@ const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 export default class MoviesList {
   constructor(main) {
     this._mainElement = main;
-
     this._filmsContainer = new FilmsContainerView();
     this._sortComponent = new SortView();
     this._filmsListComponent = new FilmsListView();
@@ -35,11 +34,23 @@ export default class MoviesList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
-  init(movies, comments) {
+  init(movies, commentsList) {
     this._movies = movies.slice();
-    this._comments = comments.slice();
+    this._commentsList = commentsList.slice();
     this._renderSort();
     this._renderFilmContainer();
+  }
+
+  _getComments(id) {
+    let comments;
+    this._commentsList
+      .forEach((comment) => {
+        if (comment.has(id)) {
+          comments = comment.get(id);
+        }
+      });
+
+    return comments;
   }
 
   _renderSort() {
@@ -61,9 +72,9 @@ export default class MoviesList {
     this._renderMostCommentedFilmList();
   }
 
-  _renderFilmCard(containerElement, movie, comments) {
+  _renderFilmCard(containerElement, movie) {
     const filmCard = new FilmCardView(movie);
-    const filmPopup = new FilmPoupView(movie, comments);
+    const filmPopup = new FilmPoupView(movie, this._getComments(movie.id));
 
     filmCard.setPosterClickHandler(() => openPopup(filmPopup));
 
@@ -75,13 +86,12 @@ export default class MoviesList {
       closePopup(filmPopup);
       document.removeEventListener('keydown', (evt) => onEscKeyDown(evt, filmPopup));
     });
+
     render(containerElement, filmCard, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmCards(from, to, container, movies, count=0) {
-    movies
-      .slice(from, to)
-      .forEach((movie, i) => this._renderFilmCard(container, movie, this._comments[i+count]));
+  _renderFilmCards(from, to, container, movies, comments) {
+    movies.slice(from, to).forEach((movie) => this._renderFilmCard(container, movie, comments));
   }
 
   _renderFilmListEmpty() {
@@ -93,8 +103,7 @@ export default class MoviesList {
       this._renderedMoviesCount,
       this._renderedMoviesCount + MOVIE_COUNT_PER_STEP,
       this._filmsContainer.getElement().querySelector('.films-list__container'),
-      this._movies,
-      this._renderedMoviesCount);
+      this._movies);
 
     this._renderedMoviesCount += MOVIE_COUNT_PER_STEP;
     if (this._renderedMoviesCount >= this._movies.length) {

@@ -1,3 +1,5 @@
+import {nanoid} from 'nanoid';
+
 const DESCRIPTION_SENTENCES_COUNT = 5;
 const COMMENTS_COUNT = 5;
 const MIN_RATING_COUNT = 2;
@@ -8,7 +10,6 @@ const GENRES_COUNT = 3;
 const MAX_AGE_RATING = 18;
 const ACTORS_COUNT = 3;
 const DIRECTOR_COUNT = 1;
-const MAX_ID_COUNR = 99;
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -180,7 +181,7 @@ export const generateMovie = () => {
   const poster = generatePoster();
 
   return {
-    id: getRandomNumberInRange(1, MAX_ID_COUNR),
+    id: nanoid(),
     commentsCount: generateComments(),
     title: poster.title,
     totalRating: generateRating(),
