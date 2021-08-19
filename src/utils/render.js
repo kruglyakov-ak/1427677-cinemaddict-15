@@ -43,9 +43,7 @@ export const remove = (component) => {
 const bodyElement = document.querySelector('body');
 
 export const closePopup = (popup) => {
-  if (popup) {
-    remove(popup);
-  }
+  remove(popup);
   bodyElement.classList.remove('hide-overflow');
 };
 
@@ -59,7 +57,9 @@ export const onEscKeyDown = (evt, popup) => {
 };
 
 export const openPopup = (popup) => {
-  closePopup();
+  if (document.querySelector('.film-details')) {
+    document.querySelector('.film-details').remove();
+  }
   render(bodyElement, popup, RenderPosition.BEFOREEND);
   bodyElement.classList.add('hide-overflow');
   document.addEventListener('keydown', (evt) => onEscKeyDown(evt, popup));

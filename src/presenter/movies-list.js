@@ -11,8 +11,7 @@ import {
   RenderPosition,
   closePopup,
   openPopup,
-  onEscKeyDown,
-  remove
+  onEscKeyDown
 } from '../utils/render.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
@@ -23,7 +22,6 @@ const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 export default class MoviesList {
   constructor(main) {
     this._mainElement = main;
-    this._filmCards = [];
     this._filmsContainer = new FilmsContainerView();
     this._sortComponent = new SortView();
     this._filmsListComponent = new FilmsListView();
@@ -77,26 +75,17 @@ export default class MoviesList {
 
   _renderFilmCard(containerElement, movie) {
     const filmCard = new FilmCardView(movie);
-    const filmPopup = new FilmPoupView(movie, this._getComments(movie.id));
 
-    filmCard.setFilmCardInfoClickHandler(() => openPopup(filmPopup));
-
-    filmPopup.setCloseBtnClickHandler(() => {
-      closePopup(filmPopup);
-      document.removeEventListener('keydown', (evt) => onEscKeyDown(evt, filmPopup));
+    filmCard.setFilmCardInfoClickHandler(() => {
+      const filmPopup = new FilmPoupView(movie, this._getComments(movie.id));
+      openPopup(filmPopup);
+      filmPopup.setCloseBtnClickHandler(() => {
+        closePopup(filmPopup);
+        document.removeEventListener('keydown', (evt) => onEscKeyDown(evt, filmPopup));
+      });
     });
 
     render(containerElement, filmCard, RenderPosition.BEFOREEND);
-    this._filmCards.push(filmCard);
-  }
-
-  _clearFilmsList() {
-    this._filmCards.forEach((card) => remove(card));
-    this._filmCards = [];
-    this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
-    remove(this._showMoreButtonComponent);
-    remove(this._topRatedListComponent);
-    remove(this._mostCommentedListComponent);
   }
 
   _renderFilmCards(from, to, container, movies, comments) {
