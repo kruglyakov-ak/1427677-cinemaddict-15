@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-const ACTIVE_CLASS_NAME = 'film-card__controls-item--active';
 
 export const formatReleaseDate = (date, format) => dayjs(date).format(format);
 
@@ -10,4 +9,4 @@ export const cutDescription = (description, charactersCount) => {
   return description;
 };
 
-export const addActiveBtnClass = (isControl) => isControl ? ACTIVE_CLASS_NAME : '';
+export const addActiveBtnClass = (isControl, className) => isControl ? className : '';
