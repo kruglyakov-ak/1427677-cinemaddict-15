@@ -3,7 +3,8 @@ import FilmPoupView from '../view/film-popup.js';
 import {
   render,
   RenderPosition,
-  remove
+  remove,
+  replace
 } from '../utils/render.js';
 
 
@@ -12,40 +13,53 @@ export default class Movie {
     this.filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
 
-    this._renderFilmPopup = this._renderFilmPopup.bind(this);
+    this._filmCard = null;
   }
 
   init(movie, comments) {
     this._movie = movie;
+
+    const prevFilmCard = this._filmCard;
+
     this._filmCard = new FilmCardView(movie);
 
-    this._filmCard.setFilmCardInfoClickHandler(() => {
-      this._renderFilmPopup(movie, comments);
-    });
+    this._filmCard.setFilmCardInfoClickHandler(() => this._renderPopup(movie, comments));
 
-    render(this.filmListContainer, this._filmCard, RenderPosition.BEFOREEND);
+    if (prevFilmCard === null) {
+      render(this.filmListContainer, this._filmCard, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this.filmListContainer.contains(prevFilmCard.getElement())) {
+      replace(this._filmCard, prevFilmCard);
+    }
+
+    remove(prevFilmCard);
   }
 
-  _renderFilmPopup(movie, comments) {
-    const popup = new FilmPoupView(movie, comments);
-    this._openPopup(popup);
+  destroy() {
+    remove(this._filmCard);
+  }
 
-    popup.setCloseBtnClickHandler(() => {
-      this._closePopup(popup);
-      document.removeEventListener('keydown', (evt) => this._onEscKeyDown(evt, popup));
+  _renderPopup(movie, comments) {
+    this._popup = new FilmPoupView(movie, comments);
+    this._openPopup(this._popup);
+
+    this._popup.setCloseBtnClickHandler(() => {
+      this._closePopup(this._popup);
     });
   }
 
   _closePopup(popup) {
     remove(popup);
     this._bodyElement.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', (evt) => this._onEscKeyDown(evt, popup));
   }
 
   _onEscKeyDown(evt, popup) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._closePopup(popup);
-      document.removeEventListener('keydown', (event) => this._onEscKeyDown(event, popup));
     }
   }
 
