@@ -39,28 +39,3 @@ export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
 };
-
-const bodyElement = document.querySelector('body');
-
-export const closePopup = (popup) => {
-  remove(popup);
-  bodyElement.classList.remove('hide-overflow');
-};
-
-export const onEscKeyDown = (evt, popup) => {
-  if (evt.key === 'Escape' || evt.key === 'Esc') {
-    evt.preventDefault();
-    closePopup(popup);
-    // eslint-disable-next-line no-shadow
-    document.removeEventListener('keydown', (evt) => onEscKeyDown(evt, popup));
-  }
-};
-
-export const openPopup = (popup) => {
-  if (document.querySelector('.film-details')) {
-    document.querySelector('.film-details').remove();
-  }
-  render(bodyElement, popup, RenderPosition.BEFOREEND);
-  bodyElement.classList.add('hide-overflow');
-  document.addEventListener('keydown', (evt) => onEscKeyDown(evt, popup));
-};
