@@ -79,13 +79,7 @@ export default class MoviesList {
     const filmCard = new FilmCardView(movie);
     const filmPopup = new FilmPoupView(movie, this._getComments(movie.id));
 
-    filmCard.setPosterClickHandler(() => openPopup(filmPopup));
-
-    filmCard.setTitleClickHandler(() => openPopup(filmPopup));
-
-    filmCard.setCommentsClickHandler(() => openPopup(filmPopup));
-
-    filmCard.setAddToWatchlistClickHandler(() => this._clearFilmsList());
+    filmCard.setFilmCardInfoClickHandler(() => openPopup(filmPopup));
 
     filmPopup.setCloseBtnClickHandler(() => {
       closePopup(filmPopup);
