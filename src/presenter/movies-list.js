@@ -10,6 +10,7 @@ import {
   RenderPosition,
   remove
 } from '../utils/render.js';
+import { updateItem } from '../utils/common.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const EXTRA_FILMS_COUNT = 2;
@@ -31,6 +32,7 @@ export default class MoviesList {
 
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
   }
 
   init(movies, commentsList) {
@@ -38,6 +40,11 @@ export default class MoviesList {
     this._commentsList = commentsList.slice();
     this._renderSort();
     this._renderFilmContainer();
+  }
+
+  _handleFilmCardChange(updatedFilmCard) {
+    this._movies = updateItem(this._movies, updatedFilmCard);
+    this._moviePresenter.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
   }
 
   _getComments(id) {
