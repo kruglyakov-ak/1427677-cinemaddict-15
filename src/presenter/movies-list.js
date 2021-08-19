@@ -7,10 +7,12 @@ import FilmsContainerView from '../view/films-container.js';
 import MoviePresenter from './movie.js';
 import {
   render,
-  RenderPosition
+  RenderPosition,
+  remove
 } from '../utils/render.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
+const EXTRA_FILMS_COUNT = 2;
 const TOP_RATED_LIST_TITLE = 'Top rated';
 const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 
@@ -24,6 +26,8 @@ export default class MoviesList {
     this._topRatedListComponent = new FilmsListExtraView(TOP_RATED_LIST_TITLE);
     this._mostCommentedListComponent = new FilmsListExtraView(MOST_COMMENTED_LIST_TITLE);
     this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._moviePresenter = new Map();
+    this._movieExtraPresenter = new Map();
 
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -34,7 +38,6 @@ export default class MoviesList {
     this._commentsList = commentsList.slice();
     this._renderSort();
     this._renderFilmContainer();
-
   }
 
   _getComments(id) {
@@ -55,15 +58,16 @@ export default class MoviesList {
     }
   }
 
-  _renderFilmCard(containerElement, movie) {
+  _renderFilmCard(containerElement, movie, movieList) {
     const moviePresenter = new MoviePresenter(containerElement);
     moviePresenter.init(movie, this._getComments(movie.id));
+    movieList.set(movie.id, moviePresenter);
   }
 
-  _renderFilmCards(from, to, container, movies) {
+  _renderFilmCards(from, to, container, movies, movieList) {
     movies
       .slice(from, to)
-      .forEach((movie) => this._renderFilmCard(container, movie));
+      .forEach((movie) => this._renderFilmCard(container, movie, movieList));
   }
 
   _renderFilmListEmpty() {
@@ -75,7 +79,8 @@ export default class MoviesList {
       this._renderedMoviesCount,
       this._renderedMoviesCount + MOVIE_COUNT_PER_STEP,
       this._filmsContainer.getElement().querySelector('.films-list__container'),
-      this._movies);
+      this._movies,
+      this._moviePresenter);
 
     this._renderedMoviesCount += MOVIE_COUNT_PER_STEP;
     if (this._renderedMoviesCount >= this._movies.length) {
@@ -90,6 +95,28 @@ export default class MoviesList {
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
+  _renderTopRatedFilmList() {
+    const moviesByRating = this._movies.slice().sort((prev, next) => next.totalRating - prev.totalRating);
+    render(this._filmsContainer, this._topRatedListComponent, RenderPosition.BEFOREEND);
+    this._renderFilmCards(0,
+      EXTRA_FILMS_COUNT,
+      this._filmsContainer
+        .getElement().querySelector('.films-list:nth-child(2').querySelector('.films-list__container'),
+      moviesByRating,
+      this._movieExtraPresenter);
+  }
+
+  _renderMostCommentedFilmList() {
+    const moviesByComments = this._movies.slice().sort((prev, next) => next.commentsCount - prev.commentsCount);
+    render(this._filmsContainer, this._mostCommentedListComponent, RenderPosition.BEFOREEND);
+    this._renderFilmCards(0,
+      EXTRA_FILMS_COUNT,
+      this._filmsContainer
+        .getElement().querySelector('.films-list:nth-child(3)').querySelector('.films-list__container'),
+      moviesByComments,
+      this._movieExtraPresenter);
+  }
+
   _renderFilmList() {
     render(this._filmsContainer, this._filmsListComponent, RenderPosition.BEFOREEND);
 
@@ -97,11 +124,23 @@ export default class MoviesList {
       0,
       Math.min(this._movies.length, MOVIE_COUNT_PER_STEP),
       this._filmsContainer.getElement().querySelector('.films-list__container'),
-      this._movies);
+      this._movies,
+      this._moviePresenter);
 
     if (this._movies.length > MOVIE_COUNT_PER_STEP) {
       this._renderShowMoreButton();
     }
+  }
+
+  _clearTaskList() {
+    this._moviePresenter.forEach((presenter) => presenter.destroy());
+    this._moviePresenter.clear();
+    this._movieExtraPresenter.forEach((presenter) => presenter.destroy());
+    this._movieExtraPresenter.clear();
+    this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
+    remove(this._showMoreButtonComponent);
+    remove(this._topRatedListComponent);
+    remove(this._mostCommentedListComponent);
   }
 
   _renderFilmContainer() {
@@ -113,5 +152,7 @@ export default class MoviesList {
     }
 
     this._renderFilmList();
+    this._renderTopRatedFilmList();
+    this._renderMostCommentedFilmList();
   }
 }
