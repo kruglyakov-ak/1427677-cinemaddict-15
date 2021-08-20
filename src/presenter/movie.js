@@ -20,6 +20,7 @@ export default class Movie {
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._closePopup = this._closePopup.bind(this);
   }
 
   init(movie, comments) {
@@ -69,6 +70,9 @@ export default class Movie {
   }
 
   _renderPopup(movie, comments) {
+    if (this._popup) {
+      this._closePopup();
+    }
     this._popup = new FilmPoupView(movie, comments);
     this._openPopup();
 
@@ -106,9 +110,6 @@ export default class Movie {
   }
 
   _openPopup() {
-    if (document.querySelector('.film-details')) {
-      document.querySelector('.film-details').remove();
-    }
     render(this._bodyElement, this._popup, RenderPosition.BEFOREEND);
     this._bodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDown);
