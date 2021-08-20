@@ -19,6 +19,9 @@ export default class Movie {
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._closePopup = this._closePopup.bind(this);
+    this._openPopup = this._openPopup.bind(this);
   }
 
   init(movie, comments) {
@@ -51,10 +54,12 @@ export default class Movie {
 
   _renderPopup(movie, comments) {
     this._popup = new FilmPoupView(movie, comments);
-    this._openPopup(this._popup);
+    this._openPopup();
+    document.addEventListener('keydown', this._onEscKeyDown);
 
     this._popup.setCloseBtnClickHandler(() => {
-      this._closePopup(this._popup);
+      this._closePopup();
+      document.removeEventListener('keydown', this._onEscKeyDown);
     });
     this._popup.setAddToWatchlistClickHandler(() => {
       this._handleAddToWatchlistClick();
@@ -73,26 +78,25 @@ export default class Movie {
     });
   }
 
-  _closePopup(popup) {
-    remove(popup);
+  _closePopup() {
+    remove(this._popup);
     this._bodyElement.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', (evt) => this._onEscKeyDown(evt, popup));
   }
 
-  _onEscKeyDown(evt, popup) {
+  _onEscKeyDown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this._closePopup(popup);
+      this._closePopup();
     }
+    document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
-  _openPopup(popup) {
+  _openPopup() {
     if (document.querySelector('.film-details')) {
       document.querySelector('.film-details').remove();
     }
-    render(this._bodyElement, popup, RenderPosition.BEFOREEND);
+    render(this._bodyElement, this._popup, RenderPosition.BEFOREEND);
     this._bodyElement.classList.add('hide-overflow');
-    document.addEventListener('keydown', (evt) => this._onEscKeyDown(evt, popup));
   }
 
   _handleAddToWatchlistClick() {
