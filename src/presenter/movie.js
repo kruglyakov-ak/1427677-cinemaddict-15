@@ -20,8 +20,6 @@ export default class Movie {
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._closePopup = this._closePopup.bind(this);
-    this._openPopup = this._openPopup.bind(this);
   }
 
   init(movie, comments) {
@@ -32,9 +30,27 @@ export default class Movie {
     this._filmCard = new FilmCardView(movie);
 
     this._filmCard.setFilmCardInfoClickHandler(() => this._renderPopup(movie, comments));
-    this._filmCard.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
-    this._filmCard.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
-    this._filmCard.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._filmCard.setAddToWatchlistClickHandler(() => {
+      if (this._popup) {
+        this._popup.getElement().querySelector('.film-details__control-button--watchlist')
+          .classList.toggle('film-details__control-button--active');
+      }
+      this._handleAddToWatchlistClick();
+    });
+    this._filmCard.setMarkAsWatchedlistClickHandler(() => {
+      if (this._popup) {
+        this._popup.getElement().querySelector('.film-details__control-button--watched')
+          .classList.toggle('film-details__control-button--active');
+      }
+      this._handleMarkAsWatchedlistClick();
+    });
+    this._filmCard.setFavoriteClickHandler(() => {
+      if (this._popup) {
+        this._popup.getElement().querySelector('.film-details__control-button--favorite')
+          .classList.toggle('film-details__control-button--active');
+      }
+      this._handleFavoriteClick();
+    });
 
     if (prevFilmCard === null) {
       render(this.filmListContainer, this._filmCard, RenderPosition.BEFOREEND);
@@ -55,11 +71,9 @@ export default class Movie {
   _renderPopup(movie, comments) {
     this._popup = new FilmPoupView(movie, comments);
     this._openPopup();
-    document.addEventListener('keydown', this._onEscKeyDown);
 
     this._popup.setCloseBtnClickHandler(() => {
       this._closePopup();
-      document.removeEventListener('keydown', this._onEscKeyDown);
     });
     this._popup.setAddToWatchlistClickHandler(() => {
       this._handleAddToWatchlistClick();
@@ -81,6 +95,7 @@ export default class Movie {
   _closePopup() {
     remove(this._popup);
     this._bodyElement.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
   _onEscKeyDown(evt) {
@@ -88,7 +103,6 @@ export default class Movie {
       evt.preventDefault();
       this._closePopup();
     }
-    document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
   _openPopup() {
@@ -97,6 +111,7 @@ export default class Movie {
     }
     render(this._bodyElement, this._popup, RenderPosition.BEFOREEND);
     this._bodyElement.classList.add('hide-overflow');
+    document.addEventListener('keydown', this._onEscKeyDown);
   }
 
   _handleAddToWatchlistClick() {
