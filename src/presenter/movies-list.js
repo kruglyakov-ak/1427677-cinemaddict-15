@@ -28,7 +28,8 @@ export default class MoviesList {
     this._mostCommentedListComponent = new FilmsListExtraView(MOST_COMMENTED_LIST_TITLE);
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._moviePresenter = new Map();
-    this._movieExtraPresenter = new Map();
+    this._movieExtraRatePresenter = new Map();
+    this._movieExtraCommentPresenter = new Map();
 
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -44,7 +45,16 @@ export default class MoviesList {
 
   _handleFilmCardChange(updatedFilmCard) {
     this._movies = updateItem(this._movies, updatedFilmCard);
-    this._moviePresenter.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
+
+    const initFilmCardPresentr= (mapPresentr) => {
+      if (mapPresentr.has(updatedFilmCard.id)) {
+        mapPresentr.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
+      }
+    };
+
+    initFilmCardPresentr(this._moviePresenter);
+    initFilmCardPresentr(this._movieExtraRatePresenter);
+    initFilmCardPresentr(this._movieExtraCommentPresenter);
   }
 
   _getComments(id) {
@@ -110,7 +120,7 @@ export default class MoviesList {
       this._filmsContainer
         .getElement().querySelector('.films-list:nth-child(2').querySelector('.films-list__container'),
       moviesByRating,
-      this._movieExtraPresenter);
+      this._movieExtraRatePresenter);
   }
 
   _renderMostCommentedFilmList() {
@@ -121,7 +131,7 @@ export default class MoviesList {
       this._filmsContainer
         .getElement().querySelector('.films-list:nth-child(3)').querySelector('.films-list__container'),
       moviesByComments,
-      this._movieExtraPresenter);
+      this._movieExtraCommentPresenter);
   }
 
   _renderFilmList() {
@@ -139,11 +149,15 @@ export default class MoviesList {
     }
   }
 
+  _clearMapPresentr(mapPresentr) {
+    mapPresentr.forEach((presenter) => presenter.destroy());
+    mapPresentr.clear();
+  }
+
   _clearTaskList() {
-    this._moviePresenter.forEach((presenter) => presenter.destroy());
-    this._moviePresenter.clear();
-    this._movieExtraPresenter.forEach((presenter) => presenter.destroy());
-    this._movieExtraPresenter.clear();
+    this._clearMapPresentr(this._moviePresenter);
+    this._clearMapPresentr(this._movieExtraRatePresenter);
+    this._clearMapPresentr(this._movieExtraCommentPresenter);
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     remove(this._showMoreButtonComponent);
     remove(this._topRatedListComponent);
