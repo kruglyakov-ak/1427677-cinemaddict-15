@@ -34,6 +34,7 @@ export default class MoviesList {
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(movies, commentsList) {
@@ -43,12 +44,18 @@ export default class MoviesList {
     this._renderFilmContainer();
   }
 
+  _handleModeChange() {
+    this._moviePresenter.forEach((presenter) => presenter.resetView());
+    this._movieExtraRatePresenter.forEach((presenter) => presenter.resetView());
+    this._movieExtraCommentPresenter.forEach((presenter) => presenter.resetView());
+  }
+
   _handleFilmCardChange(updatedFilmCard) {
     this._movies = updateItem(this._movies, updatedFilmCard);
 
-    const initFilmCardPresentr= (mapPresentr) => {
-      if (mapPresentr.has(updatedFilmCard.id)) {
-        mapPresentr.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
+    const initFilmCardPresentr= (resentrsMap) => {
+      if (resentrsMap.has(updatedFilmCard.id)) {
+        resentrsMap.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
       }
     };
 
@@ -76,7 +83,7 @@ export default class MoviesList {
   }
 
   _renderFilmCard(containerElement, movie, movieList) {
-    const moviePresenter = new MoviePresenter(containerElement, this._handleFilmCardChange);
+    const moviePresenter = new MoviePresenter(containerElement, this._handleFilmCardChange, this._handleModeChange);
     moviePresenter.init(movie, this._getComments(movie.id));
     movieList.set(movie.id, moviePresenter);
   }

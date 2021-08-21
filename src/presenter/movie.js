@@ -7,12 +7,17 @@ import {
   replace
 } from '../utils/render.js';
 
+const Mode = {
+  OPEN: 'OPEN',
+  CLOSE: 'CLOSE',
+};
 
 export default class Movie {
-  constructor(filmListContainer, changeData) {
+  constructor(filmListContainer, changeData, changeMode) {
     this.filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmCard = null;
 
@@ -21,6 +26,7 @@ export default class Movie {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._closePopup = this._closePopup.bind(this);
+    this._mode = Mode.CLOSE;
   }
 
   init(movie, comments) {
@@ -31,27 +37,9 @@ export default class Movie {
     this._filmCard = new FilmCardView(movie);
 
     this._filmCard.setFilmCardInfoClickHandler(() => this._renderPopup(movie, comments));
-    this._filmCard.setAddToWatchlistClickHandler(() => {
-      if (this._popup) {
-        this._popup.getElement().querySelector('.film-details__control-button--watchlist')
-          .classList.toggle('film-details__control-button--active');
-      }
-      this._handleAddToWatchlistClick();
-    });
-    this._filmCard.setMarkAsWatchedlistClickHandler(() => {
-      if (this._popup) {
-        this._popup.getElement().querySelector('.film-details__control-button--watched')
-          .classList.toggle('film-details__control-button--active');
-      }
-      this._handleMarkAsWatchedlistClick();
-    });
-    this._filmCard.setFavoriteClickHandler(() => {
-      if (this._popup) {
-        this._popup.getElement().querySelector('.film-details__control-button--favorite')
-          .classList.toggle('film-details__control-button--active');
-      }
-      this._handleFavoriteClick();
-    });
+    this._filmCard.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
+    this._filmCard.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
+    this._filmCard.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevFilmCard === null) {
       render(this.filmListContainer, this._filmCard, RenderPosition.BEFOREEND);
@@ -65,6 +53,12 @@ export default class Movie {
     remove(prevFilmCard);
   }
 
+  resetView() {
+    if (this._mode !== Mode.CLOSE) {
+      this._closePopup();
+    }
+  }
+
   destroy() {
     remove(this._filmCard);
   }
@@ -75,6 +69,7 @@ export default class Movie {
     }
     this._popup = new FilmPoupView(movie, comments);
     this._openPopup();
+    this._bodyElement.classList.add('hide-overflow');
 
     this._popup.setCloseBtnClickHandler(() => {
       this._closePopup();
@@ -98,8 +93,9 @@ export default class Movie {
 
   _closePopup() {
     remove(this._popup);
-    this._bodyElement.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDown);
+    this._bodyElement.classList.remove('hide-overflow');
+    this._mode = Mode.CLOSE;
   }
 
   _onEscKeyDown(evt) {
@@ -111,8 +107,9 @@ export default class Movie {
 
   _openPopup() {
     render(this._bodyElement, this._popup, RenderPosition.BEFOREEND);
-    this._bodyElement.classList.add('hide-overflow');
     document.addEventListener('keydown', this._onEscKeyDown);
+    this._changeMode();
+    this._mode = Mode.OPEN;
   }
 
   _handleAddToWatchlistClick() {
