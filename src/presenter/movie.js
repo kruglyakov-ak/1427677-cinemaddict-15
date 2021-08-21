@@ -14,7 +14,7 @@ const Mode = {
 
 export default class Movie {
   constructor(filmListContainer, changeData, changeMode) {
-    this.filmListContainer = filmListContainer;
+    this._filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -42,11 +42,11 @@ export default class Movie {
     this._filmCard.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevFilmCard === null) {
-      render(this.filmListContainer, this._filmCard, RenderPosition.BEFOREEND);
+      render(this._filmListContainer, this._filmCard, RenderPosition.BEFOREEND);
       return;
     }
 
-    if (this.filmListContainer.contains(prevFilmCard.getElement())) {
+    if (this._filmListContainer.getElement().contains(prevFilmCard.getElement())) {
       replace(this._filmCard, prevFilmCard);
     }
 
