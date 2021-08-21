@@ -31,27 +31,29 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-const bodyElement = document.querySelector('body');
-
-export const closePopup = () => {
-  const popupElement = document.querySelector('.film-details');
-  if (popupElement) {
-    bodyElement.removeChild(popupElement);
+export const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
   }
-  bodyElement.classList.remove('hide-overflow');
+
+  component.getElement().remove();
+  component.removeElement();
 };
 
-export const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape' || evt.key === 'Esc') {
-    evt.preventDefault();
-    closePopup();
-    document.removeEventListener('keydown', onEscKeyDown);
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
   }
-};
 
-export const openPopup = (popup) => {
-  closePopup();
-  render(bodyElement, popup, RenderPosition.BEFOREEND);
-  bodyElement.classList.add('hide-overflow');
-  document.addEventListener('keydown', onEscKeyDown);
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
 };

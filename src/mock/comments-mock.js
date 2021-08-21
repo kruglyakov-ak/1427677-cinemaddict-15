@@ -62,4 +62,7 @@ const generateComment = (movie) => {
     emotion: generateEmotions(),
   };
 };
-export const generateComments = (movie) => new Array(movie.commentsCount).fill().map(() => generateComment(movie));
+export const generateComments = (movie) => {
+  const comments = new Array(movie.commentsCount).fill().map(() => generateComment(movie));
+  return new Map().set(movie.id, comments);
+};

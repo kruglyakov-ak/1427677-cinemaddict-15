@@ -2,6 +2,7 @@ import { formatReleaseDate, addActiveBtnClass } from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const DATE_FORMAT = 'DD MMMM YYYY';
+const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
@@ -118,15 +119,15 @@ const createFilmPoupTemplate = (movie, comments) => {
 
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button film-details__control-button--watchlist
-           ${addActiveBtnClass(isWatchlist)}" id="watchlist" name="watchlist">
+           ${addActiveBtnClass(isWatchlist, ACTIVE_POPUP_CLASS_NAME)}" id="watchlist" name="watchlist">
                 Add to watchlist
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--watched
-          ${addActiveBtnClass(isAlreadyWatched)}" id="watched" name="watched">
+          ${addActiveBtnClass(isAlreadyWatched, ACTIVE_POPUP_CLASS_NAME)}" id="watched" name="watched">
                Already watched
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--favorite
-          ${addActiveBtnClass(isFavorite)}" id="favorite" name="favorite">
+          ${addActiveBtnClass(isFavorite, ACTIVE_POPUP_CLASS_NAME)}" id="favorite" name="favorite">
                 Add to favorites
               </button>
         </section>
@@ -186,20 +187,60 @@ export default class FilmPoup extends AbstractView {
     super();
     this._movie = movie;
     this._comments = comments;
-    this._clickHandler = this._clickHandler.bind(this);
+    this._clickCloseBtnHandler = this._clickCloseBtnHandler.bind(this);
+    this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
+    this._clickMarkAsWatchedlistHandler = this._clickMarkAsWatchedlistHandler.bind(this);
+    this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmPoupTemplate(this._movie, this._comments);
   }
 
-  _clickHandler(evt) {
+  _clickCloseBtnHandler(evt) {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.closeBtnClick();
+  }
+
+  _clickAddToWatchlistHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchlistClick();
+  }
+
+  _clickMarkAsWatchedlistHandler(evt) {
+    evt.preventDefault();
+    this._callback.markAsWatchedlistClick();
+  }
+
+  _clickFavoriteHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 
   setCloseBtnClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+    this._callback.closeBtnClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickCloseBtnHandler);
   }
+
+  setAddToWatchlistClickHandler(callback) {
+    this._callback.addToWatchlistClick = callback;
+    this.getElement()
+      .querySelector('.film-details__control-button--watchlist')
+      .addEventListener('click', this._clickAddToWatchlistHandler);
+  }
+
+  setMarkAsWatchedlistClickHandler(callback) {
+    this._callback.markAsWatchedlistClick = callback;
+    this.getElement()
+      .querySelector('.film-details__control-button--watched')
+      .addEventListener('click', this._clickMarkAsWatchedlistHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement()
+      .querySelector('.film-details__control-button--favorite')
+      .addEventListener('click', this._clickFavoriteHandler);
+  }
+
 }
