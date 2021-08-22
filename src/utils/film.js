@@ -10,3 +10,8 @@ export const cutDescription = (description, charactersCount) => {
 };
 
 export const addActiveBtnClass = (isControl, className) => isControl ? className : '';
+
+export const sortByRating = (movies) => movies.sort((prev, next) => next.totalRating - prev.totalRating);
+export const sortByComments = (movies) => movies.sort((prev, next) => next.commentsCount - prev.commentsCount);
+export const sortByDate = (movies) => movies
+  .sort((prev, next) => dayjs(next.releaseDate).diff(dayjs(prev.releaseDate)));
