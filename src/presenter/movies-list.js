@@ -163,7 +163,7 @@ export default class MoviesList {
     this._renderFilmCards(0,
       EXTRA_FILMS_COUNT,
       this._topRatedfilmsListContainer,
-      sortByRating(this._movies.slice()),
+      sortByRating(this._sourcedMovies.slice()),
       this._movieExtraRatePresenter);
   }
 
@@ -173,7 +173,7 @@ export default class MoviesList {
     this._renderFilmCards(0,
       EXTRA_FILMS_COUNT,
       this._mostCommentedfilmsListContainer,
-      sortByComments(this._movies.slice()),
+      sortByComments(this._sourcedMovies.slice()),
       this._movieExtraCommentPresenter);
   }
 

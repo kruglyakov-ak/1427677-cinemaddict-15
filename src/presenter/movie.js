@@ -71,24 +71,10 @@ export default class Movie {
     this._openPopup();
     this._bodyElement.classList.add('hide-overflow');
 
-    this._popup.setCloseBtnClickHandler(() => {
-      this._closePopup();
-    });
-    this._popup.setAddToWatchlistClickHandler(() => {
-      this._handleAddToWatchlistClick();
-      this._popup.getElement().querySelector('.film-details__control-button--watchlist')
-        .classList.toggle('film-details__control-button--active');
-    });
-    this._popup.setMarkAsWatchedlistClickHandler(() => {
-      this._handleMarkAsWatchedlistClick();
-      this._popup.getElement().querySelector('.film-details__control-button--watched')
-        .classList.toggle('film-details__control-button--active');
-    });
-    this._popup.setFavoriteClickHandler(() => {
-      this._handleFavoriteClick();
-      this._popup.getElement().querySelector('.film-details__control-button--favorite')
-        .classList.toggle('film-details__control-button--active');
-    });
+    this._popup.setCloseBtnClickHandler(this._closePopup);
+    this._popup.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
+    this._popup.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
+    this._popup.setFavoriteClickHandler(this._handleFavoriteClick);
   }
 
   _closePopup() {
