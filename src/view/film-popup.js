@@ -218,6 +218,7 @@ export default class FilmPoup extends SmartView {
     this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
     this._textTextareaHandler = this._textTextareaHandler.bind(this);
     this._emotionInputHandler = this._emotionInputHandler.bind(this);
+    this._scrollPopupHandler = this._scrollPopupHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -251,6 +252,7 @@ export default class FilmPoup extends SmartView {
     this.updateData({
       isWatchlist: !this._data.isWatchlist,
     });
+    this.getElement().scrollTo(0, this._data.scrollPosition);
   }
 
   _markAsWatchedlistToggleHandler(evt) {
@@ -258,6 +260,7 @@ export default class FilmPoup extends SmartView {
     this.updateData({
       isAlreadyWatched: !this._data.isAlreadyWatched,
     });
+    this.getElement().scrollTo(0, this._data.scrollPosition);
   }
 
   _favoriteToggleHandler(evt) {
@@ -265,6 +268,7 @@ export default class FilmPoup extends SmartView {
     this.updateData({
       isFavorite: !this._data.isFavorite,
     });
+    this.getElement().scrollTo(0, this._data.scrollPosition);
   }
 
   _textTextareaHandler(evt) {
@@ -286,6 +290,13 @@ export default class FilmPoup extends SmartView {
       isPukeEmotion: evt.target.value === PUKE_EMOTION_INPUT_VALUE,
       isAngryEmotion: evt.target.value === ANGRY_EMOTION_INPUT_VALUE,
     });
+    this.getElement().scrollTo(0, this._data.scrollPosition);
+  }
+
+  _scrollPopupHandler(evt) {
+    this.updateData({
+      scrollPosition: evt.target.scrollTop,
+    }, true);
   }
 
   setCloseBtnClickHandler(callback) {
@@ -344,6 +355,8 @@ export default class FilmPoup extends SmartView {
     this.getElement()
       .querySelector('.film-details__emoji-list')
       .addEventListener('click', this._emotionInputHandler);
+    this.getElement()
+      .addEventListener('scroll', this._scrollPopupHandler);
   }
 
   _setPresenterHandlers() {
@@ -363,6 +376,7 @@ export default class FilmPoup extends SmartView {
         isSleepingEmotion: false,
         isPukeEmotion: false,
         isAngryEmotion: false,
+        scrollPosition: 0,
       },
     );
   }
