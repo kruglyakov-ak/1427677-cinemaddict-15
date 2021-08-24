@@ -1,5 +1,5 @@
 import { formatReleaseDate } from '../utils/film.js';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 
 const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
@@ -204,7 +204,7 @@ const createFilmPoupTemplate = (data, comments) => {
 </section>`;
 };
 
-export default class FilmPoup extends AbstractView {
+export default class FilmPoup extends SmartView {
   constructor(movie, comments) {
     super();
     this._data = FilmPoup.parseMovieToData(movie);
@@ -351,36 +351,6 @@ export default class FilmPoup extends AbstractView {
     this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
     this.setMarkAsWatchedlistClickHandler(this._callback.markAsWatchedlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   static parseMovieToData(movie) {
