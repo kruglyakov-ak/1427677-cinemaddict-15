@@ -1,12 +1,20 @@
-import { formatReleaseDate, addActiveBtnClass } from '../utils/film.js';
+import { formatReleaseDate } from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
+const SMILE_EMOTION_INPUT_VALUE = 'smile';
+const SLEEPING_EMOTION_INPUT_VALUE = 'sleeping';
+const PUKE_EMOTION_INPUT_VALUE = 'puke';
+const ANGRY_EMOTION_INPUT_VALUE = 'angry';
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
   .join('');
+
+const createCommentTitleCount = (commentsCount, isCommentsCount) => isCommentsCount ? `
+<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
+</span></h3>` : '';
 
 const createCommentTemplate = (comment) => {
   const {
@@ -35,7 +43,7 @@ const createCommentsTemplate = (comments) => comments
   .map((comment) => createCommentTemplate(comment))
   .join('');
 
-const createFilmPoupTemplate = (movie, comments) => {
+const createFilmPoupTemplate = (data, comments) => {
   const {
     commentsCount,
     title,
@@ -53,7 +61,14 @@ const createFilmPoupTemplate = (movie, comments) => {
     isWatchlist,
     isAlreadyWatched,
     isFavorite,
-  } = movie;
+    isCommentsCount,
+    textComment,
+    emotionComment,
+    isSmileEmotion,
+    isSleepingEmotion,
+    isPukeEmotion,
+    isAngryEmotion,
+  } = data;
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -119,15 +134,15 @@ const createFilmPoupTemplate = (movie, comments) => {
 
         <section class="film-details__controls">
           <button type="button" class="film-details__control-button film-details__control-button--watchlist
-           ${addActiveBtnClass(isWatchlist, ACTIVE_POPUP_CLASS_NAME)}" id="watchlist" name="watchlist">
+           ${isWatchlist ? ACTIVE_POPUP_CLASS_NAME : ''}" id="watchlist" name="watchlist">
                 Add to watchlist
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--watched
-          ${addActiveBtnClass(isAlreadyWatched, ACTIVE_POPUP_CLASS_NAME)}" id="watched" name="watched">
+          ${isAlreadyWatched ? ACTIVE_POPUP_CLASS_NAME : ''}" id="watched" name="watched">
                Already watched
               </button>
           <button type="button" class="film-details__control-button film-details__control-button--favorite
-          ${addActiveBtnClass(isFavorite, ACTIVE_POPUP_CLASS_NAME)}" id="favorite" name="favorite">
+          ${isFavorite ? ACTIVE_POPUP_CLASS_NAME : ''}" id="favorite" name="favorite">
                 Add to favorites
               </button>
         </section>
@@ -135,42 +150,49 @@ const createFilmPoupTemplate = (movie, comments) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
-          </span></h3>
+          ${createCommentTitleCount(commentsCount, isCommentsCount)}
 
           <ul class="film-details__comments-list">
           ${createCommentsTemplate(comments)}
         </ul>
 
   <div class="film-details__new-comment">
-    <div class="film-details__add-emoji-label"></div>
+    <div class="film-details__add-emoji-label">
+    ${emotionComment ? `<img src="./images/emoji/${emotionComment}.png"
+    alt="emoji-${emotionComment}" width="55" height="55">` : ''}
+    </div>
 
     <label class="film-details__comment-label">
       <textarea class="film-details__comment-input"
-      placeholder="Select reaction below and write comment here" name="comment"></textarea>
+      placeholder="Select reaction below and write comment here"
+      name="comment">${textComment ? textComment : ''}</textarea>
     </label>
 
     <div class="film-details__emoji-list">
       <input class="film-details__emoji-item visually-hidden"
-      name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+      name="comment-emoji" type="radio" id="emoji-smile" value="smile"
+      ${isSmileEmotion ? 'checked' : ''}>
         <label class="film-details__emoji-label" for="emoji-smile">
           <img src="./images/emoji/smile.png" alt="emoji" width="30" height="30">
             </label>
 
     <input class="film-details__emoji-item visually-hidden"
-    name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+    name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping"
+    ${isSleepingEmotion ? 'checked' : ''}>
       <label class="film-details__emoji-label" for="emoji-sleeping">
         <img src="./images/emoji/sleeping.png" alt="emoji" width="30" height="30">
             </label>
 
           <input class="film-details__emoji-item visually-hidden"
-          name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+          name="comment-emoji" type="radio" id="emoji-puke" value="puke"
+          ${isPukeEmotion ? 'checked' : ''}>
             <label class="film-details__emoji-label" for="emoji-puke">
               <img src="./images/emoji/puke.png" alt="emoji" width="30" height="30">
             </label>
 
         <input class="film-details__emoji-item visually-hidden"
-        name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+        name="comment-emoji" type="radio" id="emoji-angry" value="angry"
+        ${isAngryEmotion ? 'checked' : ''}>
           <label class="film-details__emoji-label" for="emoji-angry">
             <img src="./images/emoji/angry.png" alt="emoji" width="30" height="30">
             </label>
@@ -185,16 +207,23 @@ const createFilmPoupTemplate = (movie, comments) => {
 export default class FilmPoup extends AbstractView {
   constructor(movie, comments) {
     super();
-    this._movie = movie;
+    this._data = FilmPoup.parseMovieToData(movie);
     this._comments = comments;
     this._clickCloseBtnHandler = this._clickCloseBtnHandler.bind(this);
     this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
     this._clickMarkAsWatchedlistHandler = this._clickMarkAsWatchedlistHandler.bind(this);
     this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
+    this._addToWatchlistToggleHandler = this._addToWatchlistToggleHandler.bind(this);
+    this._markAsWatchedlistToggleHandler = this._markAsWatchedlistToggleHandler.bind(this);
+    this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
+    this._textTextareaHandler = this._textTextareaHandler.bind(this);
+    this._emotionInputHandler = this._emotionInputHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createFilmPoupTemplate(this._movie, this._comments);
+    return createFilmPoupTemplate(this._data, this._comments);
   }
 
   _clickCloseBtnHandler(evt) {
@@ -204,23 +233,59 @@ export default class FilmPoup extends AbstractView {
 
   _clickAddToWatchlistHandler(evt) {
     evt.preventDefault();
-    this.getElement().querySelector('.film-details__control-button--watchlist')
-      .classList.toggle('film-details__control-button--active');
     this._callback.addToWatchlistClick();
   }
 
   _clickMarkAsWatchedlistHandler(evt) {
     evt.preventDefault();
-    this.getElement().querySelector('.film-details__control-button--watched')
-      .classList.toggle('film-details__control-button--active');
     this._callback.markAsWatchedlistClick();
   }
 
   _clickFavoriteHandler(evt) {
     evt.preventDefault();
-    this.getElement().querySelector('.film-details__control-button--favorite')
-      .classList.toggle('film-details__control-button--active');
     this._callback.favoriteClick();
+  }
+
+  _addToWatchlistToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isWatchlist: !this._data.isWatchlist,
+    });
+  }
+
+  _markAsWatchedlistToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isAlreadyWatched: !this._data.isAlreadyWatched,
+    });
+  }
+
+  _favoriteToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isFavorite: !this._data.isFavorite,
+    });
+  }
+
+  _textTextareaHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      textComment: evt.target.value,
+    }, true);
+  }
+
+  _emotionInputHandler(evt) {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+    evt.preventDefault();
+    this.updateData({
+      emotionComment: evt.target.value,
+      isSmileEmotion: evt.target.value === SMILE_EMOTION_INPUT_VALUE,
+      isSleepingEmotion: evt.target.value === SLEEPING_EMOTION_INPUT_VALUE,
+      isPukeEmotion: evt.target.value === PUKE_EMOTION_INPUT_VALUE,
+      isAngryEmotion: evt.target.value === ANGRY_EMOTION_INPUT_VALUE,
+    });
   }
 
   setCloseBtnClickHandler(callback) {
@@ -249,4 +314,86 @@ export default class FilmPoup extends AbstractView {
       .addEventListener('click', this._clickFavoriteHandler);
   }
 
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this._setPresenterHandlers();
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.film-details__control-button--watchlist')
+      .addEventListener('click', this._addToWatchlistToggleHandler);
+    document
+      .querySelector('.film-card__controls-item--add-to-watchlist')
+      .addEventListener('click', this._addToWatchlistToggleHandler);
+    this.getElement()
+      .querySelector('.film-details__control-button--watched')
+      .addEventListener('click', this._markAsWatchedlistToggleHandler);
+    document
+      .querySelector('.film-card__controls-item--mark-as-watched')
+      .addEventListener('click', this._markAsWatchedlistToggleHandler);
+    this.getElement()
+      .querySelector('.film-details__control-button--favorite')
+      .addEventListener('click', this._favoriteToggleHandler);
+    document
+      .querySelector('.film-card__controls-item--favorite')
+      .addEventListener('click', this._favoriteToggleHandler);
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._textTextareaHandler);
+    this.getElement()
+      .querySelector('.film-details__emoji-list')
+      .addEventListener('click', this._emotionInputHandler);
+  }
+
+  _setPresenterHandlers() {
+    this.setCloseBtnClickHandler(this._callback.closeBtnClick);
+    this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
+    this.setMarkAsWatchedlistClickHandler(this._callback.markAsWatchedlistClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+  }
+
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+      {},
+      this._data,
+      update,
+    );
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  static parseMovieToData(movie) {
+    return Object.assign(
+      {},
+      movie,
+      {
+        isCommentsCount: movie.commentsCount !== 0,
+        isSmileEmotion: false,
+        isSleepingEmotion: false,
+        isPukeEmotion: false,
+        isAngryEmotion: false,
+      },
+    );
+  }
 }

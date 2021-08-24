@@ -1,4 +1,4 @@
-import { formatReleaseDate, cutDescription, addActiveBtnClass } from '../utils/film.js';
+import { formatReleaseDate, cutDescription } from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const DATE_FORMAT = 'YYYY';
@@ -33,15 +33,15 @@ const createFilmCardTemplate = (movie) => {
       <a class="film-card__comments">${commentsCount} comments</a>
       <div class="film-card__controls">
         <button class="film-card__controls-item film-card__controls-item--add-to-watchlist
-        ${addActiveBtnClass(isWatchlist, ACTIVE_CARD_CLASS_NAME)}" type="button">
+        ${isWatchlist ? ACTIVE_CARD_CLASS_NAME : ''}" type="button">
           Add to watchlist
         </button>
         <button class="film-card__controls-item film-card__controls-item--mark-as-watched
-        ${addActiveBtnClass(isAlreadyWatched, ACTIVE_CARD_CLASS_NAME)}" type="button">
+        ${isAlreadyWatched ? ACTIVE_CARD_CLASS_NAME : ''}" type="button">
           Mark as watched
         </button>
         <button class="film-card__controls-item film-card__controls-item--favorite
-         ${addActiveBtnClass(isFavorite, ACTIVE_CARD_CLASS_NAME)}" type="button">
+         ${isFavorite ? ACTIVE_CARD_CLASS_NAME : ''}" type="button">
           Mark as favorite
         </button>
       </div>
