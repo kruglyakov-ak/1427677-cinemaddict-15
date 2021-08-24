@@ -334,20 +334,11 @@ export default class FilmPoup extends SmartView {
     this.getElement()
       .querySelector('.film-details__control-button--watchlist')
       .addEventListener('click', this._addToWatchlistToggleHandler);
-    document
-      .querySelector('.film-card__controls-item--add-to-watchlist')
-      .addEventListener('click', this._addToWatchlistToggleHandler);
     this.getElement()
       .querySelector('.film-details__control-button--watched')
       .addEventListener('click', this._markAsWatchedlistToggleHandler);
-    document
-      .querySelector('.film-card__controls-item--mark-as-watched')
-      .addEventListener('click', this._markAsWatchedlistToggleHandler);
     this.getElement()
       .querySelector('.film-details__control-button--favorite')
-      .addEventListener('click', this._favoriteToggleHandler);
-    document
-      .querySelector('.film-card__controls-item--favorite')
       .addEventListener('click', this._favoriteToggleHandler);
     this.getElement()
       .querySelector('.film-details__comment-input')
