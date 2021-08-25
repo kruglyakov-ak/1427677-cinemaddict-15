@@ -29,7 +29,6 @@ const COMMENT_TEXTS = [
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.',
 ];
-const DATE_FORMAT = 'YYYY/MM/DD HH:mm';
 
 const getRandomNumberInRange = (min = 0, max = 1, numberSymbolsAfterComma = 0) => {
   const lower = Math.min(Math.abs(min), Math.abs(max));
@@ -50,7 +49,7 @@ const generateCommentText = () => {
 
 const generateEmotions = () => EMOTIONS[getRandomNumberInRange(0, EMOTIONS.length - 1)];
 const generateCommentAuthor = () => COMMENT_AUTHORS[getRandomNumberInRange(0, COMMENT_AUTHORS.length - 1)];
-const generateDate = () => dayjs().format(DATE_FORMAT);
+const generateDate = () => dayjs();
 
 const generateComment = (movie) => {
   const {commentsCount} = movie;

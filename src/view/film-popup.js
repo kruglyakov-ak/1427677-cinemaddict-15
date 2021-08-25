@@ -1,5 +1,8 @@
 import { formatReleaseDate, generateRuntime } from '../utils/film.js';
 import SmartView from './smart.js';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
@@ -32,7 +35,7 @@ const createCommentTemplate = (comment) => {
     <p class="film-details__comment-text">${text}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
-      <span class="film-details__comment-day">${date}</span>
+      <span class="film-details__comment-day">${dayjs(date).fromNow()}</span>
       <button class="film-details__comment-delete">Delete</button>
     </p>
   </div>
