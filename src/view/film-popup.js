@@ -1,4 +1,4 @@
-import { formatReleaseDate } from '../utils/film.js';
+import { formatReleaseDate, generateRuntime } from '../utils/film.js';
 import SmartView from './smart.js';
 
 const DATE_FORMAT = 'DD MMMM YYYY';
@@ -114,7 +114,7 @@ const createFilmPoupTemplate = (data, comments) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${runtime}</td>
+                  <td class="film-details__cell">${generateRuntime(runtime)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
