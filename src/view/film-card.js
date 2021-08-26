@@ -1,4 +1,4 @@
-import { formatReleaseDate, cutDescription } from '../utils/film.js';
+import { formatReleaseDate, cutDescription, generateRuntime } from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const DATE_FORMAT = 'YYYY';
@@ -25,7 +25,7 @@ const createFilmCardTemplate = (movie) => {
     <p class="film-card__rating">${totalRating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${formatReleaseDate(releaseDate, DATE_FORMAT)}</span>
-      <span class="film-card__duration">${runtime}</span>
+      <span class="film-card__duration">${generateRuntime(runtime)}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">

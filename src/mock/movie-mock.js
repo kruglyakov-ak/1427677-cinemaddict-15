@@ -5,7 +5,7 @@ const COMMENTS_COUNT = 5;
 const MIN_RATING_COUNT = 2;
 const MAX_RATING_COUNT = 10;
 const MIN_RUNTIME = 45;
-const MAX_RUNTIME = 180;
+const MAX_RUNTIME = 150;
 const GENRES_COUNT = 3;
 const MAX_AGE_RATING = 18;
 const ACTORS_COUNT = 3;
@@ -117,7 +117,6 @@ const MIN_MONTH_RELEASE = 1;
 const MAX_MONTH_RELEASE = 12;
 const MIN_DAY_RELEASE = 1;
 const MAX_DAY_RELEASE = 30;
-const MINUTE_IN_HOUR = 60;
 
 const getRandomNumberInRange = (min = 0, max = 1, numberSymbolsAfterComma = 0) => {
   const lower = Math.min(Math.abs(min), Math.abs(max));
@@ -152,18 +151,6 @@ const generateReleaseDate = () => {
   return new Date(years, month, day);
 };
 
-const generateRuntime = () => {
-  let minute = getRandomNumberInRange(MIN_RUNTIME, MAX_RUNTIME);
-  const hour = Math.floor(minute / MINUTE_IN_HOUR);
-  let runtime = `${minute}m`;
-  if (hour > 0) {
-    minute = minute - (hour * MINUTE_IN_HOUR);
-    runtime = `${hour}h ${minute}m`;
-  }
-
-  return runtime;
-};
-
 const generateGenre = () => new Array(GENRES_COUNT)
   .fill()
   .map(() => GENERS[getRandomNumberInRange(0, GENERS.length - 1)]);
@@ -193,7 +180,7 @@ export const generateMovie = () => {
     releaseDate: generateReleaseDate(),
     releaseCountry: generateCountrie(),
     genres: generateGenre(),
-    runtime: generateRuntime(),
+    runtime: getRandomNumberInRange(MIN_RUNTIME, MAX_RUNTIME),
     description: generateDescription(),
     isWatchlist: Boolean(getRandomNumberInRange(0, 1)),
     isAlreadyWatched: Boolean(getRandomNumberInRange(0, 1)),
