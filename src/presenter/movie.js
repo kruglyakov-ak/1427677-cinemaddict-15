@@ -6,6 +6,7 @@ import {
   remove,
   replace
 } from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   OPEN: 'OPEN',
@@ -100,6 +101,8 @@ export default class Movie {
 
   _handleAddToWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._movie,
@@ -112,6 +115,8 @@ export default class Movie {
 
   _handleMarkAsWatchedlistClick() {
     this._changeData(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._movie,
@@ -124,6 +129,8 @@ export default class Movie {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._movie,

@@ -47,9 +47,15 @@ export default class MoviesList {
 
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-    this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
+
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._commentsListModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -57,12 +63,13 @@ export default class MoviesList {
     this._renderFilmsContainer();
   }
 
+
   _getMovies() {
     switch (this._currentSortType) {
       case SortType.BY_RATING:
-        return this._moviesModel.getMovies().slice().sort(sortByRating);
+        return sortByRating(this._moviesModel.getMovies().slice());
       case SortType.BY_DATE:
-        return this._moviesModel.getMovies().slice().sort(sortByDate);
+        return sortByDate(this._moviesModel.getMovies().slice());
     }
 
     return this._moviesModel.getMovies();
@@ -103,17 +110,33 @@ export default class MoviesList {
     this._movieExtraCommentPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handleFilmCardChange(updatedFilmCard) {
-    const initFilmCardPresenter = (presentersMap) => {
-      if (presentersMap.has(updatedFilmCard.id)) {
-        presentersMap.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
-      }
-    };
-
-    initFilmCardPresenter(this._moviePresenter);
-    initFilmCardPresenter(this._movieExtraRatePresenter);
-    initFilmCardPresenter(this._movieExtraCommentPresenter);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
   }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  }
+
+  // _handleFilmCardChange(updatedFilmCard) {
+  //   const initFilmCardPresenter = (presentersMap) => {
+  //     if (presentersMap.has(updatedFilmCard.id)) {
+  //       presentersMap.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
+  //     }
+  //   };
+
+  //   initFilmCardPresenter(this._moviePresenter);
+  //   initFilmCardPresenter(this._movieExtraRatePresenter);
+  //   initFilmCardPresenter(this._movieExtraCommentPresenter);
+  // }
 
   _getComments(id) {
     let comments;
@@ -135,7 +158,7 @@ export default class MoviesList {
   }
 
   _renderFilmCard(containerElement, movie, movieList) {
-    const moviePresenter = new MoviePresenter(containerElement, this._handleFilmCardChange, this._handleModeChange);
+    const moviePresenter = new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange);
     movieList.set(movie.id, moviePresenter);
     moviePresenter.init(movie, this._getComments(movie.id));
   }
@@ -172,7 +195,7 @@ export default class MoviesList {
     this._renderFilmsListContainer(this._topRatedListComponent, this._topRatedfilmsListContainer);
 
     const movieCount = this._getMovies().length;
-    const movies = sortByRating(this._getMovies().slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT)));
+    const movies = sortByRating(this._getMovies()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
 
     this._renderFilmCards(this._topRatedfilmsListContainer, movies, this._movieExtraRatePresenter);
   }
@@ -182,7 +205,7 @@ export default class MoviesList {
     this._renderFilmsListContainer(this._mostCommentedListComponent, this._mostCommentedfilmsListContainer);
 
     const movieCount = this._getMovies().length;
-    const movies = sortByComments(this._getMovies().slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT)));
+    const movies = sortByComments(this._getMovies()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
 
     this._renderFilmCards(this._mostCommentedfilmsListContainer, movies, this._movieExtraCommentPresenter);
   }
