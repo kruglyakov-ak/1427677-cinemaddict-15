@@ -6,10 +6,7 @@ dayjs.extend(relativeTime);
 
 const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
-const SMILE_EMOTION_INPUT_VALUE = 'smile';
-const SLEEPING_EMOTION_INPUT_VALUE = 'sleeping';
-const PUKE_EMOTION_INPUT_VALUE = 'puke';
-const ANGRY_EMOTION_INPUT_VALUE = 'angry';
+const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
@@ -18,6 +15,17 @@ const createGenresTemplate = (genres) => genres
 const createCommentTitleCount = (commentsCount, isCommentsCount) => isCommentsCount ? `
 <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
 </span></h3>` : '';
+
+const createInputEmojiTamplate = (emotion, checkedEmotion) => `<input class="film-details__emoji-item visually-hidden"
+name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}"
+${checkedEmotion === emotion ? 'checked' : ''}>
+  <label class="film-details__emoji-label" for="emoji-${emotion}">
+    <img src="./images/emoji/${emotion}.png" alt="emoji" width="30" height="30">
+      </label>`;
+
+const createEmojiListTemplate = (emotions, checkedEmotion) => emotions
+  .map((emotion) => createInputEmojiTamplate(emotion, checkedEmotion))
+  .join('');
 
 const createCommentTemplate = (comment) => {
   const {
@@ -66,11 +74,7 @@ const createFilmPoupTemplate = (data, comments) => {
     isFavorite,
     isCommentsCount,
     textComment,
-    emotionComment,
-    isSmileEmotion,
-    isSleepingEmotion,
-    isPukeEmotion,
-    isAngryEmotion,
+    checkedEmotion,
   } = data;
 
   return `<section class="film-details">
@@ -161,8 +165,8 @@ const createFilmPoupTemplate = (data, comments) => {
 
   <div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">
-    ${emotionComment ? `<img src="./images/emoji/${emotionComment}.png"
-    alt="emoji-${emotionComment}" width="55" height="55">` : ''}
+    ${checkedEmotion ? `<img src="./images/emoji/${checkedEmotion}.png"
+    alt="emoji-${checkedEmotion}" width="55" height="55">` : ''}
     </div>
 
     <label class="film-details__comment-label">
@@ -172,33 +176,7 @@ const createFilmPoupTemplate = (data, comments) => {
     </label>
 
     <div class="film-details__emoji-list">
-      <input class="film-details__emoji-item visually-hidden"
-      name="comment-emoji" type="radio" id="emoji-smile" value="smile"
-      ${isSmileEmotion ? 'checked' : ''}>
-        <label class="film-details__emoji-label" for="emoji-smile">
-          <img src="./images/emoji/smile.png" alt="emoji" width="30" height="30">
-            </label>
-
-    <input class="film-details__emoji-item visually-hidden"
-    name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping"
-    ${isSleepingEmotion ? 'checked' : ''}>
-      <label class="film-details__emoji-label" for="emoji-sleeping">
-        <img src="./images/emoji/sleeping.png" alt="emoji" width="30" height="30">
-            </label>
-
-          <input class="film-details__emoji-item visually-hidden"
-          name="comment-emoji" type="radio" id="emoji-puke" value="puke"
-          ${isPukeEmotion ? 'checked' : ''}>
-            <label class="film-details__emoji-label" for="emoji-puke">
-              <img src="./images/emoji/puke.png" alt="emoji" width="30" height="30">
-            </label>
-
-        <input class="film-details__emoji-item visually-hidden"
-        name="comment-emoji" type="radio" id="emoji-angry" value="angry"
-        ${isAngryEmotion ? 'checked' : ''}>
-          <label class="film-details__emoji-label" for="emoji-angry">
-            <img src="./images/emoji/angry.png" alt="emoji" width="30" height="30">
-            </label>
+    ${createEmojiListTemplate(EMOTIONS, checkedEmotion)}
           </div>
         </div>
       </section>
@@ -287,11 +265,7 @@ export default class FilmPoup extends SmartView {
     }
     evt.preventDefault();
     this.updateData({
-      emotionComment: evt.target.value,
-      isSmileEmotion: evt.target.value === SMILE_EMOTION_INPUT_VALUE,
-      isSleepingEmotion: evt.target.value === SLEEPING_EMOTION_INPUT_VALUE,
-      isPukeEmotion: evt.target.value === PUKE_EMOTION_INPUT_VALUE,
-      isAngryEmotion: evt.target.value === ANGRY_EMOTION_INPUT_VALUE,
+      checkedEmotion: evt.target.value,
     });
     this.getElement().scrollTo(0, this._data.scrollPosition);
   }
@@ -366,10 +340,6 @@ export default class FilmPoup extends SmartView {
       movie,
       {
         isCommentsCount: movie.commentsCount !== 0,
-        isSmileEmotion: false,
-        isSleepingEmotion: false,
-        isPukeEmotion: false,
-        isAngryEmotion: false,
         scrollPosition: 0,
       },
     );
