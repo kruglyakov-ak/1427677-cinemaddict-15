@@ -25,7 +25,8 @@ const TOP_RATED_LIST_TITLE = 'Top rated';
 const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 
 export default class MoviesList {
-  constructor(main) {
+  constructor(main, moviesModel) {
+    this._moviesModel = moviesModel;
     this._mainElement = main;
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
@@ -54,6 +55,10 @@ export default class MoviesList {
     this._commentsList = commentsList.slice();
     this._renderSort();
     this._renderFilmsContainer();
+  }
+
+  _getMovies() {
+    return this._moviesModel.getMovies();
   }
 
   _sortMovie(sortType) {
