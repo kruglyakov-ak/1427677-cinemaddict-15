@@ -36,7 +36,6 @@ export default class Movie {
     const prevFilmCard = this._filmCard;
 
     this._filmCard = new FilmCardView(movie);
-
     this._filmCard.setFilmCardInfoClickHandler(() => this._renderPopup(movie, comments));
     this._filmCard.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._filmCard.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
@@ -102,7 +101,7 @@ export default class Movie {
   _handleAddToWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._movie,
@@ -116,7 +115,7 @@ export default class Movie {
   _handleMarkAsWatchedlistClick() {
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._movie,
@@ -130,7 +129,7 @@ export default class Movie {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._movie,

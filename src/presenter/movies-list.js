@@ -11,13 +11,12 @@ import {
   RenderPosition,
   remove
 } from '../utils/render.js';
-// import { updateItem } from '../utils/common.js';
 import {
   sortByRating,
   sortByComments,
   sortByDate
 } from '../utils/film.js';
-import { SortType } from '../const.js';
+import { SortType, UpdateType, UserAction } from '../const.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const EXTRA_FILMS_COUNT = 2;
@@ -101,7 +100,13 @@ export default class MoviesList {
 
     this._currentSortType = sortType;
     this._clearFilmList();
-    this._renderFilmsContainer();
+
+    if (!this._getMovies().length) {
+      this._renderFilmListEmpty();
+      return;
+    }
+    this._renderFilmList();
+
   }
 
   _handleModeChange() {
@@ -111,32 +116,40 @@ export default class MoviesList {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_FILM_CARD:
+        this._moviesModel.updateMovie(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this._commentsListModel.addComments(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._commentsListModel.deleteComments(updateType, update);
+        break;
+    }
+  }
+
+  _initFilmCardPresenter(presentersMap, data) {
+    if (presentersMap.has(data.id)) {
+      presentersMap.get(data.id).init(data, this._getComments(data.id));
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._initFilmCardPresenter(this._moviePresenter, data);
+        this._initFilmCardPresenter(this._movieExtraRatePresenter, data);
+        this._initFilmCardPresenter(this._movieExtraCommentPresenter, data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
-
-  // _handleFilmCardChange(updatedFilmCard) {
-  //   const initFilmCardPresenter = (presentersMap) => {
-  //     if (presentersMap.has(updatedFilmCard.id)) {
-  //       presentersMap.get(updatedFilmCard.id).init(updatedFilmCard, this._getComments(updatedFilmCard.id));
-  //     }
-  //   };
-
-  //   initFilmCardPresenter(this._moviePresenter);
-  //   initFilmCardPresenter(this._movieExtraRatePresenter);
-  //   initFilmCardPresenter(this._movieExtraCommentPresenter);
-  // }
 
   _getComments(id) {
     let comments;
@@ -231,12 +244,8 @@ export default class MoviesList {
 
   _clearFilmList() {
     this._clearMapPresenter(this._moviePresenter);
-    this._clearMapPresenter(this._movieExtraRatePresenter);
-    this._clearMapPresenter(this._movieExtraCommentPresenter);
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     remove(this._showMoreButtonComponent);
-    remove(this._topRatedListComponent);
-    remove(this._mostCommentedListComponent);
   }
 
   _renderFilmsListContainer(container, component) {
