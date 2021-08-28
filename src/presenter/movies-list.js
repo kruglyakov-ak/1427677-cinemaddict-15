@@ -33,12 +33,12 @@ export default class MoviesList {
     this._filmsListContainer = new FilmsListContainerView();
     this._topRatedfilmsListContainer = new FilmsListContainerView();
     this._mostCommentedfilmsListContainer = new FilmsListContainerView();
-    this._sortComponent = new SortView();
     this._filmsListComponent = new FilmsListView();
     this._filmListEmptyComponent = new FilmsListEmptyView();
     this._topRatedListComponent = new FilmsListExtraView(TOP_RATED_LIST_TITLE);
     this._mostCommentedListComponent = new FilmsListExtraView(MOST_COMMENTED_LIST_TITLE);
-    this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._sortComponent = null;
+    this._showMoreButtonComponent = null;
     this._moviePresenter = new Map();
     this._movieExtraRatePresenter = new Map();
     this._movieExtraCommentPresenter = new Map();
@@ -58,7 +58,7 @@ export default class MoviesList {
   }
 
   init() {
-    this._renderSort();
+    // this._renderSort();
     this._renderFilmsContainer();
   }
 
@@ -99,14 +99,8 @@ export default class MoviesList {
     }
 
     this._currentSortType = sortType;
-    this._clearFilmList();
-
-    if (!this._getMovies().length) {
-      this._renderFilmListEmpty();
-      return;
-    }
-    this._renderFilmList();
-
+    this._clearFilmList({resetRenderedMoviekCount: true});
+    this._renderFilmsContainer();
   }
 
   _handleModeChange() {
@@ -143,10 +137,12 @@ export default class MoviesList {
         this._initFilmCardPresenter(this._movieExtraCommentPresenter, data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this._clearFilmList();
+        this._renderFilmsContainer();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this._clearFilmList({resetRenderedMoviekCount: true, resetSortType: true});
+        this._renderFilmsContainer();
         break;
     }
   }
@@ -164,6 +160,11 @@ export default class MoviesList {
   }
 
   _renderSort() {
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+    this._sortComponent = new SortView(this._currentSortType);
+
     if (this._getMovies().length) {
       render(this._mainElement, this._sortComponent, RenderPosition.BEFOREEND);
       this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
@@ -198,6 +199,10 @@ export default class MoviesList {
   }
 
   _renderShowMoreButton() {
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
+    }
+    this._showMoreButtonComponent = new ShowMoreButtonView();
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
 
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
@@ -230,6 +235,11 @@ export default class MoviesList {
     const movieCount = this._getMovies().length;
     const movies = this._getMovies().slice(0, Math.min(movieCount, MOVIE_COUNT_PER_STEP));
 
+    if (!this._getMovies().length) {
+      this._renderFilmListEmpty();
+      return;
+    }
+
     this._renderFilmCards(this._filmsListContainer, movies, this._moviePresenter);
 
     if (movieCount > MOVIE_COUNT_PER_STEP) {
@@ -242,10 +252,29 @@ export default class MoviesList {
     mapPresenter.clear();
   }
 
-  _clearFilmList() {
+  _clearFilmList({resetRenderedMoviekCount = false, resetMovieType = false} = {}) {
+    const movieCount = this._getMovies().length;
+
+    this._moviePresenter.forEach((presenter) => presenter.destroy());
+    this._moviePresenter.clear();
+
     this._clearMapPresenter(this._moviePresenter);
-    this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
+    this._clearMapPresenter(this._movieExtraCommentPresenter);
+    this._clearMapPresenter(this._movieExtraRatePresenter);
+
+    remove(this._sortComponent);
+    remove(this._filmListEmptyComponent);
     remove(this._showMoreButtonComponent);
+
+    if (resetRenderedMoviekCount) {
+      this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
+    } else {
+      this._renderedMoviesCount = Math.min(movieCount, this._renderedMoviesCount);
+    }
+
+    if (resetMovieType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
   }
 
   _renderFilmsListContainer(container, component) {
@@ -253,12 +282,8 @@ export default class MoviesList {
   }
 
   _renderFilmsContainer() {
+    this._renderSort();
     render(this._mainElement, this._filmsContainer, RenderPosition.BEFOREEND);
-
-    if (!this._getMovies().length) {
-      this._renderFilmListEmpty();
-      return;
-    }
 
     this._renderTopRatedFilmList();
     this._renderMostCommentedFilmList();
