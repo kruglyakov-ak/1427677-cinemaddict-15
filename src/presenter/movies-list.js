@@ -58,7 +58,6 @@ export default class MoviesList {
   }
 
   init() {
-    // this._renderSort();
     this._renderFilmsContainer();
   }
 
@@ -125,7 +124,7 @@ export default class MoviesList {
 
   _initFilmCardPresenter(presentersMap, data) {
     if (presentersMap.has(data.id)) {
-      presentersMap.get(data.id).init(data, this._getComments(data.id));
+      presentersMap.get(data.id).init(data, data.comments);
     }
   }
 
@@ -147,18 +146,6 @@ export default class MoviesList {
     }
   }
 
-  _getComments(id) {
-    let comments;
-    this._getCommentsList()
-      .forEach((comment) => {
-        if (comment.has(id)) {
-          comments = comment.get(id);
-        }
-      });
-
-    return comments;
-  }
-
   _renderSort() {
     if (this._sortComponent !== null) {
       this._sortComponent = null;
@@ -174,7 +161,7 @@ export default class MoviesList {
   _renderFilmCard(containerElement, movie, movieList) {
     const moviePresenter = new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange);
     movieList.set(movie.id, moviePresenter);
-    moviePresenter.init(movie, this._getComments(movie.id));
+    moviePresenter.init(movie, movie.comments);
   }
 
   _renderFilmCards(container, movies, movieList) {

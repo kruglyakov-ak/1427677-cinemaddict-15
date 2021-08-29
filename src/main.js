@@ -5,16 +5,24 @@ import MoveisModel from './model/movies.js';
 import CommentsListModel from './model/comments-list.js';
 import MovieListPresenter from './presenter/movies-list.js';
 import { generateMovie } from './mock/movie-mock.js';
-import { generateComments } from './mock/comments-mock.js';
+import { generateCommentsList } from './mock/comments-mock.js';
 import {
   render,
   RenderPosition
 } from './utils/render.js';
+import { getRandomNumberInRange } from './utils/common.js';
 
 const MOVIE_COUNT = 12;
-
-const movies = new Array(MOVIE_COUNT).fill().map(generateMovie);
-const commentsList = movies.map((movie) => generateComments(movie));
+const COMMENTS_COUNT = 5;
+let commentsCountFrom = 0;
+const commentsList = generateCommentsList();
+const getComments = () => {
+  const commentCountTo = commentsCountFrom + getRandomNumberInRange(0, COMMENTS_COUNT);
+  const comments = commentsList.slice(commentsCountFrom ,commentCountTo);
+  commentsCountFrom = commentCountTo;
+  return comments;
+};
+const movies = new Array(MOVIE_COUNT).fill().map(() => generateMovie(getComments()));
 
 const moviesModel = new MoveisModel();
 moviesModel.setMovies(movies);

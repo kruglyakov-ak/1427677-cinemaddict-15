@@ -1,7 +1,6 @@
 import {nanoid} from 'nanoid';
 
 const DESCRIPTION_SENTENCES_COUNT = 5;
-const COMMENTS_COUNT = 5;
 const MIN_RATING_COUNT = 2;
 const MAX_RATING_COUNT = 10;
 const MIN_RUNTIME = 45;
@@ -140,8 +139,6 @@ const generateDescription = () => {
   return description;
 };
 
-const generateComments = () => getRandomNumberInRange(0, COMMENTS_COUNT);
-
 const generateRating = () => getRandomNumberInRange(MIN_RATING_COUNT, MAX_RATING_COUNT, 1);
 
 const generateReleaseDate = () => {
@@ -164,12 +161,13 @@ const generateActors = (count) => new Array(count)
 
 const generateCountrie = () => COUNTRIES[getRandomNumberInRange(0, COUNTRIES.length - 1)];
 
-export const generateMovie = () => {
-  const poster = generatePoster();
 
+export const generateMovie = (comments) => {
+  const poster = generatePoster();
   return {
     id: nanoid(),
-    commentsCount: generateComments(),
+    comments: comments,
+    commentsCount: comments.length,
     title: poster.title,
     totalRating: generateRating(),
     poster: poster.src,

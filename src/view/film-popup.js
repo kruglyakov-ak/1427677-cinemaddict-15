@@ -33,6 +33,7 @@ const createCommentTemplate = (comment) => {
     text,
     author,
     date,
+    id,
   } = comment;
 
   return `<li class="film-details__comment">
@@ -44,7 +45,7 @@ const createCommentTemplate = (comment) => {
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
       <span class="film-details__comment-day">${dayjs(date).fromNow()}</span>
-      <button class="film-details__comment-delete">Delete</button>
+      <button class="film-details__comment-delete" data-id="${id}">Delete</button>
     </p>
   </div>
 </li>`;
@@ -200,6 +201,7 @@ export default class FilmPoup extends SmartView {
     this._textTextareaHandler = this._textTextareaHandler.bind(this);
     this._emotionInputHandler = this._emotionInputHandler.bind(this);
     this._scrollPopupHandler = this._scrollPopupHandler.bind(this);
+    this._commentDeleteClickHandler = this._commentDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -276,6 +278,11 @@ export default class FilmPoup extends SmartView {
     }, true);
   }
 
+  _commentDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(+evt.target.dataset.id);
+  }
+
   setCloseBtnClickHandler(callback) {
     this._callback.closeBtnClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickCloseBtnHandler);
@@ -300,6 +307,13 @@ export default class FilmPoup extends SmartView {
     this.getElement()
       .querySelector('.film-details__control-button--favorite')
       .addEventListener('click', this._clickFavoriteHandler);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement()
+      .querySelectorAll('.film-details__comment-delete')
+      .forEach((comment) => comment.addEventListener('click', this._commentDeleteClickHandler));
   }
 
   restoreHandlers() {
@@ -332,6 +346,7 @@ export default class FilmPoup extends SmartView {
     this.setAddToWatchlistClickHandler(this._callback.addToWatchlistClick);
     this.setMarkAsWatchedlistClickHandler(this._callback.markAsWatchedlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setDeleteCommentClickHandler(this._callback.deleteClick);
   }
 
   static parseMovieToData(movie) {

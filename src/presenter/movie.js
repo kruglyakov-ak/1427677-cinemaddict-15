@@ -27,6 +27,7 @@ export default class Movie {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._closePopup = this._closePopup.bind(this);
+    this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
     this._mode = Mode.CLOSE;
   }
 
@@ -75,6 +76,7 @@ export default class Movie {
     this._popup.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._popup.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
     this._popup.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._popup.setDeleteCommentClickHandler(this._handleCommentDeleteClick);
   }
 
   _closePopup() {
@@ -137,6 +139,14 @@ export default class Movie {
           isFavorite: !this._movie.isFavorite,
         },
       ),
+    );
+  }
+
+  _handleCommentDeleteClick(id) {
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.MINOR,
+      id,
     );
   }
 }

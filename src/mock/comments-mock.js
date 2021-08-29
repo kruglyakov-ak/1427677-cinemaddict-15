@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-const DESCRIPTION_SENTENCES_COUNT = 2;
 
+const DESCRIPTION_SENTENCES_COUNT = 2;
+const COMMENTS_COUNT = 100;
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 const COMMENT_AUTHORS = [
   'Anthony Mann',
@@ -50,18 +51,13 @@ const generateCommentText = () => {
 const generateEmotions = () => EMOTIONS[getRandomNumberInRange(0, EMOTIONS.length - 1)];
 const generateCommentAuthor = () => COMMENT_AUTHORS[getRandomNumberInRange(0, COMMENT_AUTHORS.length - 1)];
 const generateDate = () => dayjs();
+let i = 1;
+const generateComment = () => ({
+  id: i++,
+  author: generateCommentAuthor(),
+  text: generateCommentText(),
+  date: generateDate(),
+  emotion: generateEmotions(),
+});
 
-const generateComment = (movie) => {
-  const {commentsCount} = movie;
-  return {
-    id: movie.id,
-    author: generateCommentAuthor(),
-    text: generateCommentText(),
-    date: generateDate(commentsCount),
-    emotion: generateEmotions(),
-  };
-};
-export const generateComments = (movie) => {
-  const comments = new Array(movie.commentsCount).fill().map(() => generateComment(movie));
-  return new Map().set(movie.id, comments);
-};
+export const generateCommentsList = () => new Array(COMMENTS_COUNT).fill().map(() => generateComment());
