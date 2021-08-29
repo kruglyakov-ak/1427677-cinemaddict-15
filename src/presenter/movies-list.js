@@ -24,10 +24,9 @@ const TOP_RATED_LIST_TITLE = 'Top rated';
 const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 
 export default class MoviesList {
-  constructor(main, moviesModel, commentsListModel) {
+  constructor(main, moviesModel) {
     this._mainElement = main;
     this._moviesModel = moviesModel;
-    this._commentsListModel = commentsListModel;
 
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
@@ -54,7 +53,6 @@ export default class MoviesList {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._moviesModel.addObserver(this._handleModelEvent);
-    this._commentsListModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -71,10 +69,6 @@ export default class MoviesList {
     }
 
     return this._moviesModel.getMovies();
-  }
-
-  _getCommentsList() {
-    return this._commentsListModel.getCommentsList();
   }
 
   _sortMovie(sortType) {
@@ -200,7 +194,7 @@ export default class MoviesList {
     this._renderFilmsListContainer(this._topRatedListComponent, this._topRatedfilmsListContainer);
 
     const movieCount = this._getMovies().length;
-    const movies = sortByRating(this._getMovies()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
+    const movies = sortByRating(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
 
     this._renderFilmCards(this._topRatedfilmsListContainer, movies, this._movieExtraRatePresenter);
   }
@@ -210,7 +204,7 @@ export default class MoviesList {
     this._renderFilmsListContainer(this._mostCommentedListComponent, this._mostCommentedfilmsListContainer);
 
     const movieCount = this._getMovies().length;
-    const movies = sortByComments(this._getMovies()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
+    const movies = sortByComments(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
 
     this._renderFilmCards(this._mostCommentedfilmsListContainer, movies, this._movieExtraCommentPresenter);
   }
@@ -221,7 +215,6 @@ export default class MoviesList {
 
     const movieCount = this._getMovies().length;
     const movies = this._getMovies().slice(0, Math.min(movieCount, MOVIE_COUNT_PER_STEP));
-
     if (!this._getMovies().length) {
       this._renderFilmListEmpty();
       return;

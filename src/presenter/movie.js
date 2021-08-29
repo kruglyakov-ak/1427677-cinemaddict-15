@@ -1,5 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPoupView from '../view/film-popup.js';
+import CommentsListModel from '../model/comments-list.js';
+
 import {
   render,
   RenderPosition,
@@ -68,7 +70,9 @@ export default class Movie {
     if (this._popup) {
       this._closePopup();
     }
-    this._popup = new FilmPoupView(movie, comments);
+    this._commentsListModel = new CommentsListModel();
+    this._commentsListModel.setCommentsList(comments);
+    this._popup = new FilmPoupView(movie, this._commentsListModel.getCommentsList());
     this._openPopup();
     this._bodyElement.classList.add('hide-overflow');
 
@@ -143,11 +147,20 @@ export default class Movie {
   }
 
   _handleCommentDeleteClick(id) {
+    this._commentsListModel.deleteComments(id);
     this._changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.MINOR,
-      id,
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._movie,
+        {
+          commentsCount: this._commentsListModel.getCommentsList().length,
+          comments: this._commentsListModel.getCommentsList(),
+        },
+      ),
     );
+    this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
   }
 }
 

@@ -281,6 +281,7 @@ export default class FilmPoup extends SmartView {
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(+evt.target.dataset.id);
+    this.getElement().scrollTo(0, this._data.scrollPosition);
   }
 
   setCloseBtnClickHandler(callback) {
@@ -358,5 +359,13 @@ export default class FilmPoup extends SmartView {
         scrollPosition: 0,
       },
     );
+  }
+
+  static parseDataToMovie(data) {
+    data = Object.assign({}, data);
+
+    delete data.isCommentsCount;
+
+    return data;
   }
 }

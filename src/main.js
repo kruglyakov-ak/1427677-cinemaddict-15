@@ -2,7 +2,6 @@ import HeaderProfileView from './view/header-profile.js';
 import MainNavigationView from './view/main-navigation.js';
 import FooterStatisticsView from './view/footer-statistics.js';
 import MoveisModel from './model/movies.js';
-import CommentsListModel from './model/comments-list.js';
 import MovieListPresenter from './presenter/movies-list.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateCommentsList } from './mock/comments-mock.js';
@@ -26,8 +25,7 @@ const movies = new Array(MOVIE_COUNT).fill().map(() => generateMovie(getComments
 
 const moviesModel = new MoveisModel();
 moviesModel.setMovies(movies);
-const commentsListModel = new CommentsListModel();
-commentsListModel.setCommentsList(commentsList);
+
 
 const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
@@ -37,7 +35,7 @@ render(headerElement, new HeaderProfileView(
   new MainNavigationView(movies).getWatchedMovies()), RenderPosition.BEFOREEND);
 render(mainElement, new MainNavigationView(movies), RenderPosition.BEFOREEND);
 
-const moviePresenter = new MovieListPresenter(mainElement, moviesModel, commentsListModel);
+const moviePresenter = new MovieListPresenter(mainElement, moviesModel);
 moviePresenter.init();
 
 render(footerElement, new FooterStatisticsView(movies), RenderPosition.BEFOREEND);

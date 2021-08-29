@@ -23,7 +23,7 @@ export default class CommentsList extends AbstractObserver {
     this._notify(updateType, update);
   }
 
-  deleteComments(updateType, updateId) {
+  deleteComments(updateId) {
     const index = this._commentsList.findIndex((comments) => comments.id === updateId);
 
     if (index === -1) {
@@ -33,7 +33,5 @@ export default class CommentsList extends AbstractObserver {
       ...this._commentsList.slice(0, index),
       ...this._commentsList.slice(index + 1),
     ];
-
-    this._notify(updateType);
   }
 }
