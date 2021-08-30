@@ -289,6 +289,7 @@ export default class FilmPoup extends SmartView {
       evt.preventDefault();
       this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
     }
+    document.removeEventListener('keydown', this._commentSubmitHandler);
   }
 
   setCloseBtnClickHandler(callback) {
@@ -326,8 +327,7 @@ export default class FilmPoup extends SmartView {
 
   setSubmitCommentHandler(callback) {
     this._callback.commentSubmit = callback;
-    this.getElement()
-      .querySelector('.film-details__inner').addEventListener('keydown', this._commentSubmitHandler);
+    document.addEventListener('keydown', this._commentSubmitHandler);
   }
 
   restoreHandlers() {
