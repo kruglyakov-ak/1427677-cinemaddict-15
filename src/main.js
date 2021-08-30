@@ -10,6 +10,7 @@ import {
   RenderPosition
 } from './utils/render.js';
 import { getRandomNumberInRange } from './utils/common.js';
+import FilterModel from './model/filter.js';
 
 const MOVIE_COUNT = 12;
 const COMMENTS_COUNT = 5;
@@ -37,5 +38,6 @@ render(mainElement, new MainNavigationView(movies), RenderPosition.BEFOREEND);
 
 const moviePresenter = new MovieListPresenter(mainElement, moviesModel);
 moviePresenter.init();
+const filterModel = new FilterModel();
 
 render(footerElement, new FooterStatisticsView(movies), RenderPosition.BEFOREEND);
