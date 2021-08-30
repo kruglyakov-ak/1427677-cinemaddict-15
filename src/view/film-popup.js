@@ -3,6 +3,7 @@ import SmartView from './smart.js';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
+import he from 'he';
 
 const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
@@ -41,7 +42,7 @@ const createCommentTemplate = (comment) => {
   <img src="./images/emoji/${emotion}.png" alt="emoji-${emotion}" width="55" height="55">
 </span>
   <div>
-    <p class="film-details__comment-text">${text}</p>
+    <p class="film-details__comment-text">${he.encode(text)}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author ? author : ''}</span>
       <span class="film-details__comment-day">${date ? dayjs(date).fromNow() : ''}</span>
@@ -258,7 +259,7 @@ export default class FilmPoup extends SmartView {
   _textTextareaHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      textComment: evt.target.value,
+      textComment: he.encode(evt.target.value),
     }, true);
   }
 
@@ -288,8 +289,8 @@ export default class FilmPoup extends SmartView {
     if (evt.key === 'Enter' || evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
       this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
+      document.removeEventListener('keydown', this._commentSubmitHandler);
     }
-    document.removeEventListener('keydown', this._commentSubmitHandler);
   }
 
   setCloseBtnClickHandler(callback) {
