@@ -1,8 +1,8 @@
-import HeaderProfileView from './view/header-profile.js';
-import MainNavigationView from './view/main-navigation.js';
 import FooterStatisticsView from './view/footer-statistics.js';
 import MoveisModel from './model/movies.js';
+import FilterModel from './model/filter.js';
 import MovieListPresenter from './presenter/movies-list.js';
+import FilterPresenter from './presenter/filter.js';
 import { generateMovie } from './mock/movie-mock.js';
 import { generateCommentsList } from './mock/comments-mock.js';
 import {
@@ -10,7 +10,6 @@ import {
   RenderPosition
 } from './utils/render.js';
 import { getRandomNumberInRange } from './utils/common.js';
-import FilterModel from './model/filter.js';
 
 const MOVIE_COUNT = 12;
 const COMMENTS_COUNT = 5;
@@ -32,12 +31,12 @@ const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
 const footerElement = document.querySelector('.footer');
 
-render(headerElement, new HeaderProfileView(
-  new MainNavigationView(movies).getWatchedMovies()), RenderPosition.BEFOREEND);
-render(mainElement, new MainNavigationView(movies), RenderPosition.BEFOREEND);
+const filterModel = new FilterModel();
 
 const moviePresenter = new MovieListPresenter(mainElement, moviesModel);
+const filterPresenter = new FilterPresenter(headerElement, mainElement, filterModel, moviesModel);
+
+filterPresenter.init();
 moviePresenter.init();
-const filterModel = new FilterModel();
 
 render(footerElement, new FooterStatisticsView(movies), RenderPosition.BEFOREEND);
