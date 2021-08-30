@@ -43,8 +43,8 @@ const createCommentTemplate = (comment) => {
   <div>
     <p class="film-details__comment-text">${text}</p>
     <p class="film-details__comment-info">
-      <span class="film-details__comment-author">${author}</span>
-      <span class="film-details__comment-day">${dayjs(date).fromNow()}</span>
+      <span class="film-details__comment-author">${author ? author : ''}</span>
+      <span class="film-details__comment-day">${date ? dayjs(date).fromNow() : ''}</span>
       <button class="film-details__comment-delete" data-id="${id}">Delete</button>
     </p>
   </div>
@@ -202,6 +202,7 @@ export default class FilmPoup extends SmartView {
     this._emotionInputHandler = this._emotionInputHandler.bind(this);
     this._scrollPopupHandler = this._scrollPopupHandler.bind(this);
     this._commentDeleteClickHandler = this._commentDeleteClickHandler.bind(this);
+    this._commentSubmitHandler = this._commentSubmitHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -280,8 +281,14 @@ export default class FilmPoup extends SmartView {
 
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(+evt.target.dataset.id);
-    this.getElement().scrollTo(0, this._data.scrollPosition);
+    this._callback.deleteClick(+evt.target.dataset.id, FilmPoup.parseDataToMovie(this._data));
+  }
+
+  _commentSubmitHandler(evt) {
+    if (evt.key === 'Enter' || evt.key === 'Enter' && evt.ctrlKey) {
+      evt.preventDefault();
+      this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
+    }
   }
 
   setCloseBtnClickHandler(callback) {
@@ -315,6 +322,11 @@ export default class FilmPoup extends SmartView {
     this.getElement()
       .querySelectorAll('.film-details__comment-delete')
       .forEach((comment) => comment.addEventListener('click', this._commentDeleteClickHandler));
+  }
+
+  setSubmitCommentHandler(callback) {
+    this._callback.commentSubmit = callback;
+    document.addEventListener('keydown', this._commentSubmitHandler);
   }
 
   restoreHandlers() {
@@ -365,7 +377,6 @@ export default class FilmPoup extends SmartView {
     data = Object.assign({}, data);
 
     delete data.isCommentsCount;
-
     return data;
   }
 }

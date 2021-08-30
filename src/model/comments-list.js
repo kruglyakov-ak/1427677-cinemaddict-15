@@ -14,13 +14,11 @@ export default class CommentsList extends AbstractObserver {
     return this._commentsList;
   }
 
-  addComments(updateType, update) {
+  addComments(update) {
     this._commentsList = [
       ...this._commentsList,
       update,
     ];
-
-    this._notify(updateType, update);
   }
 
   deleteComments(updateId) {

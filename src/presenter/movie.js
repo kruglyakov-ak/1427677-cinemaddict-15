@@ -30,6 +30,7 @@ export default class Movie {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._closePopup = this._closePopup.bind(this);
     this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
+    this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
     this._mode = Mode.CLOSE;
   }
 
@@ -81,6 +82,7 @@ export default class Movie {
     this._popup.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
     this._popup.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popup.setDeleteCommentClickHandler(this._handleCommentDeleteClick);
+    this._popup.setSubmitCommentHandler(this._handleCommentSubmit);
   }
 
   _closePopup() {
@@ -146,7 +148,7 @@ export default class Movie {
     );
   }
 
-  _handleCommentDeleteClick(id) {
+  _handleCommentDeleteClick(id, data) {
     this._commentsListModel.deleteComments(id);
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
@@ -161,7 +163,31 @@ export default class Movie {
       ),
     );
     this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+    this._popup.getElement().scrollTo(0, data.scrollPosition);
   }
+
+  _handleCommentSubmit(data) {
+
+    const newComment = {
+      emotion: data.checkedEmotion,
+      text: data.textComment,
+    };
+    this._commentsListModel.addComments(newComment);
+    this._changeData(
+      UserAction.UPDATE_FILM_CARD,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._movie,
+        {
+          commentsCount: this._commentsListModel.getCommentsList().length,
+          comments: this._commentsListModel.getCommentsList(),
+        },
+      ),
+    );
+    this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+  }
+
 }
 
 
