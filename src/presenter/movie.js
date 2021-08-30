@@ -16,12 +16,12 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmListContainer, changeData, changeMode) {
+  constructor(filmListContainer, changeData, changeMode, filterType) {
     this._filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
     this._changeData = changeData;
     this._changeMode = changeMode;
-
+    this._filterType = filterType;
     this._filmCard = null;
 
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
@@ -107,9 +107,13 @@ export default class Movie {
   }
 
   _handleAddToWatchlistClick() {
+    const isCurrentFilterType = this._filterType === 'all movies' || this._filterType !== 'watchlist';
+    if (!isCurrentFilterType && this._popup) {
+      this._closePopup();
+    }
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.PATCH,
+      isCurrentFilterType ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._movie,
@@ -121,9 +125,13 @@ export default class Movie {
   }
 
   _handleMarkAsWatchedlistClick() {
+    const isCurrentFilterType = this._filterType === 'all movies' || this._filterType !== 'history';
+    if (!isCurrentFilterType && this._popup) {
+      this._closePopup();
+    }
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.PATCH,
+      isCurrentFilterType ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._movie,
@@ -135,9 +143,13 @@ export default class Movie {
   }
 
   _handleFavoriteClick() {
+    const isCurrentFilterType = this._filterType === 'all movies' || this._filterType !== 'favorites';
+    if (!isCurrentFilterType && this._popup) {
+      this._closePopup();
+    }
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.PATCH,
+      isCurrentFilterType ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._movie,

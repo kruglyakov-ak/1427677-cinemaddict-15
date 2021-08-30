@@ -50,7 +50,6 @@ export default class Filter {
     if (this._filterModel.getFilter() === filterType) {
       return;
     }
-
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
@@ -58,6 +57,10 @@ export default class Filter {
     const movies = this._moviesModel.getMovies();
 
     return [
+      {
+        type: FilterType.ALL,
+        name: 'All movies',
+      },
       {
         type: FilterType.WHATCHLIST,
         name: 'Watchlist',

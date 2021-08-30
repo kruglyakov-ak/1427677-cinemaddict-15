@@ -33,7 +33,7 @@ const footerElement = document.querySelector('.footer');
 
 const filterModel = new FilterModel();
 
-const moviePresenter = new MovieListPresenter(mainElement, moviesModel);
+const moviePresenter = new MovieListPresenter(mainElement, moviesModel, filterModel);
 const filterPresenter = new FilterPresenter(headerElement, mainElement, filterModel, moviesModel);
 
 filterPresenter.init();

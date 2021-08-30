@@ -3,11 +3,16 @@ import AbstractView from './abstract.js';
 const createMainNavigationItemTemplate = (filter, currentFilterType) => {
   const { type, name, count } = filter;
 
-  return (
-    `<a href="#${name.toLowerCase()}"
-    class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}">
-    ${name}<span class="main-navigation__item-count">${count}</span></a>`
-  );
+  if (type === 'all movies') {
+    return `<a href="#${name.toLowerCase()}"
+    class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    data-name-filter = "${name.toLowerCase()}">
+    ${name}</a>`;
+  }
+  return `<a href="#${name.toLowerCase()}"
+    class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    data-name-filter = "${name.toLowerCase()}">
+    ${name}<span class="main-navigation__item-count">${count}</span></a>`;
 };
 
 const createMainNavigationTemplate = (filterItems, currentFilterType) => {
@@ -17,7 +22,6 @@ const createMainNavigationTemplate = (filterItems, currentFilterType) => {
 
   return `<nav class="main-navigation">
   <div class="main-navigation__items">
-    <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
     ${filterItemsTemplate}
   </div>
   <a href="#stats" class="main-navigation__additional">Stats</a>
@@ -42,7 +46,7 @@ export default class MainNavigation extends AbstractView {
       return;
     }
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
+    this._callback.filterTypeChange(evt.target.dataset.nameFilter);
   }
 
   setFilterTypeChangeHandler(callback) {
