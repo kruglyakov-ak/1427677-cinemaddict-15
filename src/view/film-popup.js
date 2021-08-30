@@ -285,9 +285,6 @@ export default class FilmPoup extends SmartView {
   }
 
   _commentSubmitHandler(evt) {
-    if (evt.target.tagName !== 'TEXTAREA') {
-      return;
-    }
     if (evt.key === 'Enter' || evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
       this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
@@ -329,7 +326,8 @@ export default class FilmPoup extends SmartView {
 
   setSubmitCommentHandler(callback) {
     this._callback.commentSubmit = callback;
-    document.addEventListener('keydown', this._commentSubmitHandler);
+    this.getElement()
+      .querySelector('.film-details__inner').addEventListener('keydown', this._commentSubmitHandler);
   }
 
   restoreHandlers() {
@@ -363,6 +361,7 @@ export default class FilmPoup extends SmartView {
     this.setMarkAsWatchedlistClickHandler(this._callback.markAsWatchedlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setDeleteCommentClickHandler(this._callback.deleteClick);
+    this.setSubmitCommentHandler(this._callback.commentSubmit);
   }
 
   static parseMovieToData(movie) {

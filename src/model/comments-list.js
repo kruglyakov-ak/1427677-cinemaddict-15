@@ -14,7 +14,7 @@ export default class CommentsList extends AbstractObserver {
     return this._commentsList;
   }
 
-  addComments(update) {
+  addComment(update) {
     this._commentsList = [
       ...this._commentsList,
       update,

@@ -23,7 +23,6 @@ export default class Movie {
     this._changeMode = changeMode;
     this._filterType = filterType;
     this._filmCard = null;
-
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -36,11 +35,14 @@ export default class Movie {
 
   init(movie, comments) {
     this._movie = movie;
+    this._commentsListModel = new CommentsListModel();
+    this._commentsListModel.setCommentsList(comments);
 
     const prevFilmCard = this._filmCard;
 
     this._filmCard = new FilmCardView(movie);
-    this._filmCard.setFilmCardInfoClickHandler(() => this._renderPopup(movie, comments));
+    this._filmCard
+      .setFilmCardInfoClickHandler(() => this._renderPopup(movie, this._commentsListModel.getCommentsList()));
     this._filmCard.setAddToWatchlistClickHandler(this._handleAddToWatchlistClick);
     this._filmCard.setMarkAsWatchedlistClickHandler(this._handleMarkAsWatchedlistClick);
     this._filmCard.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -67,12 +69,12 @@ export default class Movie {
     remove(this._filmCard);
   }
 
-  _renderPopup(movie, comments) {
+  _renderPopup(movie) {
     if (this._popup) {
       this._closePopup();
     }
-    this._commentsListModel = new CommentsListModel();
-    this._commentsListModel.setCommentsList(comments);
+
+    this._idCount = this._commentsListModel.getCommentsList().length + 100;
     this._popup = new FilmPoupView(movie, this._commentsListModel.getCommentsList());
     this._openPopup();
     this._bodyElement.classList.add('hide-overflow');
@@ -179,13 +181,15 @@ export default class Movie {
   }
 
   _handleCommentSubmit(data) {
-
     const newComment = {
+      id: this._idCount++,
       emotion: data.checkedEmotion,
       text: data.textComment,
+      date: new Date(),
+      author: 'Erich von Stroheim',
     };
     if (newComment.emotion && newComment.text) {
-      this._commentsListModel.addComments(newComment);
+      this._commentsListModel.addComment(newComment);
       this._changeData(
         UserAction.UPDATE_FILM_CARD,
         UpdateType.PATCH,

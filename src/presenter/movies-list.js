@@ -249,9 +249,6 @@ export default class MoviesList {
   _clearFilmList({resetRenderedMoviekCount = false, resetSortType = false} = {}) {
     const movieCount = this._getMovies().length;
 
-    this._moviePresenter.forEach((presenter) => presenter.destroy());
-    this._moviePresenter.clear();
-
     this._clearMapPresenter(this._moviePresenter);
     this._clearMapPresenter(this._movieExtraCommentPresenter);
     this._clearMapPresenter(this._movieExtraRatePresenter);
