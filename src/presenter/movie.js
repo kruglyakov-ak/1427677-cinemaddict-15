@@ -172,20 +172,23 @@ export default class Movie {
       emotion: data.checkedEmotion,
       text: data.textComment,
     };
-    this._commentsListModel.addComments(newComment);
-    this._changeData(
-      UserAction.UPDATE_FILM_CARD,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._movie,
-        {
-          commentsCount: this._commentsListModel.getCommentsList().length,
-          comments: this._commentsListModel.getCommentsList(),
-        },
-      ),
-    );
-    this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+    if (newComment.emotion && newComment.text) {
+      this._commentsListModel.addComments(newComment);
+      this._changeData(
+        UserAction.UPDATE_FILM_CARD,
+        UpdateType.PATCH,
+        Object.assign(
+          {},
+          this._movie,
+          {
+            commentsCount: this._commentsListModel.getCommentsList().length,
+            comments: this._commentsListModel.getCommentsList(),
+          },
+        ),
+      );
+      this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+      this._popup.getElement().scrollTo(0, data.scrollPosition);
+    }
   }
 
 }

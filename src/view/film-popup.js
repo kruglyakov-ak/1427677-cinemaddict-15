@@ -285,6 +285,9 @@ export default class FilmPoup extends SmartView {
   }
 
   _commentSubmitHandler(evt) {
+    if (evt.target.tagName !== 'TEXTAREA') {
+      return;
+    }
     if (evt.key === 'Enter' || evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
       this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
