@@ -175,6 +175,9 @@ export default class MoviesList {
   }
 
   _renderFilmListEmpty() {
+    remove(this._filmsListComponent);
+    remove(this._topRatedListComponent);
+    remove(this._mostCommentedListComponent);
     this._filmListEmptyComponent = new FilmsListEmptyView(this._filterType);
     render(this._filmsContainer, this._filmListEmptyComponent, RenderPosition.BEFOREEND);
   }
@@ -202,27 +205,23 @@ export default class MoviesList {
   }
 
   _renderTopRatedFilmList() {
-    if (this._getMovies().length) {
-      render(this._filmsContainer, this._topRatedListComponent, RenderPosition.BEFOREEND);
-      this._renderFilmsListContainer(this._topRatedListComponent, this._topRatedfilmsListContainer);
+    render(this._filmsContainer, this._topRatedListComponent, RenderPosition.BEFOREEND);
+    this._renderFilmsListContainer(this._topRatedListComponent, this._topRatedfilmsListContainer);
 
-      const movieCount = this._getMovies().length;
-      const movies = sortByRating(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
+    const movieCount = this._getMovies().length;
+    const movies = sortByRating(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
 
-      this._renderFilmCards(this._topRatedfilmsListContainer, movies, this._movieExtraRatePresenter);
-    }
+    this._renderFilmCards(this._topRatedfilmsListContainer, movies, this._movieExtraRatePresenter);
   }
 
   _renderMostCommentedFilmList() {
-    if (this._getMovies().length) {
-      render(this._filmsContainer, this._mostCommentedListComponent, RenderPosition.BEFOREEND);
-      this._renderFilmsListContainer(this._mostCommentedListComponent, this._mostCommentedfilmsListContainer);
+    render(this._filmsContainer, this._mostCommentedListComponent, RenderPosition.BEFOREEND);
+    this._renderFilmsListContainer(this._mostCommentedListComponent, this._mostCommentedfilmsListContainer);
 
-      const movieCount = this._getMovies().length;
-      const movies = sortByComments(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
+    const movieCount = this._getMovies().length;
+    const movies = sortByComments(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
 
-      this._renderFilmCards(this._mostCommentedfilmsListContainer, movies, this._movieExtraCommentPresenter);
-    }
+    this._renderFilmCards(this._mostCommentedfilmsListContainer, movies, this._movieExtraCommentPresenter);
   }
 
   _renderFilmList() {
