@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
+const MINUTE_IN_HOUR = 60;
 
 export const formatReleaseDate = (date, format) => dayjs(date).format(format);
 
@@ -19,7 +20,7 @@ export const sortByDate = (movies) => movies
 export const generateRuntime = (time) => {
   const hour = dayjs.duration(time, 'm').format('H');
   const minute = dayjs.duration(time, 'm').format('m');
-  if (time < 60) {
+  if (time < MINUTE_IN_HOUR) {
     return `${minute}m`;
   }
   return `${hour}h ${minute}m`;
