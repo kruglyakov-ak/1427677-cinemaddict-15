@@ -167,7 +167,7 @@ export default class Movie {
     this._commentsListModel.deleteComments(id);
     this._changeData(
       UserAction.UPDATE_FILM_CARD,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._movie,
@@ -193,7 +193,7 @@ export default class Movie {
       this._commentsListModel.addComment(newComment);
       this._changeData(
         UserAction.UPDATE_FILM_CARD,
-        UpdateType.MINOR,
+        UpdateType.PATCH,
         Object.assign(
           {},
           this._movie,
