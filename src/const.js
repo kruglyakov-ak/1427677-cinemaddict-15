@@ -21,4 +21,10 @@ export const FilterType = {
   WHATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+  STATS: 'stats',
+};
+
+export const Screens = {
+  MOVIES: 'movies',
+  STATS: 'stats',
 };

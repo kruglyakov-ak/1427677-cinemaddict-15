@@ -24,7 +24,8 @@ const createMainNavigationTemplate = (filterItems, currentFilterType) => {
   <div class="main-navigation__items">
     ${filterItemsTemplate}
   </div>
-  <a href="#stats" class="main-navigation__additional">Stats</a>
+  <a href="#stats" class="main-navigation__additional
+  ${'stats' === currentFilterType ? 'main-navigation__item--active' : ''}" data-name-filter = "stats">Stats</a>
 </nav>`;
 };
 
@@ -35,6 +36,7 @@ export default class MainNavigation extends AbstractView {
     this._currentFilter = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._statsClickHandler = this._statsClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -49,8 +51,18 @@ export default class MainNavigation extends AbstractView {
     this._callback.filterTypeChange(evt.target.dataset.nameFilter);
   }
 
+  _statsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.statsClick();
+  }
+
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+  }
+
+  setStatsClickHandler(callback) {
+    this._callback.statsClick = callback;
+    this.getElement().querySelector('.main-navigation__additional').addEventListener('click', this._statsClickHandler);
   }
 }

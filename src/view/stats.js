@@ -1,7 +1,8 @@
 import AbstractView from './abstract.js';
 
 const createStatsTemplate = () => (
-  `<p class="statistic__rank">
+  `<section class="statistic">
+  <p class="statistic__rank">
     Your rank
     <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     <span class="statistic__rank-label">Movie buff</span>
@@ -38,8 +39,8 @@ const createStatsTemplate = () => (
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
-      <p class="statistic__item-text">130 <span class="statistic__item-description">
-      h</span> 22 <span class="statistic__item-description">m</span></p>
+      <p class="statistic__item-text">130 <span class="statistic__item-description">h</span>
+       22 <span class="statistic__item-description">m</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>
@@ -51,6 +52,7 @@ const createStatsTemplate = () => (
     <canvas class="statistic__chart" width="1000"></canvas>
   </div>
 
+</section>
 `
 );
 
