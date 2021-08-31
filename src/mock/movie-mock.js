@@ -1,4 +1,5 @@
 import {nanoid} from 'nanoid';
+import dayjs from 'dayjs';
 
 const DESCRIPTION_SENTENCES_COUNT = 5;
 const MIN_RATING_COUNT = 2;
@@ -112,10 +113,10 @@ const GENERS = [
 ];
 const MIN_YEARS_RELEASE = 1920;
 const MAX_YEARS_RELEASE = 2021;
-const MIN_MONTH_RELEASE = 1;
-const MAX_MONTH_RELEASE = 12;
-const MIN_DAY_RELEASE = 1;
-const MAX_DAY_RELEASE = 30;
+const MIN_MONTH = 1;
+const MAX_MONTH = 12;
+const MIN_DAY = 1;
+const MAX_DAY = 30;
 
 const getRandomNumberInRange = (min = 0, max = 1, numberSymbolsAfterComma = 0) => {
   const lower = Math.min(Math.abs(min), Math.abs(max));
@@ -143,8 +144,8 @@ const generateRating = () => getRandomNumberInRange(MIN_RATING_COUNT, MAX_RATING
 
 const generateReleaseDate = () => {
   const years = getRandomNumberInRange(MIN_YEARS_RELEASE, MAX_YEARS_RELEASE);
-  const month = getRandomNumberInRange(MIN_MONTH_RELEASE, MAX_MONTH_RELEASE);
-  const day = getRandomNumberInRange(MIN_DAY_RELEASE, MAX_DAY_RELEASE);
+  const month = getRandomNumberInRange(MIN_MONTH, MAX_MONTH);
+  const day = getRandomNumberInRange(MIN_DAY, MAX_DAY);
   return new Date(years, month, day);
 };
 
@@ -164,6 +165,8 @@ const generateCountrie = () => COUNTRIES[getRandomNumberInRange(0, COUNTRIES.len
 
 export const generateMovie = (comments) => {
   const poster = generatePoster();
+  const isAlreadyWatched = Boolean(getRandomNumberInRange(0, 1));
+
   return {
     id: nanoid(),
     comments: comments,
@@ -181,7 +184,8 @@ export const generateMovie = (comments) => {
     runtime: getRandomNumberInRange(MIN_RUNTIME, MAX_RUNTIME),
     description: generateDescription(),
     isWatchlist: Boolean(getRandomNumberInRange(0, 1)),
-    isAlreadyWatched: Boolean(getRandomNumberInRange(0, 1)),
+    isAlreadyWatched: isAlreadyWatched,
+    watchingDate: isAlreadyWatched ? dayjs().subtract(getRandomNumberInRange(MIN_DAY, MAX_DAY), 'day') : null,
     isFavorite: Boolean(getRandomNumberInRange(0, 1)),
   };
 };

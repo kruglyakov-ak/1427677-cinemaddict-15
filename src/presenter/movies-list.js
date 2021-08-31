@@ -217,6 +217,9 @@ export default class MoviesList {
     this._topRatedfilmsListContainer = new FilmsListContainerView();
     this._topRatedListComponent = new FilmsListExtraView(TOP_RATED_LIST_TITLE);
     const movieCount = this._getMovies().length;
+    if (!movieCount) {
+      return;
+    }
     const movies = sortByRating(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
     if (movies[0].totalRating === 0) {
       return;
@@ -236,6 +239,9 @@ export default class MoviesList {
     this._mostCommentedfilmsListContainer = new FilmsListContainerView();
     this._mostCommentedListComponent = new FilmsListExtraView(MOST_COMMENTED_LIST_TITLE);
     const movieCount = this._getMovies().length;
+    if (!movieCount) {
+      return;
+    }
     const movies = sortByComments(this._getMovies().slice()).slice(0, Math.min(movieCount, EXTRA_FILMS_COUNT));
     if (movies[0].comments.length === 0) {
       return;
@@ -249,7 +255,7 @@ export default class MoviesList {
   _renderFilmList() {
     const movieCount = this._getMovies().length;
     const movies = this._getMovies().slice(0, Math.min(movieCount, MOVIE_COUNT_PER_STEP));
-    if (!this._getMovies().length) {
+    if (!movies.length) {
       this._renderFilmListEmpty();
       return;
     }
