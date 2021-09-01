@@ -1,6 +1,7 @@
 import AbstractView from './abstract.js';
+import { StatsFilterType } from '../const.js';
 
-const createStatsTemplate = (rating) => (
+const createStatsTemplate = (rating, currentFilter) => (
   `<section class="statistic">
   <p class="statistic__rank">
     Your rank
@@ -12,23 +13,28 @@ const createStatsTemplate = (rating) => (
     <p class="statistic__filters-description">Show stats:</p>
 
     <input type="radio" class="statistic__filters-input visually-hidden"
-    name="statistic-filter" id="statistic-all-time" value="all-time" checked="">
+    name="statistic-filter" id="statistic-all-time" value="${StatsFilterType.ALL}"
+    ${currentFilter === StatsFilterType.ALL ? 'checked' : ''}>
     <label for="statistic-all-time" class="statistic__filters-label">All time</label>
 
     <input type="radio" class="statistic__filters-input visually-hidden"
-    name="statistic-filter" id="statistic-today" value="today">
+    name="statistic-filter" id="statistic-today" value="${StatsFilterType.TODAY}"
+    ${currentFilter === StatsFilterType.TODAY ? 'checked' : ''}>
     <label for="statistic-today" class="statistic__filters-label">Today</label>
 
     <input type="radio" class="statistic__filters-input visually-hidden"
-    name="statistic-filter" id="statistic-week" value="week">
+    name="statistic-filter" id="statistic-week" value="${StatsFilterType.WEEK}"
+    ${currentFilter === StatsFilterType.WEEK ? 'checked' : ''}>
     <label for="statistic-week" class="statistic__filters-label">Week</label>
 
     <input type="radio" class="statistic__filters-input visually-hidden"
-    name="statistic-filter" id="statistic-month" value="month">
+    name="statistic-filter" id="statistic-month" value="${StatsFilterType.MONTH}"
+    ${currentFilter === StatsFilterType.MONTH ? 'checked' : ''}>
     <label for="statistic-month" class="statistic__filters-label">Month</label>
 
     <input type="radio" class="statistic__filters-input visually-hidden"
-    name="statistic-filter" id="statistic-year" value="year">
+    name="statistic-filter" id="statistic-year" value="${StatsFilterType.YEAR}"
+    ${currentFilter === StatsFilterType.YEAR ? 'checked' : ''}>
     <label for="statistic-year" class="statistic__filters-label">Year</label>
   </form>
 
@@ -57,12 +63,28 @@ const createStatsTemplate = (rating) => (
 );
 
 export default class Stats extends AbstractView {
-  constructor (rating) {
+  constructor (rating, currentFilter) {
     super();
     this._rating = rating;
+    this._currentFilter = currentFilter;
+
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createStatsTemplate(this._rating);
+    return createStatsTemplate(this._rating, this._currentFilter);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.value);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().querySelector('.statistic__filters').addEventListener('click', this._filterTypeChangeHandler);
   }
 }

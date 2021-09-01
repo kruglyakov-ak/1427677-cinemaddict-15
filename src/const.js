@@ -34,3 +34,11 @@ export const ProfileRating = {
   FAN: 'Fan',
   MOVIE_BUFF: 'Movie Buff',
 };
+
+export const StatsFilterType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};

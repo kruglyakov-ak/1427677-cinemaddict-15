@@ -19,7 +19,7 @@ import {
   sortByDate,
   createProfileRating
 } from '../utils/film.js';
-import { SortType, UpdateType, UserAction, FilterType, Screens } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType, Screens, StatsFilterType } from '../const.js';
 
 
 const MOVIE_COUNT_PER_STEP = 5;
@@ -51,7 +51,7 @@ export default class MoviesList {
     this._filterType = FilterType.ALL;
     this._currentSortType = SortType.DEFAULT;
     this._currentScreen = Screens.MOVIES;
-
+    this._currentStatsFilter = StatsFilterType.ALL;
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
 
@@ -60,6 +60,7 @@ export default class MoviesList {
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleStatsFilterTypeChange = this._handleStatsFilterTypeChange.bind(this);
 
   }
 
@@ -144,16 +145,25 @@ export default class MoviesList {
         switch (this._currentScreen) {
           case Screens.MOVIES: this._renderFilmsContainer();
             break;
-          case Screens.STATS: this._renderStats(this._currentProfileRating);
+          case Screens.STATS: this._renderStats();
             break;
         }
         break;
     }
   }
 
-  _renderStats(ratingProfile) {
-    this._statsComponent = new StatsVeiw(ratingProfile);
+  _renderStats() {
+    this._statsComponent = new StatsVeiw(this._currentProfileRating, this._currentStatsFilter);
+    this._statsComponent.setFilterTypeChangeHandler(this._handleStatsFilterTypeChange);
     render(this._mainElement, this._statsComponent, RenderPosition.BEFOREEND);
+  }
+
+  _handleStatsFilterTypeChange(value) {
+    if (this._currentStatsFilter !== value) {
+      this._currentStatsFilter = value;
+    }
+    remove(this._statsComponent);
+    this._renderStats();
   }
 
   _renderSort() {
