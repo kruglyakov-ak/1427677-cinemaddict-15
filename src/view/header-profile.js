@@ -1,23 +1,5 @@
 import AbstractView from './abstract.js';
-
-const MIN_MOVIES_COUNT = 10;
-const MAX_MOVIES_COUNT = 20;
-
-const createProfileRating = (watchedMoviesCount) => {
-  const novice = watchedMoviesCount > 0 && watchedMoviesCount <= MIN_MOVIES_COUNT;
-  const fan = watchedMoviesCount > MIN_MOVIES_COUNT && watchedMoviesCount <= MAX_MOVIES_COUNT;
-  const movieBuff = watchedMoviesCount > MAX_MOVIES_COUNT;
-
-  if (novice) {
-    return 'Novice';
-  } else if (fan) {
-    return 'Fan';
-  } else if (movieBuff) {
-    return 'Movie Buff';
-  } else {
-    return '';
-  }
-};
+import { createProfileRating } from '../utils/film.js';
 
 const createHeaderProfileTemplate = (watchedMovies) => (
   `<section class="header__profile profile">

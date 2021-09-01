@@ -28,3 +28,9 @@ export const Screens = {
   MOVIES: 'movies',
   STATS: 'stats',
 };
+
+export const ProfileRating = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};

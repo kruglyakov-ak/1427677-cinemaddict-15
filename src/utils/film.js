@@ -1,7 +1,10 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
+import { ProfileRating } from '../const.js';
 const MINUTE_IN_HOUR = 60;
+const MIN_MOVIES_COUNT = 10;
+const MAX_MOVIES_COUNT = 20;
 
 export const formatReleaseDate = (date, format) => dayjs(date).format(format);
 
@@ -24,4 +27,20 @@ export const generateRuntime = (time) => {
     return `${minute}m`;
   }
   return `${hour}h ${minute}m`;
+};
+
+export const createProfileRating = (watchedMoviesCount) => {
+  const isNovice = watchedMoviesCount > 0 && watchedMoviesCount <= MIN_MOVIES_COUNT;
+  const isFan = watchedMoviesCount > MIN_MOVIES_COUNT && watchedMoviesCount <= MAX_MOVIES_COUNT;
+  const isMovieBuff = watchedMoviesCount > MAX_MOVIES_COUNT;
+
+  if (isNovice) {
+    return ProfileRating.NOVICE;
+  } else if (isFan) {
+    return ProfileRating.FAN;
+  } else if (isMovieBuff) {
+    return ProfileRating.MOVIE_BUFF;
+  } else {
+    return '';
+  }
 };
