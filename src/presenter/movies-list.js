@@ -16,9 +16,11 @@ import {
 import {
   sortByRating,
   sortByComments,
-  sortByDate
+  sortByDate,
+  createProfileRating
 } from '../utils/film.js';
 import { SortType, UpdateType, UserAction, FilterType, Screens } from '../const.js';
+
 
 const MOVIE_COUNT_PER_STEP = 5;
 const EXTRA_FILMS_COUNT = 2;
@@ -72,6 +74,7 @@ export default class MoviesList {
     this._filterType = this._filterModel.getFilter();
     const movies = this._moviesModel.getMovies();
     const filtredMovies = filter[this._filterType](movies);
+    this._currentProfileRating = createProfileRating(filter[FilterType.HISTORY](movies).length);
     if (this._filterType === FilterType.STATS) {
       this._currentScreen = Screens.STATS;
       return filtredMovies;
@@ -141,15 +144,15 @@ export default class MoviesList {
         switch (this._currentScreen) {
           case Screens.MOVIES: this._renderFilmsContainer();
             break;
-          case Screens.STATS: this._renderStats();
+          case Screens.STATS: this._renderStats(this._currentProfileRating);
             break;
         }
         break;
     }
   }
 
-  _renderStats() {
-    this._statsComponent = new StatsVeiw();
+  _renderStats(ratingProfile) {
+    this._statsComponent = new StatsVeiw(ratingProfile);
     render(this._mainElement, this._statsComponent, RenderPosition.BEFOREEND);
   }
 

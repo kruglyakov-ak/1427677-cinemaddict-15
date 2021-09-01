@@ -1,11 +1,11 @@
 import AbstractView from './abstract.js';
 
-const createStatsTemplate = () => (
+const createStatsTemplate = (rating) => (
   `<section class="statistic">
   <p class="statistic__rank">
     Your rank
     <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-    <span class="statistic__rank-label">Movie buff</span>
+    <span class="statistic__rank-label">${rating}</span>
   </p>
 
   <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -57,7 +57,12 @@ const createStatsTemplate = () => (
 );
 
 export default class Stats extends AbstractView {
+  constructor (rating) {
+    super();
+    this._rating = rating;
+  }
+
   getTemplate() {
-    return createStatsTemplate();
+    return createStatsTemplate(this._rating);
   }
 }
