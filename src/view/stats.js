@@ -10,6 +10,7 @@ import {
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+
 const BAR_HEIGHT = 50;
 
 const renderGenresChart = (statisticCtx, movies) => new Chart(statisticCtx, {
@@ -22,6 +23,7 @@ const renderGenresChart = (statisticCtx, movies) => new Chart(statisticCtx, {
       backgroundColor: '#ffe800',
       hoverBackgroundColor: '#ffe800',
       anchor: 'start',
+      barThickness: 30,
     }],
   },
   options: {
@@ -47,7 +49,6 @@ const renderGenresChart = (statisticCtx, movies) => new Chart(statisticCtx, {
           display: false,
           drawBorder: false,
         },
-        barThickness: 24,
       }],
       xAxes: [{
         ticks: {
