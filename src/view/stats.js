@@ -1,8 +1,15 @@
 import AbstractView from './abstract.js';
 import { StatsFilterType } from '../const.js';
+import { getTotalDuration } from '../utils/film.js';
+import dayjs from 'dayjs';
 
-const createStatsTemplate = (rating, currentFilter) => (
-  `<section class="statistic">
+
+const createStatsTemplate = (rating, currentFilter, movie) => {
+  const totalDuration = getTotalDuration(movie);
+  const hour = dayjs.duration(totalDuration, 'm').format('H');
+  const minute = dayjs.duration(totalDuration, 'm').format('m');
+
+  return `<section class="statistic">
   <p class="statistic__rank">
     Your rank
     <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
@@ -41,12 +48,13 @@ const createStatsTemplate = (rating, currentFilter) => (
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">You watched</h4>
-      <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+      <p class="statistic__item-text">${movie.length}<span class="statistic__item-description">
+      ${movie.length > 1 ? 'movies' : 'movie'}</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
-      <p class="statistic__item-text">130 <span class="statistic__item-description">h</span>
-       22 <span class="statistic__item-description">m</span></p>
+      <p class="statistic__item-text">${hour > 1 ? `${hour} <span class="statistic__item-description">h</span>` : ''}
+       ${minute} <span class="statistic__item-description">m</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>
@@ -59,20 +67,21 @@ const createStatsTemplate = (rating, currentFilter) => (
   </div>
 
 </section>
-`
-);
+`;
+};
 
 export default class Stats extends AbstractView {
-  constructor (rating, currentFilter) {
+  constructor (rating, currentFilter, movie) {
     super();
     this._rating = rating;
     this._currentFilter = currentFilter;
+    this._movie = movie;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createStatsTemplate(this._rating, this._currentFilter);
+    return createStatsTemplate(this._rating, this._currentFilter, this._movie);
   }
 
   _filterTypeChangeHandler(evt) {

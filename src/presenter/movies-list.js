@@ -128,6 +128,8 @@ export default class MoviesList {
   }
 
   _handleModelEvent(updateType, data) {
+    const movies = this._moviesModel.getMovies();
+    const filtredMovies = filter[FilterType.HISTORY](movies);
     switch (updateType) {
       case UpdateType.PATCH:
         this._initFilmCardPresenter(this._moviePresenter, data);
@@ -145,25 +147,27 @@ export default class MoviesList {
         switch (this._currentScreen) {
           case Screens.MOVIES: this._renderFilmsContainer();
             break;
-          case Screens.STATS: this._renderStats();
+          case Screens.STATS:
+            this._currentStatsFilter = StatsFilterType.ALL;
+            this._renderStats(filtredMovies);
             break;
         }
         break;
     }
   }
 
-  _renderStats() {
-    this._statsComponent = new StatsVeiw(this._currentProfileRating, this._currentStatsFilter);
+  _renderStats(movies) {
+    this._statsComponent = new StatsVeiw(this._currentProfileRating, this._currentStatsFilter, movies);
     this._statsComponent.setFilterTypeChangeHandler(this._handleStatsFilterTypeChange);
     render(this._mainElement, this._statsComponent, RenderPosition.BEFOREEND);
   }
 
   _handleStatsFilterTypeChange(value) {
-    if (this._currentStatsFilter !== value) {
-      this._currentStatsFilter = value;
-    }
+    const movies = this._moviesModel.getMovies();
+    const filtredMovies = filter[FilterType.HISTORY](movies);
+    this._currentStatsFilter = value;
     remove(this._statsComponent);
-    this._renderStats();
+    this._renderStats(filtredMovies);
   }
 
   _renderSort() {

@@ -44,3 +44,10 @@ export const createProfileRating = (watchedMoviesCount) => {
     return '';
   }
 };
+
+export const getTotalDuration = (movies) => movies.reduce((acc, movie) => acc += movie.runtime, 0);
+
+// export const filterMoviesByPeriod = (arrayOfMovies, period) => {
+//   const deadline = dayjs().subtract(DEFAULT_TIME_UNITS_NUMBER, period);
+//   return arrayOfMovies.filter((movie) => dayjs(movie.userDetails.watchingDate).diff(deadline, 'minute') > 0);
+// };
