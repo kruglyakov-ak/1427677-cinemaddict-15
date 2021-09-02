@@ -17,7 +17,8 @@ import {
   sortByRating,
   sortByComments,
   sortByDate,
-  createProfileRating
+  createProfileRating,
+  filterStatsByWatchingDate
 } from '../utils/film.js';
 import { SortType, UpdateType, UserAction, FilterType, Screens, StatsFilterType } from '../const.js';
 
@@ -167,7 +168,24 @@ export default class MoviesList {
     const filtredMovies = filter[FilterType.HISTORY](movies);
     this._currentStatsFilter = value;
     remove(this._statsComponent);
-    this._renderStats(filtredMovies);
+
+    switch (this._currentStatsFilter) {
+      case StatsFilterType.ALL:
+        this._renderStats(filtredMovies);
+        break;
+      case StatsFilterType.TODAY:
+        this._renderStats(filterStatsByWatchingDate(filtredMovies, 'd'));
+        break;
+      case StatsFilterType.WEEK:
+        this._renderStats(filterStatsByWatchingDate(filtredMovies, 'w'));
+        break;
+      case StatsFilterType.MONTH:
+        this._renderStats(filterStatsByWatchingDate(filtredMovies, 'M'));
+        break;
+      case StatsFilterType.YEAR:
+        this._renderStats(filterStatsByWatchingDate(filtredMovies, 'y'));
+        break;
+    }
   }
 
   _renderSort() {
