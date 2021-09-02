@@ -46,8 +46,6 @@ export const createProfileRating = (watchedMoviesCount) => {
   }
 };
 
-export const getTotalDuration = (movies) => movies.reduce((acc, movie) => acc += movie.runtime, 0);
-
 export const filterStatsByWatchingDate = (movies, period) => {
   const deadline = dayjs().subtract(TIME_COUNT, period);
   return movies.filter((movie) => dayjs(movie.watchingDate).diff(deadline, 'minute') > 0);

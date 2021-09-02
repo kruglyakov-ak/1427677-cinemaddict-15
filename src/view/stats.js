@@ -1,32 +1,75 @@
 import AbstractView from './abstract.js';
 import { StatsFilterType } from '../const.js';
-import { getTotalDuration } from '../utils/film.js';
-import dayjs from 'dayjs';
+import {
+  DurationFormat,
+  getTotalDuration,
+  getTopGenre,
+  getGenres,
+  getGenresCount
+} from '../utils/stats.js';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+const BAR_HEIGHT = 50;
 
-const createStatsTemplate = (rating, currentFilter, movies) => {
-  const totalDuration = getTotalDuration(movies);
-  const hour = dayjs.duration(totalDuration, 'm').format('H');
-  const minute = dayjs.duration(totalDuration, 'm').format('m');
-  const genres = new Set();
-  movies.forEach((movie) => movie.genres.forEach((gener) => genres.add(gener)));
+const renderGenresChart = (statisticCtx, movies) => new Chart(statisticCtx, {
+  plugins: [ChartDataLabels],
+  type: 'horizontalBar',
+  data: {
+    labels: Array.from(getGenres(movies)),
+    datasets: [{
+      data: getGenresCount(movies),
+      backgroundColor: '#ffe800',
+      hoverBackgroundColor: '#ffe800',
+      anchor: 'start',
+    }],
+  },
+  options: {
+    plugins: {
+      datalabels: {
+        font: {
+          size: 20,
+        },
+        color: '#ffffff',
+        anchor: 'start',
+        align: 'start',
+        offset: 40,
+      },
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          fontColor: '#ffffff',
+          padding: 100,
+          fontSize: 20,
+        },
+        gridLines: {
+          display: false,
+          drawBorder: false,
+        },
+        barThickness: 24,
+      }],
+      xAxes: [{
+        ticks: {
+          display: false,
+          beginAtZero: true,
+        },
+        gridLines: {
+          display: false,
+          drawBorder: false,
+        },
+      }],
+    },
+    legend: {
+      display: false,
+    },
+    tooltips: {
+      enabled: false,
+    },
+  },
+});
 
-  const getGenresCount = () => {
-    const allMoviesGenres = [];
-    movies.forEach((movie) => allMoviesGenres.push(...movie.genres));
-    const genresCount = [];
-    genres.forEach((genre) => genresCount
-      .push({genre: genre, count: allMoviesGenres.filter((allMoviesgenre) => allMoviesgenre === genre).length}));
-    return genresCount;
-  };
-
-  const getTopGenre = () => {
-    const topGenre = getGenresCount();
-    topGenre.sort((prev, next) => next.count - prev.count);
-    return topGenre[0].genre;
-  };
-
-  return `<section class="statistic">
+const createStatsTemplate = (rating, currentFilter, movies) => (`<section class="statistic">
   <p class="statistic__rank">
     Your rank
     <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
@@ -70,22 +113,22 @@ const createStatsTemplate = (rating, currentFilter, movies) => {
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
-      <p class="statistic__item-text">${hour > 1 ? `${hour} <span class="statistic__item-description">h</span>` : ''}
-       ${minute} <span class="statistic__item-description">m</span></p>
+      <p class="statistic__item-text">${getTotalDuration(movies, DurationFormat.HOUR) > 1 ? `${
+    getTotalDuration(movies, DurationFormat.HOUR)} <span class="statistic__item-description">h</span>` : ''}
+       ${getTotalDuration(movies, DurationFormat.MINUTE)} <span class="statistic__item-description">m</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>
-      <p class="statistic__item-text">${movies.length ? getTopGenre() : ''}</p>
+      <p class="statistic__item-text">${movies.length ? getTopGenre(movies) : ''}</p>
     </li>
   </ul>
 
   <div class="statistic__chart-wrap">
-    <canvas class="statistic__chart" width="1000"></canvas>
+    <canvas class="statistic__chart" width="1000" height="${BAR_HEIGHT * getGenres(movies).size}"></canvas>
   </div>
 
 </section>
-`;
-};
+`);
 
 export default class Stats extends AbstractView {
   constructor (rating, currentFilter, movies) {
@@ -94,7 +137,19 @@ export default class Stats extends AbstractView {
     this._currentFilter = currentFilter;
     this._movies = movies;
 
+    this._statisticCart = null;
+
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+
+    this._setChart();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._statisticCart !== null) {
+      this._statisticCart = null;
+    }
   }
 
   getTemplate() {
@@ -112,5 +167,18 @@ export default class Stats extends AbstractView {
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement().querySelector('.statistic__filters').addEventListener('click', this._filterTypeChangeHandler);
+  }
+
+  restoreHandlers() {
+    this._setChart();
+  }
+
+  _setChart() {
+    if (this._statisticCart !== null) {
+      this._statisticCart = null;
+    }
+
+    const statisticCtx = this.getElement().querySelector('.statistic__chart');
+    this._statisticCart = renderGenresChart(statisticCtx, this._movies);
   }
 }
