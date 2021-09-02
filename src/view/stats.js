@@ -4,10 +4,27 @@ import { getTotalDuration } from '../utils/film.js';
 import dayjs from 'dayjs';
 
 
-const createStatsTemplate = (rating, currentFilter, movie) => {
-  const totalDuration = getTotalDuration(movie);
+const createStatsTemplate = (rating, currentFilter, movies) => {
+  const totalDuration = getTotalDuration(movies);
   const hour = dayjs.duration(totalDuration, 'm').format('H');
   const minute = dayjs.duration(totalDuration, 'm').format('m');
+  const genres = new Set();
+  movies.forEach((movie) => movie.genres.forEach((gener) => genres.add(gener)));
+
+  const getGenresCount = () => {
+    const allMoviesGenres = [];
+    movies.forEach((movie) => allMoviesGenres.push(...movie.genres));
+    const genresCount = [];
+    genres.forEach((genre) => genresCount
+      .push({genre: genre, count: allMoviesGenres.filter((allMoviesgenre) => allMoviesgenre === genre).length}));
+    return genresCount;
+  };
+
+  const getTopGenre = () => {
+    const topGenre = getGenresCount();
+    topGenre.sort((prev, next) => next.count - prev.count);
+    return topGenre[0].genre;
+  };
 
   return `<section class="statistic">
   <p class="statistic__rank">
@@ -48,8 +65,8 @@ const createStatsTemplate = (rating, currentFilter, movie) => {
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">You watched</h4>
-      <p class="statistic__item-text">${movie.length}<span class="statistic__item-description">
-      ${movie.length > 1 ? 'movies' : 'movie'}</span></p>
+      <p class="statistic__item-text">${movies.length}<span class="statistic__item-description">
+      ${movies.length > 1 ? 'movies' : 'movie'}</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
@@ -58,7 +75,7 @@ const createStatsTemplate = (rating, currentFilter, movie) => {
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>
-      <p class="statistic__item-text">Sci-Fi</p>
+      <p class="statistic__item-text">${getTopGenre()}</p>
     </li>
   </ul>
 
@@ -71,17 +88,17 @@ const createStatsTemplate = (rating, currentFilter, movie) => {
 };
 
 export default class Stats extends AbstractView {
-  constructor (rating, currentFilter, movie) {
+  constructor (rating, currentFilter, movies) {
     super();
     this._rating = rating;
     this._currentFilter = currentFilter;
-    this._movie = movie;
+    this._movies = movies;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createStatsTemplate(this._rating, this._currentFilter, this._movie);
+    return createStatsTemplate(this._rating, this._currentFilter, this._movies);
   }
 
   _filterTypeChangeHandler(evt) {
