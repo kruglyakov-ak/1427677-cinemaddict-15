@@ -8,7 +8,7 @@ import {
   remove,
   replace
 } from '../utils/render.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, FilterType} from '../const.js';
 
 const ID_COUNT = 100;
 const Mode = {
@@ -110,7 +110,8 @@ export default class Movie {
   }
 
   _handleAddToWatchlistClick() {
-    const isCurrentFilterType = this._filterType === 'all movies' || this._filterType !== 'watchlist';
+    const isCurrentFilterType = this._filterType === this._filterType === FilterType.ALL ||
+    this._filterType !== FilterType.WHATCHLIST;
     if (!isCurrentFilterType && this._popup) {
       this._closePopup();
     }
@@ -128,7 +129,8 @@ export default class Movie {
   }
 
   _handleMarkAsWatchedlistClick() {
-    const isCurrentFilterType = this._filterType === 'all movies' || this._filterType !== 'history';
+    const isCurrentFilterType = this._filterType === FilterType.ALL || this._filterType !== FilterType.HISTORY;
+    const isAlreadyWatched = this._movie.isAlreadyWatched;
     if (!isCurrentFilterType && this._popup) {
       this._closePopup();
     }
@@ -140,13 +142,14 @@ export default class Movie {
         this._movie,
         {
           isAlreadyWatched: !this._movie.isAlreadyWatched,
+          watchingDate: isAlreadyWatched ? null : new Date(),
         },
       ),
     );
   }
 
   _handleFavoriteClick() {
-    const isCurrentFilterType = this._filterType === 'all movies' || this._filterType !== 'favorites';
+    const isCurrentFilterType = this._filterType === FilterType.ALL || this._filterType !== FilterType.FAVORITES;
     if (!isCurrentFilterType && this._popup) {
       this._closePopup();
     }

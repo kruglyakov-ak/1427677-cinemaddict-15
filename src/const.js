@@ -21,4 +21,24 @@ export const FilterType = {
   WHATCHLIST: 'watchlist',
   HISTORY: 'history',
   FAVORITES: 'favorites',
+  STATS: 'stats',
+};
+
+export const Screens = {
+  MOVIES: 'movies',
+  STATS: 'stats',
+};
+
+export const ProfileRating = {
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};
+
+export const StatsFilterType = {
+  ALL: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };

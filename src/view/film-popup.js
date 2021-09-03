@@ -42,7 +42,7 @@ const createCommentTemplate = (comment) => {
   <img src="./images/emoji/${emotion}.png" alt="emoji-${emotion}" width="55" height="55">
 </span>
   <div>
-    <p class="film-details__comment-text">${he.encode(text)}</p>
+    <p class="film-details__comment-text">${he.escape(text)}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author ? author : ''}</span>
       <span class="film-details__comment-day">${date ? dayjs(date).fromNow() : ''}</span>
@@ -259,7 +259,7 @@ export default class FilmPoup extends SmartView {
   _textTextareaHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      textComment: he.encode(evt.target.value),
+      textComment: he.escape(evt.target.value),
     }, true);
   }
 
