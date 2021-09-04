@@ -193,11 +193,11 @@ export default class Movie {
     const newComment = {
       id: this._idCount++,
       emotion: data.checkedEmotion,
-      text: data.textComment,
+      comment: data.textComment,
       date: new Date(),
       author: 'Erich von Stroheim',
     };
-    if (newComment.emotion && newComment.text) {
+    if (newComment.emotion && newComment.comment) {
       this._commentsListModel.addComment(newComment);
       this._changeData(
         UserAction.UPDATE_FILM_CARD,

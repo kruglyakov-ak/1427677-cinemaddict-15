@@ -28,21 +28,21 @@ const createEmojiListTemplate = (emotions, checkedEmotion) => emotions
   .map((emotion) => createInputEmojiTamplate(emotion, checkedEmotion))
   .join('');
 
-const createCommentTemplate = (comment) => {
+const createCommentTemplate = (comments) => {
   const {
     emotion,
-    text,
+    comment,
     author,
     date,
     id,
-  } = comment;
+  } = comments;
 
   return `<li class="film-details__comment">
 <span class="film-details__comment-emoji">
   <img src="./images/emoji/${emotion}.png" alt="emoji-${emotion}" width="55" height="55">
 </span>
   <div>
-    <p class="film-details__comment-text">${he.escape(text)}</p>
+    <p class="film-details__comment-text">${comment}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author ? author : ''}</span>
       <span class="film-details__comment-day">${date ? dayjs(date).fromNow() : ''}</span>
@@ -88,7 +88,7 @@ const createFilmPoupTemplate = (data, comments) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+          <img class="film-details__poster-img" src="${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
         </div>

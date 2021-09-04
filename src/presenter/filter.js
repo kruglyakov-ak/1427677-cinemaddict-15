@@ -42,7 +42,10 @@ export default class Filter {
     remove(prevHeaderProfileComponent);
   }
 
-  _handleModelEvent() {
+  _handleModelEvent(updateType) {
+    if (updateType === UpdateType.INIT) {
+      this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+    }
     this.init();
   }
 

@@ -4,6 +4,7 @@ import FilmsListExtraView from '../view/films-list-extra.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListEmptyView from '../view/films-list-empty.js';
 import FilmsContainerView from '../view/films-container.js';
+import LoadingView from '../view/loading.js';
 import StatsVeiw from '../view/stats.js';
 import FilmsListContainerView from '../view/films-list-container.js';
 import MoviePresenter from './movie.js';
@@ -38,6 +39,7 @@ export default class MoviesList {
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
     this._filmsListComponent = new FilmsListView();
+    this._loadingComponent = new LoadingView();
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
@@ -54,6 +56,7 @@ export default class MoviesList {
     this._currentSortType = SortType.DEFAULT;
     this._currentScreen = Screens.MOVIES;
     this._currentStatsFilter = StatsFilterType.ALL;
+    this._isLoading = true;
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
 
@@ -154,6 +157,11 @@ export default class MoviesList {
             this._renderStats(filtredMovies);
             break;
         }
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        this._clearFilmList({ resetRenderedMoviekCount: true, resetSortType: true });
+        this._renderFilmsContainer();
         break;
     }
   }
@@ -325,6 +333,7 @@ export default class MoviesList {
     if (this._filmListEmptyComponent) {
       remove(this._filmListEmptyComponent);
     }
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
     remove(this._filmsListComponent);
     remove(this._topRatedListComponent);
@@ -345,7 +354,16 @@ export default class MoviesList {
     render(container, component, RenderPosition.BEFOREEND);
   }
 
+  _renderLoading() {
+    render(this._filmsContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderFilmsContainer() {
+    if (this._isLoading) {
+      render(this._mainElement, this._filmsContainer, RenderPosition.BEFOREEND);
+      this._renderLoading();
+      return;
+    }
     this._renderSort();
     render(this._mainElement, this._filmsContainer, RenderPosition.BEFOREEND);
     this._renderTopRatedFilmList();
