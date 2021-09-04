@@ -172,6 +172,7 @@ export const generateMovie = (comments) => {
     comments: comments,
     commentsCount: comments.length,
     title: poster.title,
+    altTitle: poster.title,
     totalRating: generateRating(),
     poster: poster.src,
     ageRating: generateAgeRating(),

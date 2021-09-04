@@ -60,6 +60,7 @@ const createFilmPoupTemplate = (data, comments) => {
   const {
     commentsCount,
     title,
+    altTitle,
     totalRating,
     poster,
     ageRating,
@@ -96,7 +97,7 @@ const createFilmPoupTemplate = (data, comments) => {
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${title}</p>
+                <p class="film-details__title-original">Original: ${altTitle}</p>
               </div>
 
               <div class="film-details__rating">
