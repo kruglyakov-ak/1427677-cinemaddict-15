@@ -8,6 +8,8 @@ import {
   render,
   RenderPosition
 } from './utils/render.js';
+import { UpdateType } from './const.js';
+
 
 const AUTHORIZATION = 'Basic V2h5LCBNci4gQW5kZXJzb24sIHdoeT8';
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
@@ -30,7 +32,11 @@ moviePresenter.init();
 
 render(footerElement, new FooterStatisticsView(moviesModel.getMovies()), RenderPosition.BEFOREEND);
 
-api.getMovies().then((movies) => {
-  moviesModel.setMovies(movies);
-});
+api.getMovies()
+  .then((movies) => {
+    moviesModel.setMovies(UpdateType.INIT, movies);
+  })
+  .catch(() => {
+    moviesModel.setTasks(UpdateType.INIT, []);
+  });
 
