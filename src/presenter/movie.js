@@ -9,7 +9,6 @@ import {
 } from '../utils/render.js';
 import {UserAction, UpdateType, FilterType} from '../const.js';
 
-const ID_COUNT = 100;
 const Mode = {
   OPEN: 'OPEN',
   CLOSE: 'CLOSE',
@@ -42,6 +41,8 @@ export default class Movie {
       if (this._movie.comments) {
         this._commentsListModel.setCommentsList(comments);
       }
+    }).catch(() => {
+      this._commentsListModel.setCommentsList(null);
     });
 
     const prevFilmCard = this._filmCard;
@@ -80,7 +81,6 @@ export default class Movie {
       this._closePopup();
     }
 
-    this._idCount = this._commentsListModel.getCommentsList().length + ID_COUNT;
     this._popup = new FilmPoupView(movie, this._commentsListModel.getCommentsList());
     this._openPopup();
     this._bodyElement.classList.add('hide-overflow');
