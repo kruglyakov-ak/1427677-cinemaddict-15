@@ -1,7 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPoupView from '../view/film-popup.js';
 import CommentsListModel from '../model/comments-list.js';
-
 import {
   render,
   RenderPosition,
@@ -17,12 +16,14 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmListContainer, changeData, changeMode, filterType) {
+  constructor(filmListContainer, changeData, changeMode, filterType, api) {
     this._filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._filterType = filterType;
+    this._api = api;
+
     this._filmCard = null;
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
@@ -34,10 +35,14 @@ export default class Movie {
     this._mode = Mode.CLOSE;
   }
 
-  init(movie, comments) {
+  init(movie) {
     this._movie = movie;
     this._commentsListModel = new CommentsListModel();
-    this._commentsListModel.setCommentsList(comments);
+    this._api.getСomments(this._movie).then((comments) => {
+      if (this._movie.comments) {
+        this._commentsListModel.setCommentsList(comments);
+      }
+    });
 
     const prevFilmCard = this._filmCard;
 

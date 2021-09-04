@@ -29,10 +29,11 @@ const TOP_RATED_LIST_TITLE = 'Top rated';
 const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 
 export default class MoviesList {
-  constructor(main, moviesModel, filterModel) {
+  constructor(main, moviesModel, filterModel, api) {
     this._mainElement = main;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
+    this._api =  api;
 
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
@@ -202,7 +203,7 @@ export default class MoviesList {
 
   _renderFilmCard(containerElement, movie, movieList) {
     const moviePresenter =
-    new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType);
+    new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType, this._api);
     movieList.set(movie.id, moviePresenter);
     moviePresenter.init(movie, movie.comments);
   }

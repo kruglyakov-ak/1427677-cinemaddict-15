@@ -22,6 +22,11 @@ export default class Api {
       .then((movies) => movies.map(MoveisModel.adaptToClient));
   }
 
+  getСomments(movie) {
+    return this._load({url: `comments/${movie.id}`})
+      .then(Api.toJSON);
+  }
+
   updateMovie(movie) {
     return this._load({
       url: `movies/${movie.id}`,
