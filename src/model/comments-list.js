@@ -7,6 +7,9 @@ export default class CommentsList extends AbstractObserver {
   }
 
   setCommentsList(commentsList) {
+    if (commentsList === null) {
+      this._commentsList = commentsList;
+    }
     this._commentsList = commentsList.slice();
   }
 

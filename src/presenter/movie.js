@@ -1,7 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPoupView from '../view/film-popup.js';
 import CommentsListModel from '../model/comments-list.js';
-
 import {
   render,
   RenderPosition,
@@ -10,19 +9,20 @@ import {
 } from '../utils/render.js';
 import {UserAction, UpdateType, FilterType} from '../const.js';
 
-const ID_COUNT = 100;
 const Mode = {
   OPEN: 'OPEN',
   CLOSE: 'CLOSE',
 };
 
 export default class Movie {
-  constructor(filmListContainer, changeData, changeMode, filterType) {
+  constructor(filmListContainer, changeData, changeMode, filterType, api) {
     this._filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._filterType = filterType;
+    this._api = api;
+
     this._filmCard = null;
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
@@ -34,10 +34,16 @@ export default class Movie {
     this._mode = Mode.CLOSE;
   }
 
-  init(movie, comments) {
+  init(movie) {
     this._movie = movie;
     this._commentsListModel = new CommentsListModel();
-    this._commentsListModel.setCommentsList(comments);
+    this._api.getСomments(this._movie).then((comments) => {
+      if (this._movie.comments) {
+        this._commentsListModel.setCommentsList(comments);
+      }
+    }).catch(() => {
+      this._commentsListModel.setCommentsList(null);
+    });
 
     const prevFilmCard = this._filmCard;
 
@@ -75,7 +81,6 @@ export default class Movie {
       this._closePopup();
     }
 
-    this._idCount = this._commentsListModel.getCommentsList().length + ID_COUNT;
     this._popup = new FilmPoupView(movie, this._commentsListModel.getCommentsList());
     this._openPopup();
     this._bodyElement.classList.add('hide-overflow');
@@ -188,11 +193,11 @@ export default class Movie {
     const newComment = {
       id: this._idCount++,
       emotion: data.checkedEmotion,
-      text: data.textComment,
+      comment: data.textComment,
       date: new Date(),
       author: 'Erich von Stroheim',
     };
-    if (newComment.emotion && newComment.text) {
+    if (newComment.emotion && newComment.comment) {
       this._commentsListModel.addComment(newComment);
       this._changeData(
         UserAction.UPDATE_FILM_CARD,

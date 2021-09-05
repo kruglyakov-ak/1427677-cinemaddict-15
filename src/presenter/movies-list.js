@@ -4,6 +4,7 @@ import FilmsListExtraView from '../view/films-list-extra.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListEmptyView from '../view/films-list-empty.js';
 import FilmsContainerView from '../view/films-container.js';
+import LoadingView from '../view/loading.js';
 import StatsVeiw from '../view/stats.js';
 import FilmsListContainerView from '../view/films-list-container.js';
 import MoviePresenter from './movie.js';
@@ -29,14 +30,16 @@ const TOP_RATED_LIST_TITLE = 'Top rated';
 const MOST_COMMENTED_LIST_TITLE = 'Most commented';
 
 export default class MoviesList {
-  constructor(main, moviesModel, filterModel) {
+  constructor(main, moviesModel, filterModel, api) {
     this._mainElement = main;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
+    this._api =  api;
 
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
     this._filmsListComponent = new FilmsListView();
+    this._loadingComponent = new LoadingView();
 
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
@@ -53,6 +56,7 @@ export default class MoviesList {
     this._currentSortType = SortType.DEFAULT;
     this._currentScreen = Screens.MOVIES;
     this._currentStatsFilter = StatsFilterType.ALL;
+    this._isLoading = true;
     this._renderedMoviesCount = MOVIE_COUNT_PER_STEP;
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
 
@@ -111,7 +115,9 @@ export default class MoviesList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM_CARD:
-        this._moviesModel.updateMovie(updateType, update);
+        this._api.updateMovie(update).then((response) => {
+          this._moviesModel.updateMovie(updateType, response);
+        });
         break;
       case UserAction.ADD_COMMENT:
         this._commentsListModel.addComments(updateType, update);
@@ -153,6 +159,11 @@ export default class MoviesList {
             this._renderStats(filtredMovies);
             break;
         }
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        this._clearFilmList({ resetRenderedMoviekCount: true, resetSortType: true });
+        this._renderFilmsContainer();
         break;
     }
   }
@@ -202,7 +213,7 @@ export default class MoviesList {
 
   _renderFilmCard(containerElement, movie, movieList) {
     const moviePresenter =
-    new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType);
+    new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType, this._api);
     movieList.set(movie.id, moviePresenter);
     moviePresenter.init(movie, movie.comments);
   }
@@ -324,6 +335,7 @@ export default class MoviesList {
     if (this._filmListEmptyComponent) {
       remove(this._filmListEmptyComponent);
     }
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
     remove(this._filmsListComponent);
     remove(this._topRatedListComponent);
@@ -344,7 +356,16 @@ export default class MoviesList {
     render(container, component, RenderPosition.BEFOREEND);
   }
 
+  _renderLoading() {
+    render(this._filmsContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderFilmsContainer() {
+    if (this._isLoading) {
+      render(this._mainElement, this._filmsContainer, RenderPosition.BEFOREEND);
+      this._renderLoading();
+      return;
+    }
     this._renderSort();
     render(this._mainElement, this._filmsContainer, RenderPosition.BEFOREEND);
     this._renderTopRatedFilmList();

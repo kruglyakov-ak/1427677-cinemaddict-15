@@ -8,14 +8,12 @@ import he from 'he';
 const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
+const NO_COMMENTS_ERROR = 'Список коментариев недоступен. Ошибка загрузки данных.';
+
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
   .map((genre) => createGenreItemTemplate(genre))
   .join('');
-
-const createCommentTitleCount = (commentsCount, isCommentsCount) => isCommentsCount ? `
-<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
-</span></h3>` : '';
 
 const createInputEmojiTamplate = (emotion, checkedEmotion) => `<input class="film-details__emoji-item visually-hidden"
 name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}"
@@ -28,21 +26,21 @@ const createEmojiListTemplate = (emotions, checkedEmotion) => emotions
   .map((emotion) => createInputEmojiTamplate(emotion, checkedEmotion))
   .join('');
 
-const createCommentTemplate = (comment) => {
+const createCommentTemplate = (comments) => {
   const {
     emotion,
-    text,
+    comment,
     author,
     date,
     id,
-  } = comment;
+  } = comments;
 
   return `<li class="film-details__comment">
 <span class="film-details__comment-emoji">
   <img src="./images/emoji/${emotion}.png" alt="emoji-${emotion}" width="55" height="55">
 </span>
   <div>
-    <p class="film-details__comment-text">${he.escape(text)}</p>
+    <p class="film-details__comment-text">${comment}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author ? author : ''}</span>
       <span class="film-details__comment-day">${date ? dayjs(date).fromNow() : ''}</span>
@@ -60,6 +58,7 @@ const createFilmPoupTemplate = (data, comments) => {
   const {
     commentsCount,
     title,
+    altTitle,
     totalRating,
     poster,
     ageRating,
@@ -74,7 +73,6 @@ const createFilmPoupTemplate = (data, comments) => {
     isWatchlist,
     isAlreadyWatched,
     isFavorite,
-    isCommentsCount,
     textComment,
     checkedEmotion,
   } = data;
@@ -87,7 +85,7 @@ const createFilmPoupTemplate = (data, comments) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+          <img class="film-details__poster-img" src="${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
         </div>
@@ -96,7 +94,7 @@ const createFilmPoupTemplate = (data, comments) => {
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${title}</p>
+                <p class="film-details__title-original">Original: ${altTitle}</p>
               </div>
 
               <div class="film-details__rating">
@@ -158,30 +156,32 @@ const createFilmPoupTemplate = (data, comments) => {
       </div>
 
       <div class="film-details__bottom-container">
-        <section class="film-details__comments-wrap">
-          ${createCommentTitleCount(commentsCount, isCommentsCount)}
+     ${comments !== null ? `<section class="film-details__comments-wrap">
+     ${commentsCount.length ? `
+     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
+     </span></h3>` : ''}
+     <ul class="film-details__comments-list">
+     ${createCommentsTemplate(comments)}
+   </ul>
 
-          <ul class="film-details__comments-list">
-          ${createCommentsTemplate(comments)}
-        </ul>
+<div class="film-details__new-comment">
+<div class="film-details__add-emoji-label">
+${checkedEmotion ? `<img src="./images/emoji/${checkedEmotion}.png"
+alt="emoji-${checkedEmotion}" width="55" height="55">` : ''}
+</div>
 
-  <div class="film-details__new-comment">
-    <div class="film-details__add-emoji-label">
-    ${checkedEmotion ? `<img src="./images/emoji/${checkedEmotion}.png"
-    alt="emoji-${checkedEmotion}" width="55" height="55">` : ''}
-    </div>
+<label class="film-details__comment-label">
+ <textarea class="film-details__comment-input"
+ placeholder="Select reaction below and write comment here"
+ name="comment">${textComment ? textComment : ''}</textarea>
+</label>
 
-    <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input"
-      placeholder="Select reaction below and write comment here"
-      name="comment">${textComment ? textComment : ''}</textarea>
-    </label>
+<div class="film-details__emoji-list">
+${createEmojiListTemplate(EMOTIONS, checkedEmotion)}
+     </div>
+   </div>
+ </section>` : `<h3 class="film-details__comments-title">${NO_COMMENTS_ERROR}</h3>`}
 
-    <div class="film-details__emoji-list">
-    ${createEmojiListTemplate(EMOTIONS, checkedEmotion)}
-          </div>
-        </div>
-      </section>
     </div>
   </form>
 </section>`;
@@ -204,7 +204,6 @@ export default class FilmPoup extends SmartView {
     this._scrollPopupHandler = this._scrollPopupHandler.bind(this);
     this._commentDeleteClickHandler = this._commentDeleteClickHandler.bind(this);
     this._commentSubmitHandler = this._commentSubmitHandler.bind(this);
-
     this._setInnerHandlers();
   }
 
@@ -249,6 +248,14 @@ export default class FilmPoup extends SmartView {
   }
 
   _favoriteToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isFavorite: !this._data.isFavorite,
+    });
+    this.getElement().scrollTo(0, this._data.scrollPosition);
+  }
+
+  _Handler(evt) {
     evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite,
@@ -346,12 +353,16 @@ export default class FilmPoup extends SmartView {
     this.getElement()
       .querySelector('.film-details__control-button--favorite')
       .addEventListener('click', this._favoriteToggleHandler);
-    this.getElement()
-      .querySelector('.film-details__comment-input')
-      .addEventListener('input', this._textTextareaHandler);
-    this.getElement()
-      .querySelector('.film-details__emoji-list')
-      .addEventListener('click', this._emotionInputHandler);
+    if (this.getElement()
+      .querySelector('.film-details__comment-input')) {
+      this.getElement()
+        .querySelector('.film-details__comment-input')
+        .addEventListener('input', this._textTextareaHandler);
+      this.getElement()
+        .querySelector('.film-details__emoji-list')
+        .addEventListener('click', this._emotionInputHandler);
+    }
+
     this.getElement()
       .addEventListener('scroll', this._scrollPopupHandler);
   }
@@ -370,7 +381,6 @@ export default class FilmPoup extends SmartView {
       {},
       movie,
       {
-        isCommentsCount: movie.commentsCount !== 0,
         scrollPosition: 0,
       },
     );
@@ -378,8 +388,6 @@ export default class FilmPoup extends SmartView {
 
   static parseDataToMovie(data) {
     data = Object.assign({}, data);
-
-    delete data.isCommentsCount;
     return data;
   }
 }
