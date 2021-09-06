@@ -1,7 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPoupView from '../view/film-popup.js';
 import CommentsListModel from '../model/comments-list.js';
-
 import {
   render,
   RenderPosition,
@@ -10,19 +9,20 @@ import {
 } from '../utils/render.js';
 import {UserAction, UpdateType, FilterType} from '../const.js';
 
-const ID_COUNT = 100;
 const Mode = {
   OPEN: 'OPEN',
   CLOSE: 'CLOSE',
 };
 
 export default class Movie {
-  constructor(filmListContainer, changeData, changeMode, filterType) {
+  constructor(filmListContainer, changeData, changeMode, filterType, api) {
     this._filmListContainer = filmListContainer;
     this._bodyElement = document.querySelector('body');
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._filterType = filterType;
+    this._api = api;
+
     this._filmCard = null;
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
@@ -32,12 +32,19 @@ export default class Movie {
     this._handleCommentDeleteClick = this._handleCommentDeleteClick.bind(this);
     this._handleCommentSubmit = this._handleCommentSubmit.bind(this);
     this._mode = Mode.CLOSE;
+    this._commentsListModel = new CommentsListModel();
   }
 
-  init(movie, comments) {
+  init(movie) {
     this._movie = movie;
-    this._commentsListModel = new CommentsListModel();
-    this._commentsListModel.setCommentsList(comments);
+
+    this._api.getСomments(this._movie).then((comments) => {
+      if (this._movie.comments) {
+        this._commentsListModel.setCommentsList(comments);
+      }
+    }).catch(() => {
+      this._commentsListModel.setCommentsList(null);
+    });
 
     const prevFilmCard = this._filmCard;
 
@@ -75,7 +82,6 @@ export default class Movie {
       this._closePopup();
     }
 
-    this._idCount = this._commentsListModel.getCommentsList().length + ID_COUNT;
     this._popup = new FilmPoupView(movie, this._commentsListModel.getCommentsList());
     this._openPopup();
     this._bodyElement.classList.add('hide-overflow');
@@ -166,51 +172,56 @@ export default class Movie {
     );
   }
 
-  _handleCommentDeleteClick(id, data) {
-    this._commentsListModel.deleteComments(id);
-    this._changeData(
-      UserAction.UPDATE_FILM_CARD,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
+  _handleCommentDeleteClick(id, data, button) {
+    button.innerHTML = 'Deleting...';
+    button.disabled = true;
+    this._api.deleteComment(id).then(() => {
+      this._changeData(
+        UserAction.UPDATE_FILM_POPUP,
+        UpdateType.PATCH,
         this._movie,
-        {
-          commentsCount: this._commentsListModel.getCommentsList().length,
-          comments: this._commentsListModel.getCommentsList(),
+        () => {
+          this._api.getСomments(this._movie).then((comments) => {
+            this._commentsListModel.setCommentsList(comments);
+            this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+            this._popup.getElement().scrollTo(0, data.scrollPosition);
+          });
         },
-      ),
-    );
-    this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-    this._popup.getElement().scrollTo(0, data.scrollPosition);
+      );
+    }).catch(() => {
+      button.innerHTML = 'Delete';
+      button.disabled = false;
+    });
   }
 
   _handleCommentSubmit(data) {
     const newComment = {
-      id: this._idCount++,
       emotion: data.checkedEmotion,
-      text: data.textComment,
-      date: new Date(),
-      author: 'Erich von Stroheim',
+      comment: data.textComment,
     };
-    if (newComment.emotion && newComment.text) {
-      this._commentsListModel.addComment(newComment);
-      this._changeData(
-        UserAction.UPDATE_FILM_CARD,
-        UpdateType.PATCH,
-        Object.assign(
-          {},
-          this._movie,
-          {
-            commentsCount: this._commentsListModel.getCommentsList().length,
-            comments: this._commentsListModel.getCommentsList(),
-          },
-        ),
-      );
-      this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-      this._popup.getElement().scrollTo(0, data.scrollPosition);
-    }
-  }
 
+    if (!data.checkedEmotion || !data.textComment) {
+      return;
+    }
+    this._api.addComment(this._movie, newComment).then((response) => {
+      this._commentsListModel.addComment(response.comments);
+    })
+      .then(() => {
+        this._changeData(
+          UserAction.UPDATE_FILM_POPUP,
+          UpdateType.PATCH,
+          this._movie,
+          () => {
+            this._api.getСomments(this._movie).then((comments) => {
+              this._commentsListModel.setCommentsList(comments);
+              this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+              this._popup.getElement().scrollTo(0, data.scrollPosition);
+            });
+          },
+        );
+      });
+
+  }
 }
 
 

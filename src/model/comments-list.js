@@ -23,16 +23,4 @@ export default class CommentsList extends AbstractObserver {
       update,
     ];
   }
-
-  deleteComments(updateId) {
-    const index = this._commentsList.findIndex((comments) => comments.id === updateId);
-
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting movie');
-    }
-    this._commentsList = [
-      ...this._commentsList.slice(0, index),
-      ...this._commentsList.slice(index + 1),
-    ];
-  }
 }

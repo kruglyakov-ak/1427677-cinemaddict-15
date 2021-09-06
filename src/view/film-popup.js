@@ -26,14 +26,14 @@ const createEmojiListTemplate = (emotions, checkedEmotion) => emotions
   .map((emotion) => createInputEmojiTamplate(emotion, checkedEmotion))
   .join('');
 
-const createCommentTemplate = (comments) => {
+const createCommentTemplate = (commentInfo) => {
   const {
     emotion,
     comment,
     author,
     date,
     id,
-  } = comments;
+  } = commentInfo;
 
   return `<li class="film-details__comment">
 <span class="film-details__comment-emoji">
@@ -255,14 +255,6 @@ export default class FilmPoup extends SmartView {
     this.getElement().scrollTo(0, this._data.scrollPosition);
   }
 
-  _Handler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isFavorite: !this._data.isFavorite,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
-  }
-
   _textTextareaHandler(evt) {
     evt.preventDefault();
     this.updateData({
@@ -289,7 +281,7 @@ export default class FilmPoup extends SmartView {
 
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(+evt.target.dataset.id, FilmPoup.parseDataToMovie(this._data));
+    this._callback.deleteClick(+evt.target.dataset.id, FilmPoup.parseDataToMovie(this._data), evt.target);
   }
 
   _commentSubmitHandler(evt) {
