@@ -207,9 +207,9 @@ export default class Movie {
     );
   }
 
-  _handleCommentDeleteClick(id, data, button) {
-    button.innerHTML = 'Deleting...';
-    button.disabled = true;
+  _handleCommentDeleteClick(id, data, currentButton, buttons) {
+    currentButton.textContent = 'Deleting...';
+    buttons.forEach((button) => button.disabled = true);
     this._api.deleteComment(id).then(() => {
       this._changeData(
         UserAction.UPDATE_FILM_POPUP,
@@ -220,12 +220,13 @@ export default class Movie {
             this._commentsListModel.setCommentsList(comments);
             this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
             this._popup.getElement().scrollTo(0, data.scrollPosition);
+            buttons.forEach((button) => button.disabled = false);
           });
         },
       );
     }).catch(() => {
-      button.innerHTML = 'Delete';
-      button.disabled = false;
+      currentButton.textContent = 'Delete';
+      buttons.forEach((button) => button.disabled = false);
     });
   }
 

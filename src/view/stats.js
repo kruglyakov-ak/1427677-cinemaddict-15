@@ -115,10 +115,8 @@ const createStatsTemplate = (rating, currentFilter, movies) => (`<section class=
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
       <p class="statistic__item-text">
-      ${getTotalDuration(movies, DurationFormat.DAY) > 1 ? `${getTotalDuration(movies, DurationFormat.DAY)}
-      <span class="statistic__item-description">d</span>
-      ${getTotalDuration(movies, DurationFormat.HOUR)} <span class="statistic__item-description">h</span>` : ''}
-      ${getTotalDuration(movies, DurationFormat.HOUR) > 1 ? `${getTotalDuration(movies, DurationFormat.HOUR)}
+      ${getTotalDuration(movies, DurationFormat.DAY) > 0 ? `${getTotalDuration(movies, DurationFormat.DAY)} <span class="statistic__item-description">d</span>` : ''}
+      ${getTotalDuration(movies, DurationFormat.HOUR) > 0 ? `${getTotalDuration(movies, DurationFormat.HOUR)}
        <span class="statistic__item-description">h</span>` : ''}
        ${getTotalDuration(movies, DurationFormat.MINUTE)} <span class="statistic__item-description">m</span></p>
     </li>

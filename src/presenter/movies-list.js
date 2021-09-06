@@ -138,11 +138,9 @@ export default class MoviesList {
     const filtredMovies = filter[FilterType.HISTORY](movies);
     switch (updateType) {
       case UpdateType.PATCH:
-        this._initFilmCardPresenter(this._moviePresenter, data);
         this._initFilmCardPresenter(this._movieExtraRatePresenter, data);
+        this._initFilmCardPresenter(this._moviePresenter, data);
         this._initFilmCardPresenter(this._movieExtraCommentPresenter, data);
-        this._renderTopRatedFilmList();
-        this._renderMostCommentedFilmList();
         break;
       case UpdateType.MINOR:
         this._clearFilmList({ resetRenderedMoviekCount: true });

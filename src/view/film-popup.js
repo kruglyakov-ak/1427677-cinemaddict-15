@@ -258,7 +258,8 @@ export default class FilmPoup extends SmartView {
 
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(+evt.target.dataset.id, this._data, evt.target);
+    const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
+    this._callback.deleteClick(+evt.target.dataset.id, this._data, evt.target, buttons);
   }
 
   _commentSubmitHandler(evt) {
