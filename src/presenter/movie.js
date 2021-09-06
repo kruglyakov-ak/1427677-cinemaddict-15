@@ -148,6 +148,13 @@ export default class Movie {
           this._popup.getElement().scrollTo(0, this._scrollPosition);
         }
       },
+      () => {
+        if (this._popup) {
+          this._popup.shake();
+        } else {
+          this._filmCard.shake();
+        }
+      },
     );
   }
 
@@ -177,6 +184,13 @@ export default class Movie {
           this._popup.getElement().scrollTo(0, this._scrollPosition);
         }
       },
+      () => {
+        if (this._popup) {
+          this._popup.shake();
+        } else {
+          this._filmCard.shake();
+        }
+      },
     );
   }
 
@@ -204,6 +218,13 @@ export default class Movie {
           this._popup.getElement().scrollTo(0, this._scrollPosition);
         }
       },
+      () => {
+        if (this._popup) {
+          this._popup.shake();
+        } else {
+          this._filmCard.shake();
+        }
+      },
     );
   }
 
@@ -212,7 +233,7 @@ export default class Movie {
     buttons.forEach((button) => button.disabled = true);
     this._api.deleteComment(id).then(() => {
       this._changeData(
-        UserAction.UPDATE_FILM_POPUP,
+        UserAction.UPDATE_FILM_CARD,
         UpdateType.PATCH,
         this._movie,
         () => {
@@ -225,6 +246,7 @@ export default class Movie {
         },
       );
     }).catch(() => {
+      this._popup.shake();
       currentButton.textContent = 'Delete';
       buttons.forEach((button) => button.disabled = false);
     });
@@ -237,6 +259,7 @@ export default class Movie {
     };
 
     if (!data.checkedEmotion || !data.textComment) {
+      this._popup.shake();
       return;
     }
     textArea.setAttribute('disabled', 'disabled');
@@ -246,7 +269,7 @@ export default class Movie {
     })
       .then(() => {
         this._changeData(
-          UserAction.UPDATE_FILM_POPUP,
+          UserAction.UPDATE_FILM_CARD,
           UpdateType.PATCH,
           this._movie,
           () => {
@@ -261,6 +284,7 @@ export default class Movie {
       .catch(() => {
         textArea.removeAttribute('disabled');
         emojiInputs.forEach((input) => input.disabled = false);
+        this._popup.shake();
       });
 
   }

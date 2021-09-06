@@ -112,17 +112,12 @@ export default class MoviesList {
     this._movieExtraCommentPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handleViewAction(actionType, updateType, update, callback) {
+  _handleViewAction(actionType, updateType, update, callback, errorCallback) {
     switch (actionType) {
       case UserAction.UPDATE_FILM_CARD:
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
-        }).then(callback);
-        break;
-      case UserAction.UPDATE_FILM_POPUP:
-        this._api.updateMovie(update).then((response) => {
-          this._moviesModel.updateMovie(updateType, response);
-        }).then(callback);
+        }).then(callback).catch(errorCallback);
         break;
     }
   }

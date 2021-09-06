@@ -9,6 +9,7 @@ const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 const NO_COMMENTS_ERROR = 'Список коментариев недоступен. Ошибка загрузки данных.';
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
@@ -337,6 +338,13 @@ export default class FilmPoup extends SmartView {
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setDeleteCommentClickHandler(this._callback.deleteClick);
     this.setSubmitCommentHandler(this._callback.commentSubmit);
+  }
+
+  shake() {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.getElement().style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   static parseMovieToData(movie) {
