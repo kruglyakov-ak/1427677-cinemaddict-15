@@ -265,7 +265,9 @@ export default class FilmPoup extends SmartView {
   _commentSubmitHandler(evt) {
     if (evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
-      this._callback.commentSubmit(this._data);
+      const textArea = this.getElement().querySelector('.film-details__comment-input');
+      const emojiInputs = this.getElement().querySelectorAll('.film-details__emoji-item');
+      this._callback.commentSubmit(this._data, textArea, emojiInputs);
       document.removeEventListener('keydown', this._commentSubmitHandler);
     }
   }

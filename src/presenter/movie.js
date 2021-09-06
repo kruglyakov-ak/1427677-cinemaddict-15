@@ -230,7 +230,7 @@ export default class Movie {
     });
   }
 
-  _handleCommentSubmit(data) {
+  _handleCommentSubmit(data, textArea, emojiInputs) {
     const newComment = {
       emotion: data.checkedEmotion,
       comment: data.textComment,
@@ -239,6 +239,8 @@ export default class Movie {
     if (!data.checkedEmotion || !data.textComment) {
       return;
     }
+    textArea.setAttribute('disabled', 'disabled');
+    emojiInputs.forEach((input) => input.disabled = true);
     this._api.addComment(this._movie, newComment).then((response) => {
       this._commentsListModel.addComment(response.comments);
     })
@@ -255,6 +257,10 @@ export default class Movie {
             });
           },
         );
+      })
+      .catch(() => {
+        textArea.removeAttribute('disabled');
+        emojiInputs.forEach((input) => input.disabled = false);
       });
 
   }
