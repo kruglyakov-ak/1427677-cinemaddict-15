@@ -196,9 +196,6 @@ export default class FilmPoup extends SmartView {
     this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
     this._clickMarkAsWatchedlistHandler = this._clickMarkAsWatchedlistHandler.bind(this);
     this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
-    this._addToWatchlistToggleHandler = this._addToWatchlistToggleHandler.bind(this);
-    this._markAsWatchedlistToggleHandler = this._markAsWatchedlistToggleHandler.bind(this);
-    this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
     this._textTextareaHandler = this._textTextareaHandler.bind(this);
     this._emotionInputHandler = this._emotionInputHandler.bind(this);
     this._scrollPopupHandler = this._scrollPopupHandler.bind(this);
@@ -218,41 +215,17 @@ export default class FilmPoup extends SmartView {
 
   _clickAddToWatchlistHandler(evt) {
     evt.preventDefault();
-    this._callback.addToWatchlistClick();
+    this._callback.addToWatchlistClick(this._data);
   }
 
   _clickMarkAsWatchedlistHandler(evt) {
     evt.preventDefault();
-    this._callback.markAsWatchedlistClick();
+    this._callback.markAsWatchedlistClick(this._data);
   }
 
   _clickFavoriteHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
-  _addToWatchlistToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isWatchlist: !this._data.isWatchlist,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
-  }
-
-  _markAsWatchedlistToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isAlreadyWatched: !this._data.isAlreadyWatched,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
-  }
-
-  _favoriteToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isFavorite: !this._data.isFavorite,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
+    this._callback.favoriteClick(this._data);
   }
 
   _textTextareaHandler(evt) {
@@ -279,15 +252,19 @@ export default class FilmPoup extends SmartView {
     }, true);
   }
 
+  getScrollPosition() {
+    return this._data.scrollPosition;
+  }
+
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(+evt.target.dataset.id, FilmPoup.parseDataToMovie(this._data), evt.target);
+    this._callback.deleteClick(+evt.target.dataset.id, this._data, evt.target);
   }
 
   _commentSubmitHandler(evt) {
     if (evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
-      this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
+      this._callback.commentSubmit(this._data);
       document.removeEventListener('keydown', this._commentSubmitHandler);
     }
   }
@@ -336,15 +313,6 @@ export default class FilmPoup extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.film-details__control-button--watchlist')
-      .addEventListener('click', this._addToWatchlistToggleHandler);
-    this.getElement()
-      .querySelector('.film-details__control-button--watched')
-      .addEventListener('click', this._markAsWatchedlistToggleHandler);
-    this.getElement()
-      .querySelector('.film-details__control-button--favorite')
-      .addEventListener('click', this._favoriteToggleHandler);
     if (this.getElement()
       .querySelector('.film-details__comment-input')) {
       this.getElement()
@@ -376,10 +344,5 @@ export default class FilmPoup extends SmartView {
         scrollPosition: 0,
       },
     );
-  }
-
-  static parseDataToMovie(data) {
-    data = Object.assign({}, data);
-    return data;
   }
 }

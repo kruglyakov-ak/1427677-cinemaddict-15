@@ -24,6 +24,7 @@ export default class Movie {
     this._api = api;
 
     this._filmCard = null;
+    this._popup = null;
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleMarkAsWatchedlistClick = this._handleMarkAsWatchedlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -82,8 +83,13 @@ export default class Movie {
       this._closePopup();
     }
 
+    if (this._popup !== null) {
+      this._scrollPosition = this._popup.getScrollPosition();
+      this._popup = null;
+    }
     this._popup = new FilmPoupView(movie, this._commentsListModel.getCommentsList());
     this._openPopup();
+    this._popup.getElement().scrollTo(0, this._scrollPosition);
     this._bodyElement.classList.add('hide-overflow');
 
     this._popup.setCloseBtnClickHandler(this._closePopup);
@@ -99,6 +105,8 @@ export default class Movie {
     document.removeEventListener('keydown', this._onEscKeyDown);
     this._bodyElement.classList.remove('hide-overflow');
     this._mode = Mode.CLOSE;
+    this._popup;
+    this._popup = null;
   }
 
   _onEscKeyDown(evt) {
@@ -116,6 +124,9 @@ export default class Movie {
   }
 
   _handleAddToWatchlistClick() {
+    if (this._popup) {
+      this._scrollPosition = this._popup.getScrollPosition();
+    }
     const isCurrentFilterType = this._filterType === this._filterType === FilterType.ALL ||
     this._filterType !== FilterType.WHATCHLIST;
     if (!isCurrentFilterType && this._popup) {
@@ -131,10 +142,19 @@ export default class Movie {
           isWatchlist: !this._movie.isWatchlist,
         },
       ),
+      () => {
+        if (this._popup) {
+          this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+          this._popup.getElement().scrollTo(0, this._scrollPosition);
+        }
+      },
     );
   }
 
   _handleMarkAsWatchedlistClick() {
+    if (this._popup) {
+      this._scrollPosition = this._popup.getScrollPosition();
+    }
     const isCurrentFilterType = this._filterType === FilterType.ALL || this._filterType !== FilterType.HISTORY;
     const isAlreadyWatched = this._movie.isAlreadyWatched;
     if (!isCurrentFilterType && this._popup) {
@@ -151,10 +171,19 @@ export default class Movie {
           watchingDate: isAlreadyWatched ? null : new Date(),
         },
       ),
+      () => {
+        if (this._popup) {
+          this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+          this._popup.getElement().scrollTo(0, this._scrollPosition);
+        }
+      },
     );
   }
 
   _handleFavoriteClick() {
+    if (this._popup) {
+      this._scrollPosition = this._popup.getScrollPosition();
+    }
     const isCurrentFilterType = this._filterType === FilterType.ALL || this._filterType !== FilterType.FAVORITES;
     if (!isCurrentFilterType && this._popup) {
       this._closePopup();
@@ -169,6 +198,12 @@ export default class Movie {
           isFavorite: !this._movie.isFavorite,
         },
       ),
+      () => {
+        if (this._popup) {
+          this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+          this._popup.getElement().scrollTo(0, this._scrollPosition);
+        }
+      },
     );
   }
 

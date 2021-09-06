@@ -117,7 +117,7 @@ export default class MoviesList {
       case UserAction.UPDATE_FILM_CARD:
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
-        });
+        }).then(callback);
         break;
       case UserAction.UPDATE_FILM_POPUP:
         this._api.updateMovie(update).then((response) => {
