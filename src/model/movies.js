@@ -32,21 +32,6 @@ export default class Moveis extends AbstractObserver {
     this._notify(updateType, update);
   }
 
-  deleteMovie(updateType, update) {
-    const index = this._movies.findIndex((movie) => movie.id === update.id);
-
-    if (index === -1) {
-      throw new Error('Can\'t delete unexisting task');
-    }
-
-    this._movies = [
-      ...this._movies.slice(0, index),
-      ...this._movies.slice(index + 1),
-    ];
-
-    this._notify(updateType);
-  }
-
   static adaptToClient(movie) {
     const adaptedMovie = Object.assign(
       {},

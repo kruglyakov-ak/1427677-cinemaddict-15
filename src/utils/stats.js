@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 export const DurationFormat = {
   HOUR: 'hour',
   MINUTE: 'minute',
+  DAY: 'day',
 };
 
 export const getTotalDuration = (movies, format) => {
@@ -12,6 +13,8 @@ export const getTotalDuration = (movies, format) => {
       return dayjs.duration(totalDuration, 'm').format('H');
     case DurationFormat.MINUTE:
       return dayjs.duration(totalDuration, 'm').format('m');
+    case DurationFormat.DAY:
+      return dayjs.duration(totalDuration, 'm').format('D');
   }
 };
 

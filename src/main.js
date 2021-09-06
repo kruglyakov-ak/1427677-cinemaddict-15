@@ -6,13 +6,14 @@ import FilterPresenter from './presenter/filter.js';
 import Api from './api.js';
 import {
   render,
-  RenderPosition
+  RenderPosition,
+  remove
 } from './utils/render.js';
 import { UpdateType } from './const.js';
 
 
 const AUTHORIZATION = 'Basic V2h5LCBNci4gQW5kZXJzb24sIHdoeT8';
-const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -30,13 +31,17 @@ const filterPresenter = new FilterPresenter(headerElement, mainElement, filterMo
 filterPresenter.init();
 moviePresenter.init();
 
-render(footerElement, new FooterStatisticsView(moviesModel.getMovies()), RenderPosition.BEFOREEND);
+const footerStatisticsView = new FooterStatisticsView(moviesModel.getMovies());
+
+render(footerElement, footerStatisticsView, RenderPosition.BEFOREEND);
 
 api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(UpdateType.INIT, movies);
+    remove(footerStatisticsView);
+    render(footerElement, new FooterStatisticsView(moviesModel.getMovies()), RenderPosition.BEFOREEND);
   })
   .catch(() => {
-    moviesModel.setTasks(UpdateType.INIT, []);
+    moviesModel.setMovies(UpdateType.INIT, []);
   });
 

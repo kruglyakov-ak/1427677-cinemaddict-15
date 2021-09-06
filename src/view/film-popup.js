@@ -129,7 +129,7 @@ const createFilmPoupTemplate = (data, comments) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
-                  <td class="film-details__cell">${(createGenresTemplate(genres))}</td>
+                  <td class="film-details__cell">${createGenresTemplate(genres)}</td>
                 </tr>
               </tbody></table>
 
@@ -157,7 +157,7 @@ const createFilmPoupTemplate = (data, comments) => {
 
       <div class="film-details__bottom-container">
      ${comments !== null ? `<section class="film-details__comments-wrap">
-     ${commentsCount.length ? `
+     ${commentsCount ? `
      <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
      </span></h3>` : ''}
      <ul class="film-details__comments-list">
@@ -293,7 +293,7 @@ export default class FilmPoup extends SmartView {
   }
 
   _commentSubmitHandler(evt) {
-    if (evt.key === 'Enter' || evt.key === 'Enter' && evt.ctrlKey) {
+    if (evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
       this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
       document.removeEventListener('keydown', this._commentSubmitHandler);

@@ -34,7 +34,7 @@ export default class MoviesList {
     this._mainElement = main;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
-    this._api =  api;
+    this._api = api;
 
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
@@ -118,12 +118,6 @@ export default class MoviesList {
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
         });
-        break;
-      case UserAction.ADD_COMMENT:
-        this._commentsListModel.addComments(updateType, update);
-        break;
-      case UserAction.DELETE_COMMENT:
-        this._commentsListModel.deleteComments(updateType, update);
         break;
     }
   }
@@ -213,7 +207,7 @@ export default class MoviesList {
 
   _renderFilmCard(containerElement, movie, movieList) {
     const moviePresenter =
-    new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType, this._api);
+      new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType, this._api);
     movieList.set(movie.id, moviePresenter);
     moviePresenter.init(movie, movie.comments);
   }
@@ -276,7 +270,7 @@ export default class MoviesList {
   }
 
   _renderMostCommentedFilmList() {
-    if (this._mostCommentedListComponent !== null && this._mostCommentedfilmsListContainer !== null ) {
+    if (this._mostCommentedListComponent !== null && this._mostCommentedfilmsListContainer !== null) {
       remove(this._mostCommentedListComponent);
       remove(this._mostCommentedfilmsListContainer);
       this._mostCommentedListComponent = null;
