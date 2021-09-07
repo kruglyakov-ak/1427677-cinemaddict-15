@@ -260,12 +260,16 @@ export default class FilmPoup extends SmartView {
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
     const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
-    this._callback.deleteClick(+evt.target.dataset.id, this._data, evt.target, buttons);
+    this._callback.deleteClick(+evt.target.dataset.id, evt.target, buttons);
   }
 
   _commentSubmitHandler(evt) {
-    if (evt.key === 'Enter' && evt.ctrlKey) {
+    if (evt.key === 'Enter' && evt.ctrlKey || evt.key === 'Enter' && evt.metaKey) {
       evt.preventDefault();
+      if (!this._data.textComment || !this._data.checkedEmotion) {
+        this.shake();
+        return;
+      }
       const textArea = this.getElement().querySelector('.film-details__comment-input');
       const emojiInputs = this.getElement().querySelectorAll('.film-details__emoji-item');
       this._callback.commentSubmit(this._data, textArea, emojiInputs);

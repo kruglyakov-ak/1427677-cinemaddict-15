@@ -123,6 +123,29 @@ export default class Movie {
     this._mode = Mode.OPEN;
   }
 
+  errorShake () {
+    if (this._popup) {
+      this._popup.shake();
+    } else {
+      this._filmCard.shake();
+    }
+  }
+
+  updatePopup () {
+    if (this._popup) {
+      this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+      this._popup.getElement().scrollTo(0, this._scrollPosition);
+    }
+  }
+
+  updateCommentList() {
+    this._api.getСomments(this._movie).then((comments) => {
+      this._commentsListModel.setCommentsList(comments);
+      this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
+      this._popup.getElement().scrollTo(0, this._scrollPosition);
+    });
+  }
+
   _handleAddToWatchlistClick() {
     if (this._popup) {
       this._scrollPosition = this._popup.getScrollPosition();
@@ -142,19 +165,6 @@ export default class Movie {
           isWatchlist: !this._movie.isWatchlist,
         },
       ),
-      () => {
-        if (this._popup) {
-          this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-          this._popup.getElement().scrollTo(0, this._scrollPosition);
-        }
-      },
-      () => {
-        if (this._popup) {
-          this._popup.shake();
-        } else {
-          this._filmCard.shake();
-        }
-      },
     );
   }
 
@@ -178,19 +188,6 @@ export default class Movie {
           watchingDate: isAlreadyWatched ? null : new Date(),
         },
       ),
-      () => {
-        if (this._popup) {
-          this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-          this._popup.getElement().scrollTo(0, this._scrollPosition);
-        }
-      },
-      () => {
-        if (this._popup) {
-          this._popup.shake();
-        } else {
-          this._filmCard.shake();
-        }
-      },
     );
   }
 
@@ -212,38 +209,21 @@ export default class Movie {
           isFavorite: !this._movie.isFavorite,
         },
       ),
-      () => {
-        if (this._popup) {
-          this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-          this._popup.getElement().scrollTo(0, this._scrollPosition);
-        }
-      },
-      () => {
-        if (this._popup) {
-          this._popup.shake();
-        } else {
-          this._filmCard.shake();
-        }
-      },
     );
   }
 
-  _handleCommentDeleteClick(id, data, currentButton, buttons) {
+  _handleCommentDeleteClick(id, currentButton, buttons) {
+    if (this._popup) {
+      this._scrollPosition = this._popup.getScrollPosition();
+    }
+
     currentButton.textContent = 'Deleting...';
     buttons.forEach((button) => button.disabled = true);
     this._api.deleteComment(id).then(() => {
       this._changeData(
-        UserAction.UPDATE_FILM_CARD,
+        UserAction.UPDATE_FILM_POPUP,
         UpdateType.PATCH,
         this._movie,
-        () => {
-          this._api.getСomments(this._movie).then((comments) => {
-            this._commentsListModel.setCommentsList(comments);
-            this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-            this._popup.getElement().scrollTo(0, data.scrollPosition);
-            buttons.forEach((button) => button.disabled = false);
-          });
-        },
       );
     }).catch(() => {
       this._popup.shake();
@@ -253,15 +233,15 @@ export default class Movie {
   }
 
   _handleCommentSubmit(data, textArea, emojiInputs) {
+    if (this._popup) {
+      this._scrollPosition = this._popup.getScrollPosition();
+    }
+
     const newComment = {
       emotion: data.checkedEmotion,
       comment: data.textComment,
     };
 
-    if (!data.checkedEmotion || !data.textComment) {
-      this._popup.shake();
-      return;
-    }
     textArea.setAttribute('disabled', 'disabled');
     emojiInputs.forEach((input) => input.disabled = true);
     this._api.addComment(this._movie, newComment).then((response) => {
@@ -269,16 +249,9 @@ export default class Movie {
     })
       .then(() => {
         this._changeData(
-          UserAction.UPDATE_FILM_CARD,
+          UserAction.UPDATE_FILM_POPUP,
           UpdateType.PATCH,
           this._movie,
-          () => {
-            this._api.getСomments(this._movie).then((comments) => {
-              this._commentsListModel.setCommentsList(comments);
-              this._renderPopup(this._movie, this._commentsListModel.getCommentsList());
-              this._popup.getElement().scrollTo(0, data.scrollPosition);
-            });
-          },
         );
       })
       .catch(() => {
@@ -286,7 +259,6 @@ export default class Movie {
         emojiInputs.forEach((input) => input.disabled = false);
         this._popup.shake();
       });
-
   }
 }
 
