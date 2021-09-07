@@ -4,6 +4,7 @@ import AbstractView from './abstract.js';
 const DATE_FORMAT = 'YYYY';
 const MAX_NUMBER_OF_CHARACTERS = 140;
 const ACTIVE_CARD_CLASS_NAME = 'film-card__controls-item--active';
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const createFilmCardTemplate = (movie) => {
   const {
@@ -108,5 +109,12 @@ export default class FilmCard extends AbstractView {
     this.getElement()
       .querySelector('.film-card__controls-item--favorite')
       .addEventListener('click', this._clickFavoriteHandler);
+  }
+
+  shake() {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.getElement().style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

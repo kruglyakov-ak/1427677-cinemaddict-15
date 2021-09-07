@@ -34,7 +34,7 @@ export default class MoviesList {
     this._mainElement = main;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
-    this._api =  api;
+    this._api = api;
 
     this._filmsContainer = new FilmsContainerView();
     this._filmsListContainer = new FilmsListContainerView();
@@ -112,18 +112,12 @@ export default class MoviesList {
     this._movieExtraCommentPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, update, callback, errorCallback) {
     switch (actionType) {
       case UserAction.UPDATE_FILM_CARD:
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
-        });
-        break;
-      case UserAction.ADD_COMMENT:
-        this._commentsListModel.addComments(updateType, update);
-        break;
-      case UserAction.DELETE_COMMENT:
-        this._commentsListModel.deleteComments(updateType, update);
+        }).then(callback).catch(errorCallback);
         break;
     }
   }
@@ -139,11 +133,9 @@ export default class MoviesList {
     const filtredMovies = filter[FilterType.HISTORY](movies);
     switch (updateType) {
       case UpdateType.PATCH:
-        this._initFilmCardPresenter(this._moviePresenter, data);
         this._initFilmCardPresenter(this._movieExtraRatePresenter, data);
+        this._initFilmCardPresenter(this._moviePresenter, data);
         this._initFilmCardPresenter(this._movieExtraCommentPresenter, data);
-        this._renderTopRatedFilmList();
-        this._renderMostCommentedFilmList();
         break;
       case UpdateType.MINOR:
         this._clearFilmList({ resetRenderedMoviekCount: true });
@@ -213,7 +205,7 @@ export default class MoviesList {
 
   _renderFilmCard(containerElement, movie, movieList) {
     const moviePresenter =
-    new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType, this._api);
+      new MoviePresenter(containerElement, this._handleViewAction, this._handleModeChange, this._filterType, this._api);
     movieList.set(movie.id, moviePresenter);
     moviePresenter.init(movie, movie.comments);
   }
@@ -276,7 +268,7 @@ export default class MoviesList {
   }
 
   _renderMostCommentedFilmList() {
-    if (this._mostCommentedListComponent !== null && this._mostCommentedfilmsListContainer !== null ) {
+    if (this._mostCommentedListComponent !== null && this._mostCommentedfilmsListContainer !== null) {
       remove(this._mostCommentedListComponent);
       remove(this._mostCommentedfilmsListContainer);
       this._mostCommentedListComponent = null;

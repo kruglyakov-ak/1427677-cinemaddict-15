@@ -9,6 +9,7 @@ const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 const NO_COMMENTS_ERROR = 'Список коментариев недоступен. Ошибка загрузки данных.';
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
@@ -26,14 +27,14 @@ const createEmojiListTemplate = (emotions, checkedEmotion) => emotions
   .map((emotion) => createInputEmojiTamplate(emotion, checkedEmotion))
   .join('');
 
-const createCommentTemplate = (comments) => {
+const createCommentTemplate = (commentInfo) => {
   const {
     emotion,
     comment,
     author,
     date,
     id,
-  } = comments;
+  } = commentInfo;
 
   return `<li class="film-details__comment">
 <span class="film-details__comment-emoji">
@@ -129,7 +130,7 @@ const createFilmPoupTemplate = (data, comments) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
-                  <td class="film-details__cell">${(createGenresTemplate(genres))}</td>
+                  <td class="film-details__cell">${createGenresTemplate(genres)}</td>
                 </tr>
               </tbody></table>
 
@@ -157,7 +158,7 @@ const createFilmPoupTemplate = (data, comments) => {
 
       <div class="film-details__bottom-container">
      ${comments !== null ? `<section class="film-details__comments-wrap">
-     ${commentsCount.length ? `
+     ${commentsCount ? `
      <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
      </span></h3>` : ''}
      <ul class="film-details__comments-list">
@@ -196,9 +197,6 @@ export default class FilmPoup extends SmartView {
     this._clickAddToWatchlistHandler = this._clickAddToWatchlistHandler.bind(this);
     this._clickMarkAsWatchedlistHandler = this._clickMarkAsWatchedlistHandler.bind(this);
     this._clickFavoriteHandler = this._clickFavoriteHandler.bind(this);
-    this._addToWatchlistToggleHandler = this._addToWatchlistToggleHandler.bind(this);
-    this._markAsWatchedlistToggleHandler = this._markAsWatchedlistToggleHandler.bind(this);
-    this._favoriteToggleHandler = this._favoriteToggleHandler.bind(this);
     this._textTextareaHandler = this._textTextareaHandler.bind(this);
     this._emotionInputHandler = this._emotionInputHandler.bind(this);
     this._scrollPopupHandler = this._scrollPopupHandler.bind(this);
@@ -218,49 +216,17 @@ export default class FilmPoup extends SmartView {
 
   _clickAddToWatchlistHandler(evt) {
     evt.preventDefault();
-    this._callback.addToWatchlistClick();
+    this._callback.addToWatchlistClick(this._data);
   }
 
   _clickMarkAsWatchedlistHandler(evt) {
     evt.preventDefault();
-    this._callback.markAsWatchedlistClick();
+    this._callback.markAsWatchedlistClick(this._data);
   }
 
   _clickFavoriteHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
-  _addToWatchlistToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isWatchlist: !this._data.isWatchlist,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
-  }
-
-  _markAsWatchedlistToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isAlreadyWatched: !this._data.isAlreadyWatched,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
-  }
-
-  _favoriteToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isFavorite: !this._data.isFavorite,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
-  }
-
-  _Handler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      isFavorite: !this._data.isFavorite,
-    });
-    this.getElement().scrollTo(0, this._data.scrollPosition);
+    this._callback.favoriteClick(this._data);
   }
 
   _textTextareaHandler(evt) {
@@ -287,15 +253,22 @@ export default class FilmPoup extends SmartView {
     }, true);
   }
 
+  getScrollPosition() {
+    return this._data.scrollPosition;
+  }
+
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(+evt.target.dataset.id, FilmPoup.parseDataToMovie(this._data));
+    const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
+    this._callback.deleteClick(+evt.target.dataset.id, this._data, evt.target, buttons);
   }
 
   _commentSubmitHandler(evt) {
-    if (evt.key === 'Enter' || evt.key === 'Enter' && evt.ctrlKey) {
+    if (evt.key === 'Enter' && evt.ctrlKey) {
       evt.preventDefault();
-      this._callback.commentSubmit(FilmPoup.parseDataToMovie(this._data));
+      const textArea = this.getElement().querySelector('.film-details__comment-input');
+      const emojiInputs = this.getElement().querySelectorAll('.film-details__emoji-item');
+      this._callback.commentSubmit(this._data, textArea, emojiInputs);
       document.removeEventListener('keydown', this._commentSubmitHandler);
     }
   }
@@ -344,15 +317,6 @@ export default class FilmPoup extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.film-details__control-button--watchlist')
-      .addEventListener('click', this._addToWatchlistToggleHandler);
-    this.getElement()
-      .querySelector('.film-details__control-button--watched')
-      .addEventListener('click', this._markAsWatchedlistToggleHandler);
-    this.getElement()
-      .querySelector('.film-details__control-button--favorite')
-      .addEventListener('click', this._favoriteToggleHandler);
     if (this.getElement()
       .querySelector('.film-details__comment-input')) {
       this.getElement()
@@ -376,6 +340,13 @@ export default class FilmPoup extends SmartView {
     this.setSubmitCommentHandler(this._callback.commentSubmit);
   }
 
+  shake() {
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.getElement().style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
   static parseMovieToData(movie) {
     return Object.assign(
       {},
@@ -384,10 +355,5 @@ export default class FilmPoup extends SmartView {
         scrollPosition: 0,
       },
     );
-  }
-
-  static parseDataToMovie(data) {
-    data = Object.assign({}, data);
-    return data;
   }
 }
