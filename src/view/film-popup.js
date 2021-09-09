@@ -156,13 +156,13 @@ const createFilmPoupTemplate = (data, comments) => {
       </div>
 
       <div class="film-details__bottom-container">
-     ${comments !== null ? `<section class="film-details__comments-wrap">
-     ${commentsCount ? `
-     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
-     </span></h3>` : ''}
-     <ul class="film-details__comments-list">
-     ${createCommentsTemplate(comments)}
-   </ul>
+     ${!comments.length && commentsCount ? `<h3 class="film-details__comments-title">${NO_COMMENTS_ERROR}</h3>` : `<section class="film-details__comments-wrap">
+${commentsCount ? `
+<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
+</span></h3>` : ''}
+<ul class="film-details__comments-list">
+${createCommentsTemplate(comments)}
+</ul>`}
 
 <div class="film-details__new-comment">
 <div class="film-details__add-emoji-label">
@@ -180,7 +180,7 @@ alt="emoji-${checkedEmotion}" width="55" height="55">` : ''}
 ${createEmojiListTemplate(EMOTIONS, checkedEmotion)}
      </div>
    </div>
- </section>` : `<h3 class="film-details__comments-title">${NO_COMMENTS_ERROR}</h3>`}
+ </section>
 
     </div>
   </form>

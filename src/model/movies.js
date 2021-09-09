@@ -84,8 +84,9 @@ export default class Moveis extends AbstractObserver {
   static adaptToServer(movie) {
     const adaptedMovie = Object.assign(
       {},
-      movie,
       {
+        'id': movie.id,
+        'comments': movie.comments,
         'film_info': {
           'title': movie.title,
           'alternative_title': movie.altTitle,
@@ -111,24 +112,6 @@ export default class Moveis extends AbstractObserver {
         },
       },
     );
-
-    delete movie.title;
-    delete movie.altTitle;
-    delete movie.totalRating;
-    delete movie.poster;
-    delete movie.ageRating;
-    delete movie.director;
-    delete movie.writers;
-    delete movie.actors;
-    delete movie.releaseDate;
-    delete movie.releaseCountry;
-    delete movie.genres;
-    delete movie.runtime;
-    delete movie.description;
-    delete movie.isWatchlist;
-    delete movie.isAlreadyWatched;
-    delete movie.watchingDate;
-    delete movie.isFavorite;
 
     return adaptedMovie;
   }

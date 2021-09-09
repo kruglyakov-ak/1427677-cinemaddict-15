@@ -1,10 +1,9 @@
 import MoveisModel from '../model/movies.js';
 import {isOnline} from '../utils/common.js';
 
-const getSyncedMovies = (items) =>
-  items
-    .filter(({success}) => success)
-    .map(({payload}) => payload.movie);
+const getSyncedMovies = (items) => items
+  .filter(({success}) => success)
+  .map(({payload}) => payload.movie);
 
 const createStoreStructure = (items) =>
   items
@@ -36,7 +35,7 @@ export default class Provider {
 
   updateMovie(movie) {
     if (isOnline()) {
-      return this._api.updateTask(movie)
+      return this._api.updateMovie(movie)
         .then((updatedMovie) => {
           this._store.setItem(updatedMovie.id, MoveisModel.adaptToServer(updatedMovie));
           return updatedMovie;
@@ -58,9 +57,7 @@ export default class Provider {
         });
     }
 
-    const storeComments = Object.values(this._store.getItems());
-
-    return Promise.resolve(storeComments);
+    return Promise.reject(new Error('Get comment failed'));
   }
 
   addComment(movie, comment) {
@@ -90,13 +87,9 @@ export default class Provider {
 
       return this._api.sync(storeMovies)
         .then((response) => {
-          // Забираем из ответа синхронизированные задачи
-          const createdMovies = getSyncedMovies(response.created);
           const updatedMovies = getSyncedMovies(response.updated);
 
-          // Добавляем синхронизированные задачи в хранилище.
-          // Хранилище должно быть актуальным в любой момент.
-          const items = createStoreStructure([...createdMovies, ...updatedMovies]);
+          const items = createStoreStructure([...updatedMovies]);
 
           this._store.setItems(items);
         });

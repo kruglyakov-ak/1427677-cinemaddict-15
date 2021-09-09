@@ -1,6 +1,8 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPoupView from '../view/film-popup.js';
 import CommentsListModel from '../model/comments-list.js';
+import {isOnline} from '../utils/common.js';
+import {toast} from '../utils/toast.js';
 import {
   render,
   RenderPosition,
@@ -38,13 +40,10 @@ export default class Movie {
 
   init(movie) {
     this._movie = movie;
-
     this._api.getСomments(this._movie).then((comments) => {
       if (this._movie.comments) {
         this._commentsListModel.setCommentsList(comments);
       }
-    }).catch(() => {
-      this._commentsListModel.setCommentsList(null);
     });
 
     const prevFilmCard = this._filmCard;
@@ -213,6 +212,10 @@ export default class Movie {
   }
 
   _handleCommentDeleteClick(id, currentButton, buttons) {
+    if (!isOnline()) {
+      toast('You can\'t delete comment offline');
+      return;
+    }
     if (this._popup) {
       this._scrollPosition = this._popup.getScrollPosition();
     }
@@ -233,6 +236,10 @@ export default class Movie {
   }
 
   _handleCommentSubmit(data, textArea, emojiInputs) {
+    if (!isOnline()) {
+      toast('You can\'t add comment offline');
+      return;
+    }
     if (this._popup) {
       this._scrollPosition = this._popup.getScrollPosition();
     }
