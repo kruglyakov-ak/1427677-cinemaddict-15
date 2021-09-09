@@ -3,7 +3,7 @@ import MoveisModel from './model/movies.js';
 import FilterModel from './model/filter.js';
 import MovieListPresenter from './presenter/movies-list.js';
 import FilterPresenter from './presenter/filter.js';
-import Api from './api.js';
+import Api from './api/api.js';
 import {
   render,
   RenderPosition,

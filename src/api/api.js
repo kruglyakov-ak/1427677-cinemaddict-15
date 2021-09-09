@@ -1,4 +1,4 @@
-import MoveisModel from './model/movies.js';
+import MoveisModel from '../model/movies.js';
 
 const Method = {
   GET: 'GET',
