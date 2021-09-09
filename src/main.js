@@ -45,3 +45,6 @@ api.getMovies()
     moviesModel.setMovies(UpdateType.INIT, []);
   });
 
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
