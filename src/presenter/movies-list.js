@@ -112,13 +112,51 @@ export default class MoviesList {
     this._movieExtraCommentPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  _handleViewAction(actionType, updateType, update, callback, errorCallback) {
+  _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM_CARD:
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateMovie(updateType, response);
-        }).then(callback).catch(errorCallback);
+        })
+          .then(() => {
+            this._updatePopupFilmCardPresenter(this._moviePresenter, update);
+            this._updatePopupFilmCardPresenter(this._movieExtraRatePresenter, update);
+            this._updatePopupFilmCardPresenter(this._movieExtraCommentPresenter, update);
+          })
+          .catch(() => {
+            this._shakeFilmCardPresenter(this._moviePresenter, update);
+            this._shakeFilmCardPresenter(this._movieExtraRatePresenter, update);
+            this._shakeFilmCardPresenter(this._movieExtraCommentPresenter, update);
+          });
         break;
+      case UserAction.UPDATE_FILM_POPUP:
+        this._api.updateMovie(update).then((response) => {
+          this._moviesModel.updateMovie(updateType, response);
+        })
+          .then(() => {
+            this._updateCommentFilmCardPresenter(this._moviePresenter, update);
+            this._updateCommentFilmCardPresenter(this._movieExtraRatePresenter, update);
+            this._updateCommentFilmCardPresenter(this._movieExtraCommentPresenter, update);
+          });
+        break;
+    }
+  }
+
+  _updatePopupFilmCardPresenter (presentersMap, data) {
+    if (presentersMap.has(data.id)) {
+      return presentersMap.get(data.id).updatePopup();
+    }
+  }
+
+  _updateCommentFilmCardPresenter (presentersMap, data) {
+    if (presentersMap.has(data.id)) {
+      return presentersMap.get(data.id).updateCommentList();
+    }
+  }
+
+  _shakeFilmCardPresenter(presentersMap, data) {
+    if (presentersMap.has(data.id)) {
+      return presentersMap.get(data.id).errorShake();
     }
   }
 

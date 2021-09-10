@@ -9,7 +9,6 @@ const DATE_FORMAT = 'DD MMMM YYYY';
 const ACTIVE_POPUP_CLASS_NAME = 'film-details__control-button--active';
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 const NO_COMMENTS_ERROR = 'Список коментариев недоступен. Ошибка загрузки данных.';
-const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const createGenreItemTemplate = (genre) => `<span class="film-details__genre">${genre}</span>`;
 const createGenresTemplate = (genres) => genres
@@ -157,13 +156,13 @@ const createFilmPoupTemplate = (data, comments) => {
       </div>
 
       <div class="film-details__bottom-container">
-     ${comments !== null ? `<section class="film-details__comments-wrap">
-     ${commentsCount ? `
-     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
-     </span></h3>` : ''}
-     <ul class="film-details__comments-list">
-     ${createCommentsTemplate(comments)}
-   </ul>
+     ${!comments.length && commentsCount ? `<h3 class="film-details__comments-title">${NO_COMMENTS_ERROR}</h3>` : `<section class="film-details__comments-wrap">
+${commentsCount ? `
+<h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}
+</span></h3>` : ''}
+<ul class="film-details__comments-list">
+${createCommentsTemplate(comments)}
+</ul>`}
 
 <div class="film-details__new-comment">
 <div class="film-details__add-emoji-label">
@@ -181,7 +180,7 @@ alt="emoji-${checkedEmotion}" width="55" height="55">` : ''}
 ${createEmojiListTemplate(EMOTIONS, checkedEmotion)}
      </div>
    </div>
- </section>` : `<h3 class="film-details__comments-title">${NO_COMMENTS_ERROR}</h3>`}
+ </section>
 
     </div>
   </form>
@@ -260,12 +259,16 @@ export default class FilmPoup extends SmartView {
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
     const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
-    this._callback.deleteClick(+evt.target.dataset.id, this._data, evt.target, buttons);
+    this._callback.deleteClick(+evt.target.dataset.id, evt.target, buttons);
   }
 
   _commentSubmitHandler(evt) {
-    if (evt.key === 'Enter' && evt.ctrlKey) {
+    if (evt.key === 'Enter' && evt.ctrlKey || evt.key === 'Enter' && evt.metaKey) {
       evt.preventDefault();
+      if (!this._data.textComment || !this._data.checkedEmotion) {
+        this.shake();
+        return;
+      }
       const textArea = this.getElement().querySelector('.film-details__comment-input');
       const emojiInputs = this.getElement().querySelectorAll('.film-details__emoji-item');
       this._callback.commentSubmit(this._data, textArea, emojiInputs);
@@ -338,13 +341,6 @@ export default class FilmPoup extends SmartView {
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setDeleteCommentClickHandler(this._callback.deleteClick);
     this.setSubmitCommentHandler(this._callback.commentSubmit);
-  }
-
-  shake() {
-    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    setTimeout(() => {
-      this.getElement().style.animation = '';
-    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   static parseMovieToData(movie) {
