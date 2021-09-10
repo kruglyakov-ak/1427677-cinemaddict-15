@@ -41,9 +41,9 @@ export const createProfileRating = (watchedMoviesCount) => {
     return ProfileRating.FAN;
   } else if (isMovieBuff) {
     return ProfileRating.MOVIE_BUFF;
-  } else {
-    return '';
   }
+
+  return '';
 };
 
 export const filterStatsByWatchingDate = (movies, period) => {
