@@ -1,7 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPoupView from '../view/film-popup.js';
 import CommentsListModel from '../model/comments-list.js';
-import {isOnline} from '../utils/common.js';
 import {
   render,
   RenderPosition,
@@ -211,10 +210,6 @@ export default class Movie {
   }
 
   _handleCommentDeleteClick(id, currentButton, buttons) {
-    if (!isOnline()) {
-      this._popup.shake();
-      return;
-    }
     if (this._popup) {
       this._scrollPosition = this._popup.getScrollPosition();
     }
@@ -235,10 +230,6 @@ export default class Movie {
   }
 
   _handleCommentSubmit(data, textArea, emojiInputs) {
-    if (!isOnline()) {
-      this._popup.shake();
-      return;
-    }
     if (this._popup) {
       this._scrollPosition = this._popup.getScrollPosition();
     }

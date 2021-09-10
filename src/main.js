@@ -18,7 +18,7 @@ const STORE_VER = 'v15';
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const AUTHORIZATION = 'Basic V2h5LCBNci4gQW5kZXJzb24sIHdoeT8';
-const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
+const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 
 const api = new Api(END_POINT, AUTHORIZATION);
 const store = new Store(STORE_NAME, window.localStorage);

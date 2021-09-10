@@ -1,6 +1,7 @@
 import { formatReleaseDate, generateRuntime } from '../utils/film.js';
 import SmartView from './smart.js';
 import dayjs from 'dayjs';
+import {isOnline} from '../utils/common.js';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 import he from 'he';
@@ -128,7 +129,7 @@ const createFilmPoupTemplate = (data, comments) => {
                   <td class="film-details__cell">${releaseCountry}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genres.length > 1 ? 'Genres' : 'Genre'}</td>
                   <td class="film-details__cell">${createGenresTemplate(genres)}</td>
                 </tr>
               </tbody></table>
@@ -258,6 +259,10 @@ export default class FilmPoup extends SmartView {
 
   _commentDeleteClickHandler(evt) {
     evt.preventDefault();
+    if (!isOnline()) {
+      this.shake();
+      return;
+    }
     const buttons = this.getElement().querySelectorAll('.film-details__comment-delete');
     this._callback.deleteClick(+evt.target.dataset.id, evt.target, buttons);
   }
@@ -266,6 +271,10 @@ export default class FilmPoup extends SmartView {
     if (evt.key === 'Enter' && evt.ctrlKey || evt.key === 'Enter' && evt.metaKey) {
       evt.preventDefault();
       if (!this._data.textComment || !this._data.checkedEmotion) {
+        this.shake();
+        return;
+      }
+      if (!isOnline()) {
         this.shake();
         return;
       }
